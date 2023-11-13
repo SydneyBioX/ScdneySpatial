@@ -1,16 +1,12 @@
-Package: BuildABiocWorkshop
-Title: Bioconductor or R Workshop Template and Github Actions
+Package: ScdneySpatial
+Title: Unlocking single cell spatial omics analyses with scdney
 Version: 2.0.0
 Authors@R: 
-    person(given = "Sean",
-           family = "Davis",
-           role = c("aut", "cre"),
-           email = "seandavi@gmail.com",
-           comment = c(ORCID = "0000-0002-8991-6458"))
-Description: This package serves as a template for using github actions to 
-    prepare a Bioconductor Workshop package for use. In particular,
-    a pkgdown website and docker image are generated based on workflow 
-    settings. 
+    c(person(given = "Farhan", family = "Ameen", role = c("aut", "cre"), email = "farhan.ameen@sydney.edu.au"),
+      person(given = "Ellis", family = "Patrick", role = c("aut"), email = "ellis.patrick@sydney.edu.au"),
+      person(given = "Shila", family = "Ghazanfar", role = c("aut"), email = "shila.ghazanfar@sydney.edu.au"))
+Description: This workshop introduces an analysitical framwork for analysisng data from high dimensional spatial omics technologies, 
+    using functionality from packages developed by the Sydney Precision Data Science Center.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,7 +18,7 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown
-URL: https://seandavi.github.io/BuildABiocWorkshop/
-BugReports: https://github.com/seandavi/BuildABiocWorkshop/issues/new/choose
+URL: https://sydneybiox.github.io/ScdneySpatial/
+BugReports: https://github.com/SydneyBioX/ScdneySpatial/issues/new/choose
 VignetteBuilder: knitr
-DockerImage: ghcr.io/seandavi/buildabiocworkshop:latest
+DockerImage:  ghcr.io/sydneybiox/scdneyspatial:latest
