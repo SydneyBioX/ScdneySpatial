@@ -1,4 +1,4 @@
-# ![](vignettes/images/banner.png)
+![](vignettes/images/banner.png)
 
 ## Overview
 
