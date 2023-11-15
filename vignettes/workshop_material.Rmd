@@ -319,9 +319,8 @@ kerenSPE <- scater::runUMAP(kerenSPE, exprs_values = "intensities", name = "UMAP
 # try to answer the question here!
 ```
 
-## Cell segmentation & evaluation
 
-*TO FILL* - Waiting on tiff images
+
 
 ## Feature normalisation
 
@@ -441,3 +440,4 @@ kerenSPE |>
 ```
 
 ## Feature generation
+
