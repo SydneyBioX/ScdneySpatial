@@ -151,7 +151,8 @@ library(batchelor)
 
 theme_set(theme_classic())
 nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
-source("data/celltype_colours.R")
+BPPARAM <- simpleSeg:::generateBPParam(nCores)
+source(system.file("data/celltype_colours.R", package = "ScdneySpatial"))
 ```
 
 ## The data
@@ -317,6 +318,103 @@ kerenSPE <- scater::runUMAP(kerenSPE, exprs_values = "intensities", name = "UMAP
 
 
 # try to answer the question here!
+```
+
+## Cell segmentation & evaluation
+
+### Reading images
+
+To load in our images we use the `loadImages` function from `cytomapper`, here we use the patient 5 image from Keren et al. as an example.
+
+```{r}
+image5 = cytomapper::loadImages(
+  x = system.file("data/kerenPatient5.tiff", package = "ScdneySpatial")
+)
+
+mcols(image5) = data.frame(list("imageID" = "kerenPatient5"))
+
+# Setting the channel names according to orginal paper. 
+channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD11c", "CD138", "CD16", "CD20", "CD209", "CD3", "CD31", "CD4", "CD45", "CD45RO", "CD56", "CD63", "CD68", "CD8", "dsDNA", "EGFR", "Fe", "FoxP3", "H3K27me3", "H3K9ac", "HLA_Class_1", "HLA_DR", "IDO", "Keratin17", "Keratin6", "Ki67", "Lag3", "MPO", "Na", "P", "p53", "Pan-Keratin", "PD-L1", "PD1", "phospho-S6", "Si", "SMA", "Ta", "Vimentin")
+
+
+```
+
+
+### Segmentation
+
+Images stored in a `list` or `CytoImageList` can be segmented using `simpleSeg`. Below `simpleSeg` will identify the nucleiin in the image using the `dsDNA` channel. To estimate the cell body of the cells we will simply dilate out from the nuclei by 10 pixels. We also have specified that the channels be sqrt transformed, and the 99th quantile of values removed to ensure our segmentation is not affected by outliers.
+
+
+We can visualise the segmentations using the `display` and `colorLabels` functions in `EBImage`.
+
+```{r}
+
+# Generate segmentation masks
+masks <- simpleSeg(
+  image5,
+  nucleus = c("dsDNA"),
+  cellBody = "dilate", 
+  transform = c("sqrt", "norm99"),
+  discSize = 3,
+  cores = nCores
+)
+
+
+# Visualise segmentation performance one way.
+EBImage::display(colorLabels(masks[[1]]))
+```
+
+The `plotPixels` function in `cytomapper` make it easy to overlay the masks on top of the intensities of 3 markers. Here we can see that the segmentation appears to be performing reasonably.
+
+
+```{r}
+# Visualise segmentation performance another way.
+cytomapper::plotPixels(
+  image = image5[1],
+  mask = masks[1],
+  img_id = "imageID",
+  colour_by = c("CD45", "Pan-Keratin", "SMA", "dsDNA"),
+  display = "single",
+  colour = list(
+    CD45 = c("black", "blue"),
+    `Pan-Keratin` = c("black", "yellow"),
+    SMA = c("black", "green"),
+    dsDNA = c("black", "red")
+  ),
+  # Adjust the brightness, contrast and gamma of each channel.
+  bcg = list(
+    CD45 = c(0, 1, 0.5),
+    `Pan-Keratin` = c(0, 1, 0.5),
+    SMA = c(0, 1, 0.5),
+    dsDNA = c(0, 1, 0.8)
+  ),
+  legend = NULL
+)
+
+```
+
+::: question
+**Questions**
+
+1.  Do our segmentations look better if other parameters are used?  *Hint*: use the help function to see what other parameters are available in `simpleSeg`.
+:::
+
+### Converting segmentation to a SpatialExperiment object
+
+With our segmentation `masks` we can convert our image to a `SpatialExperiment` object using the `measureObjects` function in `cytomapper. 
+
+```{r}
+# Summarise the expression of each marker in each cell
+cells <- cytomapper::measureObjects(
+  mask = masks,
+  image = image5,
+  img_id = "imageID",
+  BPPARAM = BPPARAM
+)
+
+
+cells
+
 ```
 
 
