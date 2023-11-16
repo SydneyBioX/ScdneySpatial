@@ -10,16 +10,6 @@ editor_options:
     wrap: 72
 ---
 
-```{html}
-<style>
-.question {
-  padding: 1em;
-  background: lightcyan;
-  color: black;
-  border-radius: 10px;
-}
-</style>
-```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -29,6 +19,18 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+```
+
+
+```{=html}
+<style>
+.question {
+  padding: 1em;
+  background: lightcyan;
+  color: black;
+  border-radius: 10px;
+}
+</style>
 ```
 
 Farhan Ameen$^{1,2,3}$, Shila Ghazanfar$^{2,3}$, Ellis
@@ -101,7 +103,7 @@ more information visit: <https://sydneybiox.github.io/scdney/>
 -   Understand the key analytical steps involved in spatial omics
     analysis, and perform these steps using R.
 -   Evaluate the performance of data normalisation and cell
-    segmentation.\
+    segmentation.
 -   Understand and generate individual feature representations from
     spatial omics data.
 -   Develop appreciation on how to assess performance of classification
@@ -125,7 +127,7 @@ BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHot", "FuseS
 
 ```{r library, warning=FALSE, message=FALSE}
 
-library(ScdneySpatial)
+#library(ScdneySpatial)
 
 # packages from scdney
 library(simpleSeg)
@@ -152,7 +154,8 @@ library(batchelor)
 theme_set(theme_classic())
 nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
-source(system.file("data/celltype_colours.R", package = "ScdneySpatial"))
+source("celltype_colours.R")
+options("restore_SingleCellExperiment_show" = TRUE)
 ```
 
 ## The data
@@ -324,11 +327,13 @@ kerenSPE <- scater::runUMAP(kerenSPE, exprs_values = "intensities", name = "UMAP
 
 ### Reading images
 
-To load in our images we use the `loadImages` function from `cytomapper`, here we use the patient 5 image from Keren et al. as an example.
+To load in our images we use the `loadImages` function from
+`cytomapper`, here we use the patient 5 image from Keren et al. as an
+example.
 
-```{r}
+```{r loadImage5}
 image5 = cytomapper::loadImages(
-  x = system.file("data/kerenPatient5.tiff", package = "ScdneySpatial")
+  x = system.file("extdata", "kerenPatient5.tiff", package = "ScdneySpatial")
 )
 
 mcols(image5) = data.frame(list("imageID" = "kerenPatient5"))
@@ -339,35 +344,47 @@ channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD1
 
 ```
 
+### How do I perform segmentation in R?
 
-### Segmentation
+Images stored in a `list` or `CytoImageList` can be segmented using
+`simpleSeg`. Below `simpleSeg` will identify the nuclei in the image
+using the `dsDNA`, `H3K27me3` and `H3K9ac` channel. To estimate the cell body of the cells we
+will simply dilate out from the nuclei by 3 pixels. We also have
+specified that the channels be sqrt transformed, and the 99th quantile
+of values removed to ensure our segmentation is not affected by
+outliers.
 
-Images stored in a `list` or `CytoImageList` can be segmented using `simpleSeg`. Below `simpleSeg` will identify the nucleiin in the image using the `dsDNA` channel. To estimate the cell body of the cells we will simply dilate out from the nuclei by 10 pixels. We also have specified that the channels be sqrt transformed, and the 99th quantile of values removed to ensure our segmentation is not affected by outliers.
+We can visualise the segmentations using the `display` and `colorLabels`
+functions in `EBImage`.
 
-
-We can visualise the segmentations using the `display` and `colorLabels` functions in `EBImage`.
-
-```{r}
+```{r simpleSeg}
 
 # Generate segmentation masks
 masks <- simpleSeg(
   image5,
-  nucleus = c("dsDNA"),
+  nucleus = c("dsDNA", "H3K27me3", "H3K9ac"),
   cellBody = "dilate", 
   transform = c("sqrt", "norm99"),
+  sizeSelection = 40,
+  smooth = 3,
   discSize = 3,
   cores = nCores
 )
 
 
 # Visualise segmentation performance one way.
-EBImage::display(colorLabels(masks[[1]]))
+masks[[1]] |> 
+  EBImage::colorLabels() |> 
+  EBImage::display()
+
 ```
 
-The `plotPixels` function in `cytomapper` make it easy to overlay the masks on top of the intensities of 3 markers. Here we can see that the segmentation appears to be performing reasonably.
 
+### Is this segmentation appropriate?
 
-```{r}
+The `plotPixels` function in `cytomapper` makes it easy to overlay the masks on top of the intensities of markers in the image. Here we can s
+
+```{r plotSegmentation}
 # Visualise segmentation performance another way.
 cytomapper::plotPixels(
   image = image5[1],
@@ -393,42 +410,65 @@ cytomapper::plotPixels(
 
 ```
 
+Using the `table` function in R we can measure the pixel area of each cell and plot this on a histogram. In this dataset 1 µm is equivalent to $2.56$ pixels, we can transform the pixel area of a cell to physical area by dividing the pixel area by $2.56^2$. We can see below the majority of our cells are just below $100µm^2$, you should decide whether or not this is an appropriate size based on your knowledge of the cell types being imaged. 
+
+```{r pixelArea}
+# Get area of every cell
+cellSize = table(masks[[1]])/(2.56^2)
+
+# Filter out first index, which represents background
+cellSize[2:length(cellSize)] |> 
+  hist(breaks = 30,
+       xlab = "Pixel area of cell (µm^2)",
+       main = NULL) 
+
+```
+
+
+
 ::: question
 **Questions**
 
-1.  Do our segmentations look better if other parameters are used?  *Hint*: use the help function to see what other parameters are available in `simpleSeg`.
+1.  Do our segmentations look better if other parameters are used?
+    *Hint*: use the help function to see what other parameters are
+    available in `simpleSeg`.
 :::
 
-### Converting segmentation to a SpatialExperiment object
+### How to I convert my image and mask to an object I can use in R?
 
-With our segmentation `masks` we can convert our image to a `SpatialExperiment` object using the `measureObjects` function in `cytomapper. 
+With our segmentation `masks` we can convert our image to a
+`SpatialExperiment` object using the `measureObjects` function in
+`cytomapper`. `measureObjects` will find the center of each cell and
+represent the cell as an x and y coordinate. In addition the average
+marker expression within each cell is summarised and stored in the
+assays object of the `SpatialExperiment`. *NOTE:* If you are using other segmentation tools or softwares, you can import the masks as tiffs into R and use `measureObjects` to create a `SingleCellExperiment`.
 
-```{r}
+```{r measureObjects}
 # Summarise the expression of each marker in each cell
 cells <- cytomapper::measureObjects(
   mask = masks,
   image = image5,
+  feature_types = c("basic", "moment"),
+  basic_feature = "mean",
+  moment_feature = c("cx", "cy"),
   img_id = "imageID",
   BPPARAM = BPPARAM
 )
 
 
 cells
-
 ```
-
-
-
 
 ## Feature normalisation
 
-*TO FILL* - Waiting on tiff images.
+
+
 
 
 
 ## Cell type annotation
 
-### Cell type clustering 
+### Cell type clustering
 
 #### Clustering cell types
 
@@ -515,10 +555,10 @@ reference dataset.
 "HLA.DR" "CD11b" "CD45" "H3K9ac" "Pan.Keratin" "H3K27me3"\
 [43] "phospho.S6" "MPO" "Keratin6" "HLA_Class_1" "Ta" "Au"
 
-
 ### Viewing images
 
-We can look at the distribution of cells in an image. Here we compare our clusters to the cell types in the dataset. 
+We can look at the distribution of cells in an image. Here we compare
+our clusters to the cell types in the dataset.
 
 ```{r viewClustering}
 reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
@@ -538,4 +578,3 @@ kerenSPE |>
 ```
 
 ## Feature generation
-
