@@ -30,7 +30,9 @@ Depends:
     cytomapper,
     tidySingleCellExperiment,
     scuttle,
-    batchelor
+    batchelor,
+    plotly,
+    BumpyMatrix
 Suggests: 
     knitr,
     rmarkdown,

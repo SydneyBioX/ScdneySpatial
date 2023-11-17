@@ -150,6 +150,8 @@ library(cytomapper)
 library(tidySingleCellExperiment)
 library(scuttle)
 library(batchelor)
+library(plotly)
+library(BumpyMatrix)
 
 theme_set(theme_classic())
 nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
@@ -556,10 +558,6 @@ scater::plotGroupedHeatmap(
 ```
 
 
-
-
-
-
 ::: question
 **Questions**
 
@@ -664,4 +662,211 @@ kerenSPE |>
 
 ```
 
-## Feature generation
+## Analytical techniques
+
+### scHOT analysis of the developing brain
+
+Here we will ask which gene patterns we observe to be changing across the
+`spe$gutRegion` cell type in space. Note that we want to assess
+the anatomical region corresponding to the anterior end of the developing gut
+developing brain so we will first subset the cells using the spatial 
+coordinates. We can check what we have selected by plotting.
+
+```{r}
+# Filter cells which are labeled gut tub, and in the anterior section.
+spe$gutRegion <- spe$celltype_mapped_refined == "Gut tube" &
+  reducedDim(spe, "spatialCoords")[,1] < -0.5
+
+plotReducedDim(spe, "spatialCoords", colour_by = "gutRegion") + 
+  coord_fixed() + 
+  scale_colour_manual(values = c("TRUE" = "red", "FALSE" = "grey"))
+```
+
+Let's subset the data to only these cells and continue with our scHOT analysis.
+
+```{r spe_gut}
+spe_gut <- spe[,spe$gutRegion]
+spe_gut
+```
+
+We select genes with at least some proportion of expressed cells for testing, 
+and create the `scHOT` object.
+
+```{r}
+hist(rowMeans(counts(spe_gut)>0), 40)
+
+gene_to_test <- as.matrix(c(rownames(spe_gut[rowMeans(counts(spe_gut)>0) > 0.2,])))
+length(gene_to_test)
+
+rownames(gene_to_test) <- apply(gene_to_test, 1, paste0, collapse = "_")
+head(gene_to_test)
+
+scHOT_spatial <- scHOT_buildFromSCE(spe_gut,
+                                    assayName = "logcounts",
+                                    positionType = "spatial",
+                                    positionColData = c("x_global_affine", "y_global_affine"))
+
+scHOT_spatial
+```
+
+We now add the testing scaffold to the `scHOT` object, and set the local
+weight matrix for testing, with a choice of span of 0.1 (the proportion
+of cells to weight around each cell).  We can speed up computation by not
+requiring the weight matrix correspond to every individual cell, but instead a
+random selection among all the cells using the `thin` function.
+
+```{r}
+scHOT_spatial <- scHOT_addTestingScaffold(scHOT_spatial, gene_to_test)
+head(scHOT_spatial@testingScaffold)
+
+scHOT_spatial <- scHOT_setWeightMatrix(scHOT_spatial, span = 0.2)
+scHOT_spatial@weightMatrix <- thin(scHOT_spatial@weightMatrix, n = 50)
+
+dim(slot(scHOT_spatial, "weightMatrix"))
+```
+
+For a given cell we can visually examine the local weight given by the span
+parameter.
+
+```{r}
+cellID = 10
+
+df <- cbind(as.data.frame(colData(scHOT_spatial)),
+      W = slot(scHOT_spatial, "weightMatrix")[cellID,])
+
+ggplot(df,
+       aes(x = x_global_affine, y = -y_global_affine)) +
+  geom_point(aes(colour = W, size = W)) +
+  scale_colour_gradient(low = "black", high = "purple") +
+  scale_size_continuous(range = c(0.5,2.5)) +
+  theme_classic() +
+  guides(colour = guide_legend(title = "Spatial Weight"),
+         size = guide_legend(title = "Spatial Weight")) +
+  ggtitle(paste0("Central cell: ", cellID)) + 
+  coord_fixed() +
+  NULL
+```
+::: question
+**Question**
+
+1. How will the results change if the span is increased/decreased?
+
+:::
+
+```{r}
+## Make associated changes to the code to test out the question above.
+```
+
+We set the higher order function as the weighted mean function, and then 
+calculate the observed higher order test statistics. This may take around 10 
+seconds.
+
+```{r}
+scHOT_spatial <- scHOT_calculateGlobalHigherOrderFunction(
+    scHOT_spatial,
+    higherOrderFunction = weightedMean,
+    higherOrderFunctionType = "weighted")
+
+slot(scHOT_spatial, "scHOT_output")
+
+scHOT_spatial <- scHOT_calculateHigherOrderTestStatistics(
+    scHOT_spatial, na.rm = TRUE)
+```
+
+Now we can plot the overall mean versus the scHOT statistic to observe any 
+relationship. Labels can be interactively visualised using `ggplotly`. Some 
+genes may have different distributions so we turn to 
+permutation testing to assess statistical significance.
+
+```{r}
+g <- ggplot(as.data.frame(scHOT_spatial@scHOT_output), 
+           aes(x = globalHigherOrderFunction, y = higherOrderStatistic, label = gene_1)) + 
+  xlab("Mean across all cells") +
+  ylab("scHOT statistic for local weightedMean") +
+  geom_point()
+g
+ggplotly(g)
+```
+
+Set up the permutation testing schema. For the purposes of this workshop we set
+a low number of permutations over a low number of genes in the testing 
+scaffold, you may want to change this as you work through 
+the workshop yourself. The testing will take a few minutes to run, here with
+the parallel parameters that were set at the beginning of this document.
+
+```{r}
+scHOT_spatial <- scHOT_setPermutationScaffold(scHOT_spatial,
+                                              numberPermutations = 50,
+                                              numberScaffold = 30)
+
+scHOT_spatial <- scHOT_performPermutationTest(
+    scHOT_spatial,
+    verbose = TRUE,
+    parallel = FALSE)
+
+slot(scHOT_spatial, "scHOT_output")
+```
+
+After the permutation test we can estimate the P-values across all genes.
+
+```{r}
+scHOT_plotPermutationDistributions(scHOT_spatial)
+
+scHOT_spatial <- scHOT_estimatePvalues(scHOT_spatial,
+                                       nperm_estimate = 100,
+                                       maxDist = 0.1)
+slot(scHOT_spatial, "scHOT_output")
+```
+
+We can now examine the spatial expression of the 5 most significant genes, 
+both in our scHOT object and over our original spe object.
+
+```{r}
+output_sorted <- slot(scHOT_spatial, "scHOT_output")[order(slot(scHOT_spatial,
+                                                                "scHOT_output")$pvalEstimated),]
+topgenes <- rownames(output_sorted)[1:5]
+
+reducedDim(scHOT_spatial, "spatialCoords") <- reducedDim(spe, "spatialCoords")[colnames(scHOT_spatial),]
+
+for (topgene in topgenes) {
+  g_spe <- plotReducedDim(spe, "spatialCoords", colour_by = c(topgene), point_size = 1) +
+    coord_fixed()
+  
+  g_scHOT <- plotReducedDim(scHOT_spatial, "spatialCoords", colour_by = c(topgene), point_size = 1,
+                           by_exprs_values = "expression") +
+    coord_fixed()
+  
+  g_all <- g_scHOT + g_spe
+  print(g_all)
+}
+```
+
+Here we are noting the genes that are found to have the most statistically 
+significant spatial variation in their local mean expression. These genes point
+to specific patterns that govern the development of individual parts of the 
+gut tube.
+
+
+::: question
+**Advanced/Extended Questions**
+
+1. How would you perform such testing over multiple distinct samples? 
+2. scHOT is developed with all higher order testing in mind, use the associated
+[vignette](http://www.bioconductor.org/packages/release/bioc/html/scHOT.html) 
+to get towards assessing changes in variation or correlation 
+structure in space.
+
+:::
+
+```{r}
+## try some code
+
+```
+
+Now that we have assessed genes varying in expression in space, let's look
+further into the IMC data where we will make use of the multiple samples to 
+perform clustering and extract some biological understanding.
+
+
+
+### Feature generation
