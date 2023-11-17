@@ -154,7 +154,7 @@ library(batchelor)
 theme_set(theme_classic())
 nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
-source("celltype_colours.R")
+source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
 ```
 
@@ -461,8 +461,52 @@ cells
 
 ## Feature normalisation
 
+Before moving onto annotating the cell types, we should check if the marker intensities of each cell require any transformation or normalisation. Here we examine the distribution of CD45 in each cell across all the images, which is a general marker for immune cells. Below we can see that the intensity of CD45 looks very skewed. 
+
+```{r viewingProteinDensity}
+# Joining the marker information with the cell information
+proteinIntensities = kerenSPE |> 
+  join_features(features = rownames(kerenSPE), shape = "wide", assay = "intensities")
+
+# View the density of CD45 across all images.
+ggplot(proteinIntensities, aes(x = CD45, colour = imageID)) +
+  geom_density() +
+  theme(legend.position = "none")
+```
+
+We can transform and normalise our data using the `normalizeCells` function in `simpleSeg`. Here we have taken the intensities from the `intensities` assay, performed a asinh transform, then for each image trimmed the 99 quantile and min-max scaled to 0-1. In addition to this we have performed principle component analysis, and regressed out the first PC. This modified data is then stored in the `normIntensities` assay. We can see that the distribution of CD45 looks much less skewed than before. 
+
+```{r kerenNormalise}
+kerenSPE <- normalizeCells(
+  cells = kerenSPE,
+  transformation = "asinh",
+  method = c("trim99", "minMax", "PC1"),
+  assayIn = "intensities",
+  assayOut = "normIntensities",
+  cores = nCores
+)
 
 
+normProteinIntensities = kerenSPE |> 
+  join_features(features = rownames(kerenSPE), shape = "wide", assay = "normIntensities")
+
+
+ggplot(normProteinIntensities, aes(x = CD45, colour = imageID)) +
+  geom_density() +
+  theme(legend.position = "none")
+```
+
+
+::: question
+**Questions**
+
+1. CD3 is a marker which characterises T cells, plot the distribution of CD3. What does it look like? What does this tell us about T cells in our dataset.
+:::
+
+
+```{r normaliseQ1}
+# Answer question here
+```
 
 
 
@@ -475,7 +519,7 @@ cells
 Here we cluster using the `runFuseSOM` function from `FuseSOM`. We have
 chosen to specify the same subset of markers used in the original
 manuscript for gating cell types. We have also specified the number of
-clusters to identify to be `numClusters = 10`.
+clusters to identify to be `numClusters = 17`.
 
 ```{r fuseSOM}
 
@@ -486,8 +530,8 @@ set.seed(51773)
 kerenSPE <- runFuseSOM(
   kerenSPE,
   markers = useMarkers,
-  assay = "intensities",
-  numClusters = 10
+  assay = "normIntensities",
+  numClusters = 17
 )
 
 ```
@@ -502,47 +546,90 @@ scater::plotGroupedHeatmap(
   kerenSPE,
   features = useMarkers,
   group = "clusters",
-  exprs_values = "intensities",
+  exprs_values = "normIntensities",
   center = TRUE,
   scale = TRUE,
   zlim = c(-3, 3),
   cluster_rows = FALSE
 )
+
 ```
+
+
+
+
+
 
 ::: question
 **Questions**
 
 1.  Have we captured distinct cell populations? Can you identify any of
     the clusters?
-2.  How does this compare to the heatmap of the original dataset,
-    *Hint*: Plot the heatmap using `cellType` as the group.
+2.  Run the code below to compare the cell types in the dataset to the clusters we have identified. How do our clusters compare? Are there any clusters that should be combined? 
 :::
 
 ```{r clusteringQ1}
 # Type your answer here
+
+
+# Question 2 code
+regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(x = "Cell types in data", y = "Our clusters")
 ```
 
 #### How do I determine an appropriate number of clusters?
 
-Great question! We can use the `estimateNumCluster` and `optiPlot`
-functions from `FuseSOM` to examine if our choice of 13 clusters is
-reasonable. Here we use the gap statistic, other methods such as jump,
-silhouette and within cluster distance are also available.
+Great question! There is no right answer here, however there are several statistics which can be used to estimate the "true" number of clusters. We can use the `estimateNumCluster` and `optiPlot`
+functions from `FuseSOM` to examine if our choice of 17 clusters is
+reasonable. Here we use the gap statistic, other methods such as jump, slope,
+silhouette and within cluster distance (wcd) are also available.
 
 ```{r optiPlot}
 kerenSPE <- estimateNumCluster(kerenSPE, kSeq = 2:30)
 optiPlot(kerenSPE, method = "gap")
 
-
 kerenSPE@metadata$clusterEstimation$Discriminant
 ```
+Finally we can run a UMAP to examine how distinct our clusters are from one another. 
+
+```{r normUMAP}
+set.seed(51773)
+# Perform dimension reduction using UMP.
+kerenSPE <- scater::runUMAP(
+  kerenSPE,
+  subset_row = useMarkers,
+  exprs_values = "normIntensities",
+  name = "normUMAP"
+)
+
+
+
+# UMAP by cell type cluster.
+scater::plotReducedDim(
+  kerenSPE,
+  dimred = "normUMAP",
+  colour_by = "clusters"
+)
+```
+
+::: question
+**Questions**
+
+1.  How does this UMAP compare to the original UMAP. 
+:::
+
+
+```{r clusteringQ2}
+# Answer question here.
+```
+
 
 ### Cell type classification
 
 Cell type clustering may difficult without the aid of domain experts who
-are able to annotate the the clusters. Cell type classification is an
-alternative approach to clustering which anntates cell types based a
+know how many cell types to expect and are able to annotate the clusters. Cell type classification is an
+alternative approach to clustering which annotates cell types based on an expert labeled
 reference dataset.
 
 *TO FILL* - Need a reference dataset with similar markers to keren: [1]
