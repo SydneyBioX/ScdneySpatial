@@ -1,6 +1,9 @@
 name: Check, build, and push image
 
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+    - devel
 
 env:
   cache-version: v1
