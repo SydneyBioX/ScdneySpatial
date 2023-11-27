@@ -1535,4 +1535,3 @@ performancePlot(kerenCV_recurrence,
   geom_rect(aes(xmin = 5.5, xmax = 14.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
   geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
-
