@@ -120,7 +120,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
-BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHot", "FuseSOM", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
+BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseSOM", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
 ```
 
 ## Load packages
@@ -155,7 +155,7 @@ library(BumpyMatrix)
 
 theme_set(theme_classic())
 
-nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
+nCores <- 8  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
 source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
