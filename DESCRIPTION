@@ -37,7 +37,8 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown
+    SpatialExperiment
 URL: https://sydneybiox.github.io/ScdneySpatial/
 BugReports: https://github.com/SydneyBioX/ScdneySpatial/issues/new/choose
 VignetteBuilder: knitr
-DockerImage: ghcr.io/sydneybiox/scdneyspatial:latest
+DockerImage: ghcr.io/sydneybiox/scdneyspatial:latest 
