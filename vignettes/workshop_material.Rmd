@@ -1009,7 +1009,7 @@ parentDf <- parentCombinations(
 
 Rather than specifying `to`, `from`, and `parent` in Kontextual, the output from `parentCombinations` can be input into `Kontextual` using the `parentDf` argument, to examine all pairwise relationships in the dataset. This chunk will take a signficant amount of time to run (\~20 minutes), for demonstration the results have been saved and are loaded in.
 
-```{r kontextAll eval=FALSE}
+```{r kontextAll, eval=FALSE}
 # Running Kontextual on all relationships across all images.
 # kerenKontextual <- Kontextual(
 #   cells = kerenSPE,
