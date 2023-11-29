@@ -124,31 +124,31 @@ BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseS
 
 ```{r library, warning=FALSE, message=FALSE}
 
-#library(ScdneySpatial)
+# library(ScdneySpatial)
 
 # packages from scdney
-library(simpleSeg)
-library(scClassify)
-library(scHOT)
-library(FuseSOM)
-library(spicyR)
-library(lisaClust)
-library(Statial)
-library(scFeatures) 
 library(ClassifyR)
+library(FuseSOM)
+library(lisaClust)
+library(scClassify)
+library(scFeatures) 
+library(scHOT)
+library(simpleSeg)
 library(SpatialDatasets)
+library(spicyR)
+library(Statial)
 
 # Other required packages
-library(scater)
-library(tidyverse)
-library(SingleCellExperiment)
-library(STexampleData)
+library(BumpyMatrix)
 library(cytomapper)
-library(tidySingleCellExperiment)
-library(scuttle)
 library(batchelor)
 library(plotly)
-library(BumpyMatrix)
+library(scater)
+library(scuttle)
+library(SingleCellExperiment)
+library(STexampleData)
+library(tidySingleCellExperiment)
+library(tidyverse)
 
 theme_set(theme_classic())
 
@@ -160,16 +160,23 @@ options("restore_SingleCellExperiment_show" = TRUE)
 
 ## The data
 
+In this workshop, we will be working through two datasets to explore how
+biological phenotypes, cellular interactions, and patterns of gene
+expression are correlated with disease.
+
 We will use two motivating datasets:
 
 -   [Keren et al,
     2018](https://www.cell.com/fulltext/S0092-8674(18)31100-0): A
     multiplexed ion beam imaging by time-of-flight (MIBI-TOF) dataset
-    profilining tissue from triple-negative breast cancer patients.
+    profilining tissue from triple-negative breast cancer patients. Can
+    we predict risk of cancer recurrence and overall survival time based
+    on imaging data?
 -   [Lohoff et al,
     2022](https://www.nature.com/articles/s41587-021-01006-2): A seqFISH
     study of early mouse organogenesis. We will use a subset of data
-    that is made available from the STExampleData package.
+    that is made available from the STExampleData package. Can we find
+    key transcriptomic drivers of the developing brain?
 
 ## Data visualisation and exploration
 
@@ -178,9 +185,9 @@ data and perform some exploratory analyses.
 
 ### SeqFISH mouse embryo
 
-Here we download the seqFISH mouse embryo data. This is a
-`SpatialExperiment` object, which extends the `SingleCellExperiment`
-object.
+Here we download the seqFISH mouse embryo data. This comes in the format
+of a `SpatialExperiment` object, where all the data from an IMC dataset
+can be compiled and accessed with relative ease.
 
 ```{r seqFISHData}
 spe <- STexampleData::seqFISH_mouseEmbryo()
@@ -221,8 +228,11 @@ Later in part two we will perform some specific analytical techniques,
 but for now let's explore the dataset and use methods designed for
 single cell data.
 
-Dimensionality reduction using PCA, batch correction across tiles using
-the `batchelor` package, followed by UMAP and plotting.
+Typically in single-cell data analysis, we perform dimension reduction
+to project the high dimensional cell x gene matrix on to 2D space. This
+allows us to visualise various things of interest, such as distribution
+of cell types and disease outcomes. Here, we will see how cells are
+segregated by their expression of Sox2.
 
 ```{r seqFISHEDA}
 spe <- runPCA(spe)
@@ -274,8 +284,10 @@ testing.
 
 ### MIBI-TOF breast cancer
 
-Here we explore the MIBI-TOF breast cancer data, this is also a
-`SpatialExperiment` object.
+As part of scdney package infrastructure, we provide several
+pre-processed datasets which can be loaded in with the `SpatialDatasets`
+package. Below, we've loaded in the MIBI-TOF triple negative breast
+cancer data from Keren et al. into a `SpatialExperiment` object.
 
 ```{r kerenData}
 # Load in Keren et al. data.
@@ -295,6 +307,12 @@ reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
 kerenSPE
 ```
 
+At the start of any analysis, it is often good to explore the data to
+get a sense of complexity. We can do this by exploring the distribution
+of the outcomes and variables in the patients' meta-data.
+
+Try starting off your exploration by answering the below questions.
+
 ::: question
 **Questions**
 
@@ -309,7 +327,8 @@ kerenSPE
 
 ```
 
-Use the following code to run a UMAP `intensities` assay.
+Again, we can perform dimension reduction to visualize this dataset on a
+2D plane.
 
 ::: question
 **Questions**
@@ -472,7 +491,7 @@ cells
 
 ## Feature normalisation
 
-### How do I make sure my image marker intensities are normalised?
+### How do I make sure my image marker intensities are consistent across images?
 
 Before moving onto annotating the cell types, we should check if the
 marker intensities of each cell require any transformation or
