@@ -34,7 +34,7 @@ Depends:
     plotly,
     BumpyMatrix,
     SpatialExperiment,
-    ggsurvfit2,
+    ggsurvfit,
     reshape
 Suggests: 
     knitr,
