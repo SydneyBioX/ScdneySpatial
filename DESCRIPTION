@@ -32,12 +32,12 @@ Depends:
     scuttle,
     batchelor,
     plotly,
-    BumpyMatrix
+    BumpyMatrix,
+    SpatialExperiment
 Suggests: 
     knitr,
     rmarkdown,
     pkgdown
-    SpatialExperiment
 URL: https://sydneybiox.github.io/ScdneySpatial/
 BugReports: https://github.com/SydneyBioX/ScdneySpatial/issues/new/choose
 VignetteBuilder: knitr
