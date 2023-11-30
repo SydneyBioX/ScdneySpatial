@@ -33,7 +33,9 @@ Depends:
     batchelor,
     plotly,
     BumpyMatrix,
-    SpatialExperiment
+    SpatialExperiment,
+    ggsurvfit2,
+    reshape
 Suggests: 
     knitr,
     rmarkdown,
