@@ -2,7 +2,7 @@
 title: "Unlocking single cell spatial omics analyses with scdney"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Unlocking spatial omics analysis with scdney}
+  %\VignetteIndexEntry{Unlocking single cell spatial omics analyses with scdney}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -10,17 +10,15 @@ editor_options:
     wrap: 72
 ---
 
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   #collapse = TRUE,
   comment = "#>",
-  cache = TRUE,
+  cache = FALSE,
   message = FALSE,
   warning = FALSE
 )
 ```
-
 
 ```{=html}
 <style>
@@ -32,7 +30,6 @@ knitr::opts_chunk$set(
 }
 </style>
 ```
-
 Farhan Ameen$^{1,2,3}$, Shila Ghazanfar$^{2,3}$, Ellis
 Patrick$^{1,2,3}$.
 
@@ -120,42 +117,45 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
-BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHot", "FuseSOM", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
+BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseSOM", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
 ```
 
 ## Load packages
 
 ```{r library, warning=FALSE, message=FALSE}
 
-#library(ScdneySpatial)
+# library(ScdneySpatial)
 
 # packages from scdney
-library(simpleSeg)
-library(scClassify)
-library(scHOT)
-library(FuseSOM)
-library(spicyR)
-library(lisaClust)
-library(Statial)
-library(scFeatures) 
 library(ClassifyR)
+library(FuseSOM)
+library(lisaClust)
+library(scClassify)
+library(scFeatures) 
+library(scHOT)
+library(simpleSeg)
 library(SpatialDatasets)
+library(spicyR)
+library(Statial)
 
 # Other required packages
+library(BumpyMatrix)
+library(cytomapper)
+library(batchelor)
+library(ggplot2)
+library(ggsurvfit)
+library(plotly)
+library(reshape)
 library(scater)
-library(tidyverse)
+library(scuttle)
 library(SingleCellExperiment)
 library(STexampleData)
-library(cytomapper)
 library(tidySingleCellExperiment)
-library(scuttle)
-library(batchelor)
-library(plotly)
-library(BumpyMatrix)
+library(tidyverse)
 
 theme_set(theme_classic())
 
-nCores <- 1  # Feel free to parallelise things if you have the cores to spare.
+nCores <- 8  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
 source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
@@ -163,16 +163,23 @@ options("restore_SingleCellExperiment_show" = TRUE)
 
 ## The data
 
+In this workshop, we will be working through two datasets to explore how
+biological phenotypes, cellular interactions, and patterns of gene
+expression are correlated with disease.
+
 We will use two motivating datasets:
 
 -   [Keren et al,
     2018](https://www.cell.com/fulltext/S0092-8674(18)31100-0): A
     multiplexed ion beam imaging by time-of-flight (MIBI-TOF) dataset
-    profilining tissue from triple-negative breast cancer patients.
+    profilining tissue from triple-negative breast cancer patients. Can
+    we predict risk of cancer recurrence and overall survival time based
+    on imaging data?
 -   [Lohoff et al,
     2022](https://www.nature.com/articles/s41587-021-01006-2): A seqFISH
     study of early mouse organogenesis. We will use a subset of data
-    that is made available from the STExampleData package.
+    that is made available from the STExampleData package. Can we find
+    key transcriptomic drivers of the developing brain?
 
 ## Data visualisation and exploration
 
@@ -181,9 +188,9 @@ data and perform some exploratory analyses.
 
 ### SeqFISH mouse embryo
 
-Here we download the seqFISH mouse embryo data. This is a
-`SpatialExperiment` object, which extends the `SingleCellExperiment`
-object.
+Here we download the seqFISH mouse embryo data. This comes in the format
+of a `SpatialExperiment` object, where all the data from an IMC dataset
+can be compiled and accessed with relative ease.
 
 ```{r seqFISHData}
 spe <- STexampleData::seqFISH_mouseEmbryo()
@@ -224,8 +231,11 @@ Later in part two we will perform some specific analytical techniques,
 but for now let's explore the dataset and use methods designed for
 single cell data.
 
-Dimensionality reduction using PCA, batch correction across tiles using
-the `batchelor` package, followed by UMAP and plotting.
+Typically in single-cell data analysis, we perform dimension reduction
+to project the high dimensional cell x gene matrix on to 2D space. This
+allows us to visualise various things of interest, such as distribution
+of cell types and disease outcomes. Here, we will see how cells are
+segregated by their expression of Sox2.
 
 ```{r seqFISHEDA}
 spe <- runPCA(spe)
@@ -277,8 +287,10 @@ testing.
 
 ### MIBI-TOF breast cancer
 
-Here we explore the MIBI-TOF breast cancer data, this is also a
-`SpatialExperiment` object.
+As part of scdney package infrastructure, we provide several
+pre-processed datasets which can be loaded in with the `SpatialDatasets`
+package. Below, we've loaded in the MIBI-TOF triple negative breast
+cancer data from Keren et al. into a `SpatialExperiment` object.
 
 ```{r kerenData}
 # Load in Keren et al. data.
@@ -298,6 +310,12 @@ reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
 kerenSPE
 ```
 
+At the start of any analysis, it is often good to explore the data to
+get a sense of complexity. We can do this by exploring the distribution
+of the outcomes and variables in the patients' meta-data.
+
+Try starting off your exploration by answering the below questions.
+
 ::: question
 **Questions**
 
@@ -312,7 +330,8 @@ kerenSPE
 
 ```
 
-Use the following code to run a UMAP `intensities` assay.
+Again, we can perform dimension reduction to visualize this dataset on a
+2D plane.
 
 ::: question
 **Questions**
@@ -356,11 +375,11 @@ channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD1
 
 Images stored in a `list` or `CytoImageList` can be segmented using
 `simpleSeg`. Below `simpleSeg` will identify the nuclei in the image
-using the `dsDNA`, `H3K27me3` and `H3K9ac` channel. To estimate the cell body of the cells we
-will simply dilate out from the nuclei by 3 pixels. We also have
-specified that the channels be sqrt transformed, and the 99th quantile
-of values removed to ensure our segmentation is not affected by
-outliers.
+using the `dsDNA`, `H3K27me3` and `H3K9ac` channel. To estimate the cell
+body of the cells we will simply dilate out from the nuclei by 3 pixels.
+We also have specified that the channels be sqrt transformed, and the
+99th quantile of values removed to ensure our segmentation is not
+affected by outliers.
 
 We can visualise the segmentations using the `display` and `colorLabels`
 functions in `EBImage`.
@@ -387,10 +406,10 @@ masks[[1]] |>
 
 ```
 
-
 ### Is this segmentation appropriate?
 
-The `plotPixels` function in `cytomapper` makes it easy to overlay the masks on top of the intensities of markers in the image. Here we can s
+The `plotPixels` function in `cytomapper` makes it easy to overlay the
+masks on top of the intensities of markers in the image. Here we can s
 
 ```{r plotSegmentation}
 # Visualise segmentation performance another way.
@@ -418,7 +437,13 @@ cytomapper::plotPixels(
 
 ```
 
-Using the `table` function in R we can measure the pixel area of each cell and plot this on a histogram. In this dataset 1 µm is equivalent to $2.56$ pixels, we can transform the pixel area of a cell to physical area by dividing the pixel area by $2.56^2$. We can see below the majority of our cells are just below $100µm^2$, you should decide whether or not this is an appropriate size based on your knowledge of the cell types being imaged. 
+Using the `table` function in R we can measure the pixel area of each
+cell and plot this on a histogram. In this dataset 1 µm is equivalent to
+$2.56$ pixels, we can transform the pixel area of a cell to physical
+area by dividing the pixel area by $2.56^2$. We can see below the
+majority of our cells are just below $100µm^2$, you should decide
+whether or not this is an appropriate size based on your knowledge of
+the cell types being imaged.
 
 ```{r pixelArea}
 # Get area of every cell
@@ -431,8 +456,6 @@ cellSize[2:length(cellSize)] |>
        main = NULL) 
 
 ```
-
-
 
 ::: question
 **Questions**
@@ -449,7 +472,9 @@ With our segmentation `masks` we can convert our image to a
 `cytomapper`. `measureObjects` will find the center of each cell and
 represent the cell as an x and y coordinate. In addition the average
 marker expression within each cell is summarised and stored in the
-assays object of the `SpatialExperiment`. *NOTE:* If you are using other segmentation tools or softwares, you can import the masks as tiffs into R and use `measureObjects` to create a `SingleCellExperiment`.
+assays object of the `SpatialExperiment`. *NOTE:* If you are using other
+segmentation tools or softwares, you can import the masks as tiffs into
+R and use `measureObjects` to create a `SingleCellExperiment`.
 
 ```{r measureObjects}
 # Summarise the expression of each marker in each cell
@@ -469,7 +494,13 @@ cells
 
 ## Feature normalisation
 
-Before moving onto annotating the cell types, we should check if the marker intensities of each cell require any transformation or normalisation. Here we examine the distribution of CD45 in each cell across all the images, which is a general marker for immune cells. Below we can see that the intensity of CD45 looks very skewed. 
+### How do I make sure my image marker intensities are consistent across images?
+
+Before moving onto annotating the cell types, we should check if the
+marker intensities of each cell require any transformation or
+normalisation. Here we examine the distribution of CD45 in each cell
+across all the images, which is a general marker for immune cells. Below
+we can see that the intensity of CD45 looks very skewed.
 
 ```{r viewingProteinDensity}
 # Joining the marker information with the cell information
@@ -482,7 +513,16 @@ ggplot(proteinIntensities, aes(x = CD45, colour = imageID)) +
   theme(legend.position = "none")
 ```
 
-We can transform and normalise our data using the `normalizeCells` function in `simpleSeg`. Here we have taken the intensities from the `intensities` assay, performed a asinh transform, then for each image trimmed the 99 quantile and min-max scaled to 0-1. In addition to this we have performed principle component analysis, and regressed out the first PC. This modified data is then stored in the `normIntensities` assay. We can see that the distribution of CD45 looks much less skewed than before. 
+### How can I transform and normalise my data?
+
+We can transform and normalise our data using the `normalizeCells`
+function in `simpleSeg`. Here we have taken the intensities from the
+`intensities` assay, performed a asinh transform, then for each image
+trimmed the 99 quantile and min-max scaled to 0-1. In addition to this
+we have performed principle component analysis, and regressed out the
+first PC. This modified data is then stored in the `normIntensities`
+assay. We can see that the distribution of CD45 looks much less skewed
+than before.
 
 ```{r kerenNormalise}
 kerenSPE <- normalizeCells(
@@ -504,19 +544,17 @@ ggplot(normProteinIntensities, aes(x = CD45, colour = imageID)) +
   theme(legend.position = "none")
 ```
 
-
 ::: question
 **Questions**
 
-1. CD3 is a marker which characterises T cells, plot the distribution of CD3. What does it look like? What does this tell us about T cells in our dataset.
+1.  CD3 is a marker which characterises T cells, plot the distribution
+    of CD3. What does it look like? What does this tell us about T cells
+    in our dataset.
 :::
-
 
 ```{r normaliseQ1}
 # Answer question here
 ```
-
-
 
 ## Cell type annotation
 
@@ -563,13 +601,14 @@ scater::plotGroupedHeatmap(
 
 ```
 
-
 ::: question
 **Questions**
 
 1.  Have we captured distinct cell populations? Can you identify any of
     the clusters?
-2.  Run the code below to compare the cell types in the dataset to the clusters we have identified. How do our clusters compare? Are there any clusters that should be combined? 
+2.  Run the code below to compare the cell types in the dataset to the
+    clusters we have identified. How do our clusters compare? Are there
+    any clusters that should be combined?
 :::
 
 ```{r clusteringQ1}
@@ -584,10 +623,12 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
 
 #### How do I determine an appropriate number of clusters?
 
-Great question! There is no right answer here, however there are several statistics which can be used to estimate the "true" number of clusters. We can use the `estimateNumCluster` and `optiPlot`
-functions from `FuseSOM` to examine if our choice of 17 clusters is
-reasonable. Here we use the gap statistic, other methods such as jump, slope,
-silhouette and within cluster distance (wcd) are also available.
+Great question! There is no right answer here, however there are several
+statistics which can be used to estimate the "true" number of clusters.
+We can use the `estimateNumCluster` and `optiPlot` functions from
+`FuseSOM` to examine if our choice of 17 clusters is reasonable. Here we
+use the gap statistic, other methods such as jump, slope, silhouette and
+within cluster distance (wcd) are also available.
 
 ```{r optiPlot}
 kerenSPE <- estimateNumCluster(kerenSPE, kSeq = 2:30)
@@ -595,7 +636,9 @@ optiPlot(kerenSPE, method = "gap")
 
 kerenSPE@metadata$clusterEstimation$Discriminant
 ```
-Finally we can run a UMAP to examine how distinct our clusters are from one another. 
+
+Finally we can run a UMAP to examine how distinct our clusters are from
+one another.
 
 ```{r normUMAP}
 set.seed(51773)
@@ -620,20 +663,19 @@ scater::plotReducedDim(
 ::: question
 **Questions**
 
-1.  How does this UMAP compare to the original UMAP. 
+1.  How does this UMAP compare to the original UMAP.
 :::
-
 
 ```{r clusteringQ2}
 # Answer question here.
 ```
 
-
 ### Cell type classification
 
 Cell type clustering may difficult without the aid of domain experts who
-know how many cell types to expect and are able to annotate the clusters. Cell type classification is an
-alternative approach to clustering which annotates cell types based on an expert labeled
+know how many cell types to expect and are able to annotate the
+clusters. Cell type classification is an alternative approach to
+clustering which annotates cell types based on an expert labeled
 reference dataset.
 
 *TO FILL* - Need a reference dataset with similar markers to keren: [1]
@@ -671,15 +713,16 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
 ```
 
 ## Analytical techniques
+
 ### scHOT analysis of the developing brain
 
-Here we will ask which gene patterns we observe to be changing across the
-`spe$gutRegion` cell type in space. Note that we want to assess
-the anatomical region corresponding to the anterior end of the developing gut
-developing brain so we will first subset the cells using the spatial 
+Here we will ask which gene patterns we observe to be changing across
+the `spe$gutRegion` cell type in space. Note that we want to assess the
+anatomical region corresponding to the anterior end of the developing
+gut developing brain so we will first subset the cells using the spatial
 coordinates. We can check what we have selected by plotting.
 
-```{r}
+```{r visualise_spe}
 # Filter cells which are labeled gut tub, and in the anterior section.
 spe$gutRegion <- spe$celltype_mapped_refined == "Gut tube" &
   reducedDim(spe, "spatialCoords")[,1] < -0.5
@@ -689,17 +732,18 @@ plotReducedDim(spe, "spatialCoords", colour_by = "gutRegion") +
   scale_colour_manual(values = c("TRUE" = "red", "FALSE" = "grey"))
 ```
 
-Let's subset the data to only these cells and continue with our scHOT analysis.
+Let's subset the data to only these cells and continue with our scHOT
+analysis.
 
 ```{r spe_gut}
 spe_gut <- spe[,spe$gutRegion]
 spe_gut
 ```
 
-We select genes with at least some proportion of expressed cells for testing, 
-and create the `scHOT` object.
+We select genes with at least some proportion of expressed cells for
+testing, and create the `scHOT` object.
 
-```{r}
+```{r scHOT-init}
 hist(rowMeans(counts(spe_gut)>0), 40)
 
 gene_to_test <- as.matrix(c(rownames(spe_gut[rowMeans(counts(spe_gut)>0) > 0.2,])))
@@ -718,11 +762,12 @@ scHOT_spatial
 
 We now add the testing scaffold to the `scHOT` object, and set the local
 weight matrix for testing, with a choice of span of 0.1 (the proportion
-of cells to weight around each cell).  We can speed up computation by not
-requiring the weight matrix correspond to every individual cell, but instead a
-random selection among all the cells using the `thin` function.
+of cells to weight around each cell). We can speed up computation by not
+requiring the weight matrix correspond to every individual cell, but
+instead a random selection among all the cells using the `thin`
+function.
 
-```{r}
+```{r scHOT_wmat}
 scHOT_spatial <- scHOT_addTestingScaffold(scHOT_spatial, gene_to_test)
 head(scHOT_spatial@testingScaffold)
 
@@ -732,10 +777,10 @@ scHOT_spatial@weightMatrix <- thin(scHOT_spatial@weightMatrix, n = 50)
 dim(slot(scHOT_spatial, "weightMatrix"))
 ```
 
-For a given cell we can visually examine the local weight given by the span
-parameter.
+For a given cell we can visually examine the local weight given by the
+span parameter.
 
-```{r}
+```{r scHOT-vis}
 cellID = 10
 
 df <- cbind(as.data.frame(colData(scHOT_spatial)),
@@ -753,22 +798,22 @@ ggplot(df,
   coord_fixed() +
   NULL
 ```
+
 ::: question
 **Question**
 
-1. How will the results change if the span is increased/decreased?
-
+1.  How will the results change if the span is increased/decreased?
 :::
 
-```{r}
+```{r scHOT-q}
 ## Make associated changes to the code to test out the question above.
 ```
 
-We set the higher order function as the weighted mean function, and then 
-calculate the observed higher order test statistics. This may take around 10 
-seconds.
+We set the higher order function as the weighted mean function, and then
+calculate the observed higher order test statistics. This may take
+around 10 seconds.
 
-```{r}
+```{r scHOT-t_stat}
 scHOT_spatial <- scHOT_calculateGlobalHigherOrderFunction(
     scHOT_spatial,
     higherOrderFunction = weightedMean,
@@ -780,12 +825,12 @@ scHOT_spatial <- scHOT_calculateHigherOrderTestStatistics(
     scHOT_spatial, na.rm = TRUE)
 ```
 
-Now we can plot the overall mean versus the scHOT statistic to observe any 
-relationship. Labels can be interactively visualised using `ggplotly`. Some 
-genes may have different distributions so we turn to 
+Now we can plot the overall mean versus the scHOT statistic to observe
+any relationship. Labels can be interactively visualised using
+`ggplotly`. Some genes may have different distributions so we turn to
 permutation testing to assess statistical significance.
 
-```{r}
+```{r scHOT-vis2}
 g <- ggplot(as.data.frame(scHOT_spatial@scHOT_output), 
            aes(x = globalHigherOrderFunction, y = higherOrderStatistic, label = gene_1)) + 
   xlab("Mean across all cells") +
@@ -795,13 +840,13 @@ g
 ggplotly(g)
 ```
 
-Set up the permutation testing schema. For the purposes of this workshop we set
-a low number of permutations over a low number of genes in the testing 
-scaffold, you may want to change this as you work through 
-the workshop yourself. The testing will take a few minutes to run, here with
+Set up the permutation testing schema. For the purposes of this workshop
+we set a low number of permutations over a low number of genes in the
+testing scaffold, you may want to change this as you work through the
+workshop yourself. The testing will take a few minutes to run, here with
 the parallel parameters that were set at the beginning of this document.
 
-```{r}
+```{r scHOT-scaffold}
 scHOT_spatial <- scHOT_setPermutationScaffold(scHOT_spatial,
                                               numberPermutations = 50,
                                               numberScaffold = 30)
@@ -814,9 +859,10 @@ scHOT_spatial <- scHOT_performPermutationTest(
 slot(scHOT_spatial, "scHOT_output")
 ```
 
-After the permutation test we can estimate the P-values across all genes.
+After the permutation test we can estimate the P-values across all
+genes.
 
-```{r}
+```{r scHOT-pval}
 scHOT_plotPermutationDistributions(scHOT_spatial)
 
 scHOT_spatial <- scHOT_estimatePvalues(scHOT_spatial,
@@ -825,10 +871,10 @@ scHOT_spatial <- scHOT_estimatePvalues(scHOT_spatial,
 slot(scHOT_spatial, "scHOT_output")
 ```
 
-We can now examine the spatial expression of the 5 most significant genes, 
-both in our scHOT object and over our original spe object.
+We can now examine the spatial expression of the 5 most significant
+genes, both in our scHOT object and over our original spe object.
 
-```{r}
+```{r scHOT-final}
 output_sorted <- slot(scHOT_spatial, "scHOT_output")[order(slot(scHOT_spatial,
                                                                 "scHOT_output")$pvalEstimated),]
 topgenes <- rownames(output_sorted)[1:5]
@@ -848,52 +894,78 @@ for (topgene in topgenes) {
 }
 ```
 
-Here we are noting the genes that are found to have the most statistically 
-significant spatial variation in their local mean expression. These genes point
-to specific patterns that govern the development of individual parts of the 
-gut tube.
-
+Here we are noting the genes that are found to have the most
+statistically significant spatial variation in their local mean
+expression. These genes point to specific patterns that govern the
+development of individual parts of the gut tube.
 
 ::: question
 **Advanced/Extended Questions**
 
-1. How would you perform such testing over multiple distinct samples? 
-2. scHOT is developed with all higher order testing in mind, use the associated
-[vignette](http://www.bioconductor.org/packages/release/bioc/html/scHOT.html) 
-to get towards assessing changes in variation or correlation 
-structure in space.
-
+1.  How would you perform such testing over multiple distinct samples?
+2.  scHOT is developed with all higher order testing in mind, use the
+    associated
+    [vignette](http://www.bioconductor.org/packages/release/bioc/html/scHOT.html)
+    to get towards assessing changes in variation or correlation
+    structure in space.
 :::
 
-```{r}
+```{r scHOT-q2}
 ## try some code
 
 ```
 
-Now that we have assessed genes varying in expression in space, let's look
-further into the IMC data where we will make use of the multiple samples to 
-perform clustering and extract some biological understanding.
+Now that we have assessed genes varying in expression in space, let's
+look further into the IMC data where we will make use of the multiple
+samples to perform clustering and extract some biological understanding.
 
-## How do we extract biological and molecular understanding from the native biological landscapes found in imaging data?
+## How do I make sense of and summarise spatially defined cellular interactions that occur in my data?
 
-In this workshop, we will use 2 packages, `Statial` and `scFeatures`.
-`Statial` is the latest of scdney bioconductor packages aimed at addressing biological questions relating to cellular interactions *in-situ*. For example, questions such as:
- - Which cell types localise with each other?
- - How does the functionality of a cell affect its localisation with other cell types?
- - How do the phenotypes of cells change during localisation?
- 
-The suite of functions provided by the `Statial` can largely be divided into 2 sections - `Kontextual` and `SpatioMark`. `Kontextual` uses a hierarchical clustering based approach to provide information about localisation/dispersion of cell types in the **context** of another cell type. The folllowing section will provide a demonstration of this capability:
+Having now clustered and annotated our data, we now want to see what
+biological conclusions and hypotheses we can draw from it.
 
-### Statial - Kontextual
-Kontextual models spatial relationships between cells in the context of hierarchical cell lineage structures. By assessing spatial relationships between pairs of cells in the context of other related cell types, Kontextual provides robust quantification of cell type relationships which are invariant to changes in tissue structure.
+For this workshop, we will use 2 packages, `Statial` and `scFeatures`.
+`Statial` is the latest of scdney bioconductor packages aimed at
+addressing biological questions relating to cellular interactions
+*in-situ*. For example, we can answer questions such as:
 
-For the purposes of using `Kontextual` we treat cell states as identified clusters of cells, where larger clusters represent a "parent" cell population, and finer sub-clusters representing a "child" cell population. For example a CD4+ T cell may be considered a child to a larger parent population of T cells. `Kontextual` thus aims to quantify how the localisation patterns of a child population of cells deviate from the spatial behaviour of their parent population, and how that influences the localisation between the child cell state and another cell state.
+\- Which cell types localise with each other?
+
+\- How does the functionality of a cell affect its localisation with
+other cell types?
+
+\- How do the phenotypes of cells change during localisation?
+
+### How do I determine which cell types are interacting with each other in my data?
+
+`Kontextual` is a part of the `Statial` package which models spatial
+relationships between cells in the context of hierarchical cell lineage
+structures. By assessing spatial relationships between pairs of cells in
+the context of other related cell types, Kontextual provides robust
+quantification of cell type relationships which are invariant to changes
+in tissue structure.
+
+For the purposes of using `Kontextual` we define cell functions as
+identified clusters of cells, where larger clusters represent a "parent"
+cell population, and finer sub-clusters representing a "child" cell
+population with a particular function. For example, CD4+ T cells have a
+highly specified function, and may be considered a child to a larger
+parent population of T cells. `Kontextual` thus aims to quantify how the
+localisation patterns of a child population of cells deviate from the
+spatial behaviour of their parent population, and how their cellular
+function defines their spatial localisation.
 
 #### Cell type hierarchy
 
-A key input for Kontextual is an annotation of cell type hierarchies. We will need these to organise all the cells present into cell state populations or clusters, e.g. all the different B cell types are put in a vector called bcells.
+A key input for Kontextual is an annotation of cell type hierarchies. We
+will need these to organise all the cells present into cell state
+populations or clusters, e.g. all the different B cell types are put in
+a vector called bcells.
 
-To make our lives easier, we will start by defining these here. I'm happy to talk about how we use our bioconductor package [treekoR](http://www.bioconductor.org/packages/release/bioc/html/treekoR.html) to define these hierarchies in a data driven way.
+To make our lives easier, we will start by defining these here. I'm
+happy to talk about how we use our bioconductor package
+[treekoR](http://www.bioconductor.org/packages/release/bioc/html/treekoR.html)
+to define these hierarchies in a data driven way.
 
 ```{r cell-hierarchy}
 # Set up cell populations
@@ -914,9 +986,15 @@ all <- c(tumour, tissue, immune, "Unidentified")
 
 ```
 
-#### Discrete cell state changes within a single image
+#### Do p53+ tumour cells exhibit a different spatial behaviour compared to all tumour cells?
 
-Here we examine an image highlighted in the Keren et al. 2018 manuscript where the relationship between two cell types depends on a parent cell population. In image 6 of the Keren et al. dataset, we can see that *p53+ tumour cells* and *immune cells* are dispersed. However when the behaviour of *p53+ tumour cells* are placed in the context of the spatial behaviour of its broader parent population *tumour cells*, *p53+ tumour cells* and *immune* would appear localised.
+Here we examine an image highlighted in the Keren et al. 2018 manuscript
+where the relationship between two cell types depends on a parent cell
+population. In image 6 of the Keren et al. dataset, we can see that
+*p53+ tumour cells* and *immune cells* are dispersed. However when the
+behaviour of *p53+ tumour cells* are placed in the context of the
+spatial behaviour of its broader parent population *tumour cells*, *p53+
+tumour cells* and *immune* would appear localised.
 
 ```{r kontext-example, fig.width=5.5, fig.height=3.5}
 
@@ -950,7 +1028,19 @@ kerenSPE |>
 
 ```
 
-The `Kontextual` function accepts a `SingleCellExperiment` object, or a single image, or list of images from a `SingleCellExperiment` object, this gets passed into the `cells` argument. The two cell types which will be evaluated are specified in the `to` and `from` arguments. A parent population must also be specified in the `parent` argument, note the parent cell population must include the `to` cell type. The argument `r` will specify the radius which the cell relationship will be evaluated on. `Kontextual` supports parallel processing, the number of cores can be specified using the `cores` argument. `Kontextual` can take a single value or multiple values for each argument and will test all combinations of the arguments specified.
+#### How do we quantify this relationship?
+
+The `Kontextual` function accepts a `SingleCellExperiment` object, or a
+single image, or list of images from a `SingleCellExperiment` object,
+this gets passed into the `cells` argument. The two cell types which
+will be evaluated are specified in the `to` and `from` arguments. A
+parent population must also be specified in the `parent` argument, note
+the parent cell population must include the `to` cell type. The argument
+`r` will specify the radius which the cell relationship will be
+evaluated on. `Kontextual` supports parallel processing, the number of
+cores can be specified using the `cores` argument. `Kontextual` can take
+a single value or multiple values for each argument and will test all
+combinations of the arguments specified.
 
 We can calculate these relationships for a single radius.
 
@@ -969,7 +1059,17 @@ p53_Kontextual
 
 ```
 
-The `kontextCurve` calculates the L-function value and Kontextual values over a range of radii. While `kontextPlot` plots these values. If the points lie above the red line (expected pattern) then localisation is indicated for that radius, if the points lie below the red line then dispersion is indicated. As seen in the following plot Kontextual is able to correctly identify localisation between p53+ tumour cells and immune cells in the example image for a certain range of radii. The original L-function is not able to identify localisation at any value of radii.
+#### How do I choose a radius?
+
+The `kontextCurve` calculates the L-function value and Kontextual values
+over a range of radii. While `kontextPlot` plots these values. If the
+points lie above the red line (expected pattern) then localisation is
+indicated for that radius, if the points lie below the red line then
+dispersion is indicated. As seen in the following plot Kontextual is
+able to correctly identify localisation between p53+ tumour cells and
+immune cells in the example image for a certain range of radii. The
+original L-function is not able to identify localisation at any value of
+radii.
 
 ```{r kontextCurve, fig.width=6, fig.height=4}
 
@@ -987,7 +1087,14 @@ curves <- kontextCurve(
 kontextPlot(curves)
 ```
 
-Alternatively all pairwise cell relationships and their corresponding parents in the dataset can be tested. A data frame with all pairwise combinations can be creating using the `parentCombinations` function. This function takes in a vector of all the cells, as well as all the parent vectors set up earlier. As shown below the output is a data frame specifying the `to`, `from`, and `parent` arguments for `Kontextual`.
+#### How do I quantitatively identify these function-dictated spatial patterns across all my images?
+
+Alternatively all pairwise cell relationships and their corresponding
+parents in the dataset can be tested. A data frame with all pairwise
+combinations can be creating using the `parentCombinations` function.
+This function takes in a vector of all the cells, as well as all the
+parent vectors set up earlier. As shown below the output is a data frame
+specifying the `to`, `from`, and `parent` arguments for `Kontextual`.
 
 ```{r parentDf}
 # Get all relationships between cell types and their parents
@@ -1005,28 +1112,37 @@ parentDf <- parentCombinations(
 
 ```
 
-#### Discrete cell state changes across all images
-
-Rather than specifying `to`, `from`, and `parent` in Kontextual, the output from `parentCombinations` can be input into `Kontextual` using the `parentDf` argument, to examine all pairwise relationships in the dataset. This chunk will take a signficant amount of time to run (\~20 minutes), for demonstration the results have been saved and are loaded in.
+Rather than specifying `to`, `from`, and `parent` in Kontextual, the
+output from `parentCombinations` can be input into `Kontextual` using
+the `parentDf` argument, to examine all pairwise relationships in the
+dataset. This chunk will take a significant amount of time to run (\~20
+minutes), for demonstration the results have been saved and are loaded
+in.
 
 ```{r kontextAll, eval=FALSE}
 # Running Kontextual on all relationships across all images.
-# kerenKontextual <- Kontextual(
-#   cells = kerenSPE,
-#   parentDf = parentDf,
-#   r = 50,
-#   cores = nCores
-# )
+kerenKontextual <- Kontextual(
+  cells = kerenSPE,
+  parentDf = parentDf,
+  r = 50,
+  cores = nCores
+)
 ```
 
 ```{r kontextLoad}
-source(system.file("extdata", "kerenKontextual.rda", package = "ScdneySpatial"))
+load(system.file("extdata", "kerenKontextual.rda", package = "ScdneySpatial"))
 ```
 
+#### Are these spatial patterns associated with survival outcomes?
 
-#### Associate discrete state changes with survival outcomes
-
-To examine whether the features obtained from `Statial` are associated with patient outcomes or groupings, we can use the `colTest` function from `SpicyR`. To understand if survival outcomes differ significantly between 2 patient groups, specify `type = "survival"` in `colTest`. Here we examine which features are most associated with patient survival using the Kontextual values as an example. To do so, survival data is extracted from `kerenSPE` and converted into the survival object `kerenSurv`.
+To examine whether the features obtained from `Statial` are associated
+with patient outcomes or groupings, we can use the `colTest` function
+from `SpicyR`. To understand if survival outcomes differ significantly
+between 2 patient groups, specify `type = "survival"` in `colTest`. Here
+we examine which features are most associated with patient survival
+using the Kontextual values as an example. To do so, survival data is
+extracted from `kerenSPE` and converted into the survival object
+`kerenSurv`.
 
 ```{r survData}
 # Extracting survival data
@@ -1042,7 +1158,10 @@ names(kerenSurv) = survData$imageID
 
 ```
 
-In addition to this, the Kontextual results must be converted from a `data.frame` to a wide `matrix`, this can be done using `prepMatrix`. Note, to extract the original L-function values, specify `column = "original"` in `prepMatrix`.
+In addition to this, the Kontextual results must be converted from a
+`data.frame` to a wide `matrix`, this can be done using `prepMatrix`.
+Note, to extract the original L-function values, specify
+`column = "original"` in `prepMatrix`.
 
 ```{r kontextMat}
 # Converting Kontextual result into data matrix
@@ -1056,7 +1175,8 @@ kontextMat[is.na(kontextMat )] <- 0
 
 ```
 
-Finally, both the Kontextual matrix and survival object are passed into `colTest`, with `type = "survival"` to obtain the survival results.
+Finally, both the Kontextual matrix and survival object are passed into
+`colTest`, with `type = "survival"` to obtain the survival results.
 
 ```{r kontextSurvival}
 # Running survival analysis
@@ -1067,11 +1187,24 @@ head(survivalResults)
 
 ```
 
-As we can see from the results `Mesenchymal__Macrophages__tissue` is the most significant pairwise relationship which contributes to patient survival. That is the relationship between Mesenchymal cells and macrophage cells, relative to the parent population of all tissue cells. We can see that there is a negative coefficient associated with this relationship, which tells us a decrease in localisation of Mesenchymal and Macrophages leads to poorer survival outcomes for patients.
+As we can see from the results `Mesenchymal__Macrophages__tissue` is the
+most significant pairwise relationship which contributes to patient
+survival. That is the relationship between Mesenchymal cells and
+macrophage cells, relative to the parent population of all tissue cells.
+We can see that there is a negative coefficient associated with this
+relationship, which tells us a decrease in localisation of Mesenchymal
+and Macrophages leads to poorer survival outcomes for patients.
 
-The association between `Mesenchymal__Macrophages__tissue` and survival can also be visualised on a Kaplan-Meier curve. We must first extract the Kontextual values of this relationship across all images. Next we determine if Mesenchymal and Macrophages are relatively attracted or avoiding in each image, by comparing the Kontextual value in each image to the median Kontextual value. Finally we plot the Kaplan-Meier curve using the `ggsurvfit` package.
+The association between `Mesenchymal__Macrophages__tissue` and survival
+can also be visualised on a Kaplan-Meier curve. We must first extract
+the Kontextual values of this relationship across all images. Next we
+determine if Mesenchymal and Macrophages are relatively attracted or
+avoiding in each image, by comparing the Kontextual value in each image
+to the median Kontextual value. Finally we plot the Kaplan-Meier curve
+using the `ggsurvfit` package.
 
-As shown below, when Mesenchymal and Macrophages are relatively more dispersed to one another, patients tend to have worse survival outcomes.
+As shown below, when Mesenchymal and Macrophages are relatively more
+dispersed to one another, patients tend to have worse survival outcomes.
 
 ```{r kontextSurvPlot, fig.width=5, fig.height=4}
 # Selecting most significant relationship
@@ -1085,15 +1218,28 @@ survfit2(kerenSurv ~ survRelationship) |>
     ggtitle("Mesenchymal__Macrophages__tissue")
 ```
 
-### Statial - SpatioMark
+### Can I visualise changes in specific markers as spatial proximity between cell types change?
 
-Changes in cell phenotype can be analytically framed as the change in abundance of a gene or protein within a particular cell type. We can analytically determine whether continuous changes occur to a cell's proteomic or transcriptomic signature as changes occur in its spatial proximity to another cell type. In the figures below we see the expression of a marker increased in cell type A as it grows closer in spatial proximity to cell type B. This can then be quantified with a scatterplot to determine statistical significance. In the next section of this workshop, we will be exploring the analytical functionalities of Statial which can uncover these continuous changes in cell state.
+Changes in cell phenotype can be analytically framed as the change in
+abundance of a gene or protein within a particular cell type. We can
+analytically determine whether continuous changes occur to a cell's
+proteomic or transcriptomic signature as changes occur in its spatial
+proximity to another cell type. In the figures below we see the
+expression of a marker increased in cell type A as it grows closer in
+spatial proximity to cell type B. This can then be quantified with a
+scatterplot to determine statistical significance. In the next section
+of this workshop, we will be exploring the analytical functionalities of
+Statial which can uncover these continuous changes in cell state.
 
 <img src="images/ctsCombined.jpg" alt="ctsCombined" style="border: 0px"/>
 
-### How do we identify specific marker changes when distinct cell types increase or decrease in spatial proximity?
+#### How do we identify specific marker changes when distinct cell types increase or decrease in spatial proximity?
 
-The first step in analysing these changes is to calculate the spatial proximity (`getDistances`) and abundance (`getAbundances`) of each cell to every cell type. These values will then be stored in the `reducedDims` slot of the `SpatialExperiment` object under the names `distances` and `abundances` respectively.
+The first step in analysing these changes is to calculate the spatial
+proximity (`getDistances`) and abundance (`getAbundances`) of each cell
+to every cell type. These values will then be stored in the
+`reducedDims` slot of the `SpatialExperiment` object under the names
+`distances` and `abundances` respectively.
 
 ```{r spatiomark-init}
 
@@ -1105,9 +1251,24 @@ kerenSPE <- getAbundances(kerenSPE,
 
 ```
 
-First, let's examine the same effect observed earlier with Kontextual. To avoid redefining cell types we'll examine the distance between p53-positive tumour cells and macrophages in the context of total keratin/tumour cells for image 6.
+```{r bugfix}
+reducedDim(kerenSPE, "abundances")[is.na(reducedDim(kerenSPE, "abundances"))] <- 0
+```
 
-Statial provides two main functions to assess this relationship - `calcStateChanges` and `plotStateChanges`. We can use `calcStateChanges` to examine the relationship between 2 cell types for 1 marker in a specific image. Similar to `Kontextual`, we can specify the two cell types with the `to` and `from` arguments, and the marker of interest with the `marker` argument. We can appreciate that the `fdr` statistic for this relationship is significant, and with a negative `coef`, or coefficient value, indicating that the expression of p53 in keratin/tumour cells decreases as distance from macrophages increases.
+First, let's examine the same effect observed earlier with Kontextual.
+To avoid redefining cell types we'll examine the distance between
+p53-positive tumour cells and macrophages in the context of total
+keratin/tumour cells for image 6.
+
+Statial provides two main functions to assess this relationship -
+`calcStateChanges` and `plotStateChanges`. We can use `calcStateChanges`
+to examine the relationship between 2 cell types for 1 marker in a
+specific image. Similar to `Kontextual`, we can specify the two cell
+types with the `to` and `from` arguments, and the marker of interest
+with the `marker` argument. We can appreciate that the `fdr` statistic
+for this relationship is significant, and with a negative `coef`, or
+coefficient value, indicating that the expression of p53 in
+keratin/tumour cells decreases as distance from macrophages increases.
 
 ```{r spatiomark-example}
 stateChanges <- calcStateChanges(
@@ -1121,11 +1282,20 @@ stateChanges <- calcStateChanges(
 stateChanges
 ```
 
-Statial provides a convenient function for visualising this relationship - `plotStateChanges`. Similar to `Kontextual` and `calcStateChanges`, we can specify the cell types to be evaluated with the `to` and `from` arguments and the marker of interest with `marker`.
+Statial provides a convenient function for visualising this
+relationship - `plotStateChanges`. Similar to `Kontextual` and
+`calcStateChanges`, we can specify the cell types to be evaluated with
+the `to` and `from` arguments and the marker of interest with `marker`.
 
-Through this analysis, we can observe that keratin/tumour cells closer to a group of macrophages tend to have higher expression of p53, as observed in the first graph. This relationship is quantified with the second graph, showing an overall decrease of p53 expression in keratin/tumour cells as distance to macrophages increase.
+Through this analysis, we can observe that keratin/tumour cells closer
+to a group of macrophages tend to have higher expression of p53, as
+observed in the first graph. This relationship is quantified with the
+second graph, showing an overall decrease of p53 expression in
+keratin/tumour cells as distance to macrophages increase.
 
-These results allow us to essentially arrive at the same result as Kontextual, which calculated a localisation between p53+ keratin/tumour cells and macrophages in the wider context of keratin/tumour cells.
+These results allow us to essentially arrive at the same result as
+Kontextual, which calculated a localisation between p53+ keratin/tumour
+cells and macrophages in the wider context of keratin/tumour cells.
 
 ```{r spatiomark-example2, fig.width=6, fig.height=4}
 p <- plotStateChanges(
@@ -1152,14 +1322,26 @@ p$scatter +
 ::: question
 **Question**
 
-1.  What information does this form of analysis provide that Kontextual does not?
+1.  What information does this form of analysis provide that Kontextual
+    does not?
 2.  Is this observation of localisation consistent across images?
-3.  Can you find an interaction where the coefficient is positive? i.e. marker expression in the `to` cell type rises as distances increases from the `from` cell type.
+3.  Can you find an interaction where the coefficient is positive? i.e.
+    marker expression in the `to` cell type rises as distances increases
+    from the `from` cell type.
 :::
 
-### Can we repeat this analysis across all images to identify global relationships?
+#### Can we repeat this analysis across all images to identify global relationships?
 
-Beyond looking at single cell-to-cell interactions for a single image, we can also look at all interactions across all images. The `calcStateChanges` function provided by Statial can be expanded for this exact purpose - by not specifying cell types, a marker, or an image, `calcStateChanges` will examine the most significant correlations between distance and marker expression across the entire dataset. Here, we've calculated all state changes across all images in case you would like to have a play, but first we'll be taking a closer examination at the most significant interactions found within image 6 of the Keren et al. dataset.
+Beyond looking at single cell-to-cell interactions for a single image,
+we can also look at all interactions across all images. The
+`calcStateChanges` function provided by Statial can be expanded for this
+exact purpose - by not specifying cell types, a marker, or an image,
+`calcStateChanges` will examine the most significant correlations
+between distance and marker expression across the entire dataset. Here,
+we've calculated all state changes across all images in case you would
+like to have a play, but first we'll be taking a closer examination at
+the most significant interactions found within image 6 of the Keren et
+al. dataset.
 
 ```{r spatiomark-all}
 stateChanges <- calcStateChanges(
@@ -1172,11 +1354,21 @@ stateChanges |>
   head(n = 10)
 ```
 
-In image 6, the majority of the top 10 most significant interactions occur between keratin/tumour cells and an immune population, and many of these interactions appear to involve the HLA class I ligand.
+In image 6, the majority of the top 10 most significant interactions
+occur between keratin/tumour cells and an immune population, and many of
+these interactions appear to involve the HLA class I ligand.
 
-We can examine some of these interactions further with the `plotStateChanges` function. Taking a closer examination of the relationship between macrophages and keratin/tumour HLA class I expression, the plot below shows us a clear visual correlation - as macrophage density increases, keratin/tumour cells increase their expression HLA class I.
+We can examine some of these interactions further with the
+`plotStateChanges` function. Taking a closer examination of the
+relationship between macrophages and keratin/tumour HLA class I
+expression, the plot below shows us a clear visual correlation - as
+macrophage density increases, keratin/tumour cells increase their
+expression HLA class I.
 
-Biologically, HLA Class I is a ligand which exists on all nucleated cells, tasked with presenting internal cell antigens for recognition by the immune system, marking aberrant cells for destruction by either CD8+ T cells or NK cells.
+Biologically, HLA Class I is a ligand which exists on all nucleated
+cells, tasked with presenting internal cell antigens for recognition by
+the immune system, marking aberrant cells for destruction by either CD8+
+T cells or NK cells.
 
 ```{r spatiomark-example3, fig.width=6, fig.height=4}
 
@@ -1201,26 +1393,38 @@ p$scatter +
        x = "Distance of Keratin_Tumour to Macrophages")
 ```
 
-Now, we can take a look at the top 10 most significant results across all images.
+Now, we can take a look at the top 10 most significant results across
+all images.
 
 ```{r spatiomark-all-head}
 stateChanges |> head(n = 10)
 ```
 
-Immediately, we can appreciate that a couple of interactions appear a bit strange. One of the most significant interactions occurs between B cells and CD4 T cells, where CD4 T cells are found to increase in CD20 expression when in close proximity to B cells. Biologically, CD20 is a highly specific ligand for B cells, and under healthy circumstances are usually not expressed in T cells.
+Immediately, we can appreciate that a couple of interactions appear a
+bit strange. One of the most significant interactions occurs between B
+cells and CD4 T cells, where CD4 T cells are found to increase in CD20
+expression when in close proximity to B cells. Biologically, CD20 is a
+highly specific ligand for B cells, and under healthy circumstances are
+usually not expressed in T cells.
 
-Could this potentially be an artefact of `calcStateChanges`? We can examine the image through the `plotStateChanges` function, where we indeed observe an apparent localisation between B cells and T cells.
+Could this potentially be an artefact of `calcStateChanges`? We can
+examine the image through the `plotStateChanges` function, where we
+indeed observe an apparent localisation between B cells and T cells.
 
 ::: question
 **Question**
 
-1.  Are there any other interactions here that you think might not make biological sense?\
+1.  Are there any other interactions here that you think might not make
+    biological sense?\
 
-2.  Does the relationship between T cell CD20 expression and B cell proximity occur across images?\
+2.  Does the relationship between T cell CD20 expression and B cell
+    proximity occur across images?\
 
-3.  Why are the majority of most significant interactions occurring in image 35?
+3.  Why are the majority of most significant interactions occurring in
+    image 35?
 
-    HINT: Configure the parameters of `plotStateChanges` to examine some these other significant interactions. Do they look like artefacts?
+    HINT: Configure the parameters of `plotStateChanges` to examine some
+    these other significant interactions. Do they look like artefacts?
 :::
 
 ```{r spatiomark-contamination, fig.width=6, fig.height=4}
@@ -1245,17 +1449,46 @@ p$image +
 p$scatter
 ```
 
-So why are T cells expressing CD20? This brings us to a key limitation of cell segmentation.
+So why are T cells expressing CD20? This brings us to a key limitation
+of cell segmentation.
 
-### How do we deal with lateral cell spill over?
+#### How do we deal with lateral cell spill over?
 
-Contamination, or more specifically known as lateral marker spill over, is an issue that results in a cell's marker expressions being wrongly attributed to another adjacent cell. This issue arises from incorrect segmentation where components of one cell are wrongly determined as belonging to another cell. Alternatively, this issue can arise when antibodies used to tag and measure marker expressions do not latch on properly to a cell of interest, thereby resulting in residual markers being wrongly assigned as belonging to a cell near the intended target cell. It is important that we either correct or account for this incorrect attribution of markers in our modelling process. This is critical in understanding whether significant cell-cell interactions detected are an artifact of technical measurement errors driven by spill over or are real biological changes that represent a shift in a cell's state.
+Contamination, or more specifically known as lateral marker spill over,
+is an issue that results in a cell's marker expressions being wrongly
+attributed to another adjacent cell. This issue arises from incorrect
+segmentation where components of one cell are wrongly determined as
+belonging to another cell. Alternatively, this issue can arise when
+antibodies used to tag and measure marker expressions do not latch on
+properly to a cell of interest, thereby resulting in residual markers
+being wrongly assigned as belonging to a cell near the intended target
+cell. It is important that we either correct or account for this
+incorrect attribution of markers in our modelling process. This is
+critical in understanding whether significant cell-cell interactions
+detected are an artifact of technical measurement errors driven by spill
+over or are real biological changes that represent a shift in a cell's
+state.
 
 <img src="images/Contamination.png" alt="Contamination" style="width: 4in; border: 0px"/>
 
-To circumvent this problem, `Statial` provides a function that predicts the probability that a cell is any particular cell type - `calcContamination`. `calcContamination` returns a dataframe of probabilities demarcating the chance of a cell being any particular cell type. This dataframe is stored under `contaminations` in the `reducedDim` slot of the `SpatialExperiment` object. It also provides the `rfMainCellProb` column, which provides the probability that a cell is indeed the cell type it has been designated. E.g. For a cell designated as a CD8+ T cell, rfMainCellProb could give a 80% chance that the cell is indeed CD8+ T cell, due to contamination.
+To circumvent this problem, `Statial` provides a function that predicts
+the probability that a cell is any particular cell type -
+`calcContamination`. `calcContamination` returns a dataframe of
+probabilities demarcating the chance of a cell being any particular cell
+type. This dataframe is stored under `contaminations` in the
+`reducedDim` slot of the `SpatialExperiment` object. It also provides
+the `rfMainCellProb` column, which provides the probability that a cell
+is indeed the cell type it has been designated. E.g. For a cell
+designated as a CD8+ T cell, rfMainCellProb could give a 80% chance that
+the cell is indeed CD8+ T cell, due to contamination.
 
-We can then introduce these probabilities as covariates into our linear model by setting `contamination = TRUE` as a parameter in our `calcStateChanges` function. However, this is not a perfect solution for the issue of contamination. As we can see, despite factoring in contamination into our linear model, the correlation between B cell density and CD20 expression in CD4+ T cells remains one of the most significant interactions in our model.
+We can then introduce these probabilities as covariates into our linear
+model by setting `contamination = TRUE` as a parameter in our
+`calcStateChanges` function. However, this is not a perfect solution for
+the issue of contamination. As we can see, despite factoring in
+contamination into our linear model, the correlation between B cell
+density and CD20 expression in CD4+ T cells remains one of the most
+significant interactions in our model.
 
 ```{r spatiomark-correction}
 kerenSPE <- calcContamination(kerenSPE)
@@ -1270,9 +1503,16 @@ stateChangesCorrected |> head(n = 20)
 
 ```
 
-However, this does not mean factoring in contamination into our linear model was ineffective. In general, cell type specific markers such as CD68, CD45, and CD20 should not change in cells they are not specific to. Therefore, relationships detected to be significant involving these cell type markers are likely false positives and will be treated as such for the purposes of evaluation.
+However, this does not mean factoring in contamination into our linear
+model was ineffective. In general, cell type specific markers such as
+CD68, CD45, and CD20 should not change in cells they are not specific
+to. Therefore, relationships detected to be significant involving these
+cell type markers are likely false positives and will be treated as such
+for the purposes of evaluation.
 
-Plotting the relationship between false positives and true positives, we'd expect the contamination correction to be greatest in relationships which are detected to be more significant.
+Plotting the relationship between false positives and true positives,
+we'd expect the contamination correction to be greatest in relationships
+which are detected to be more significant.
 
 ```{r spatiomark-roc, fig.height=3.5, fig.width=5}
 cellTypeMarkers <- c("CD3", "CD4", "CD8", "CD56", "CD11c", "CD68", "CD45", "CD20")
@@ -1286,7 +1526,9 @@ df <- rbind(data.frame(TP =cumsum(stateChanges$marker %in% cellTypeMarkers), FP 
 ggplot(df, aes(x = TP, y = FP, colour = type)) + geom_line()+ labs(y = "Cell state marker", x = "Cell type marker") + scale_colour_manual(values = values)
 ```
 
-Here, we zoom in on the ROC curve where the top 100 lowest p values occur, where we indeed see more true positives than false positives with contamination correction.
+Here, we zoom in on the ROC curve where the top 100 lowest p values
+occur, where we indeed see more true positives than false positives with
+contamination correction.
 
 ```{r spatiomark-roc-zoom, fig.height=3.5, fig.width=5}
 ggplot(df, aes(x = TP, y = FP, colour = type)) + geom_line()+ xlim(0,100) + ylim(0,1000)+ labs(y = "Cell state marker", x = "Cell type marker") + scale_colour_manual(values = values)
@@ -1299,9 +1541,12 @@ ggplot(df, aes(x = TP, y = FP, colour = type)) + geom_line()+ xlim(0,100) + ylim
 1.  What can we conclude from the above ROC graphs?
 :::
 
-### Associate continuous state changes with survival outcomes
+#### Are these cell type - marker relationships predictive or survival outcomes?
 
-Similiar to `Kontextual`, we can run a similar survival analysis using our state changes results. Here, `prepMatrix` extracts the coefficients, or the `coef` column of `stateChanges` by default. To use the t values instead, specify `column = "tval"` in the `prepMatrix` function.
+Similiar to `Kontextual`, we can run a similar survival analysis using
+our state changes results. Here, `prepMatrix` extracts the coefficients,
+or the `coef` column of `stateChanges` by default. To use the t values
+instead, specify `column = "tval"` in the `prepMatrix` function.
 
 ```{r spatiomark-mat}
 # Preparing features for Statial
@@ -1322,12 +1567,21 @@ head(survivalResults)
 ::: question
 **Question**
 
-1.  Are the survival results the same for both the distance and abundance metrics?
+1.  Are the survival results the same for both the distance and
+    abundance metrics?
 2.  Do these survival results change with contamination correction?
-3.  Why might the survival results look the same/different between distance and abundance?
+3.  Why might the survival results look the same/different between
+    distance and abundance?
 :::
 
-For our state changes results, `Keratin_Tumour__Mesenchymal__HLA_Class_1` is the most significant pairwise relationship which contributes to patient survival. That is, the relationship between HLA class I expression in keratin/tumour cells and their spatial proximity to mesenchymal cells. As there is a negative coeffcient associated with this relationship, which tells us that higher HLA class I expression in keratin/tumour cells nearby mesenchymal cell populations lead to poorer survival outcomes for patients.
+For our state changes results,
+`Keratin_Tumour__Mesenchymal__HLA_Class_1` is the most significant
+pairwise relationship which contributes to patient survival. That is,
+the relationship between HLA class I expression in keratin/tumour cells
+and their spatial proximity to mesenchymal cells. As there is a negative
+coeffcient associated with this relationship, which tells us that higher
+HLA class I expression in keratin/tumour cells nearby mesenchymal cell
+populations lead to poorer survival outcomes for patients.
 
 ```{r spatiomarkSurvPlot, fig.width=5, fig.height=4}
 # Selecting the most significant relationship
@@ -1350,20 +1604,32 @@ survfit2(kerenSurv ~ survRelationship) |>
 3.  Could you visualise representative images?
 :::
 
-### scFeatures
+### How do we generate a molecular representation for each individual?
 
-The next section of this workshop will be dedicated to scFeatures - a straightforward package for generating a suite of molecular representations regarding a patient, taking a matrix of `features x cells` as input. The molecular representation is interpretable and hence facilitates downstream analysis of the individual. In general, `scFeatures` generates features across six categories representing different molecular views of cellular characteristics. These include:
+The next section of this workshop will be dedicated to scFeatures - a
+straightforward package for generating a suite of molecular
+representations regarding a patient, taking a matrix of
+`proteins x cells` as input. The molecular representation is
+interpretable and hence facilitates downstream analysis of the
+individual. In general, `scFeatures` generates features across six
+categories representing different molecular views of cellular
+characteristics. These include:
 
-i) cell type proportions
+i)  cell type proportions
 ii) cell type specific gene expressions
 iii) cell type specific pathway expressions
 iv) cell type specific cell-cell interaction (CCI) scores
-v) overall aggregated gene expressions
+v)  overall aggregated gene expressions
 vi) spatial metrics
 
-The different types of features constructed enable a more comprehensive multi-view understanding of each individual from a matrix of `spot x cells`. By default, the function will generate a total of 13 different types of features (feature_types) shown below and store them in a list. All generated feature types are stored in a matrix of `samples x features`. 
+The different types of features constructed enable a more comprehensive
+multi-view understanding of each individual from a matrix of
+`spot x cells`. By default, the function will generate a total of 13
+different types of features (feature_types) shown below and store them
+in a list. All generated feature types are stored in a matrix of
+`samples x features`.
 
-```
+```         
 ##  [1] "proportion_raw"       "proportion_logit"     "proportion_ratio"    
 ##  [4] "gene_mean_celltype"   "gene_prop_celltype"   "gene_cor_celltype"   
 ##  [7] "gene_mean_bulk"       "gene_prop_bulk"       "gene_cor_bulk"       
@@ -1371,42 +1637,54 @@ The different types of features constructed enable a more comprehensive multi-vi
 ## [13] "nn_correlation"
 ```
 
-There are different ways you can use `scFeatures` to generate molecular representations for individuals and it requires the following information for spatial data. 
+There are different ways you can use `scFeatures` to generate molecular
+representations for individuals and it requires the following
+information for spatial data.
 
-- data,  
-- sample, 
-- X coordinates, 
-- Y coordinates, 
-- feature_types, and
-- type
+-   data,
+-   sample,
+-   X coordinates,
+-   Y coordinates,
+-   feature_types, and
+-   type
 
-There are a total of 13 different types of features (feature_types) that you can choose to generate. The argument type refers the type of input data we have. This is either `scrna` (single-cell RNA-sequencing data), `spatial_p` (spatial proteomics data), or `spatial_t` (single cell spatial data). 
+There are a total of 13 different types of features (feature_types) that
+you can choose to generate. The argument type refers the type of input
+data we have. This is either `scrna` (single-cell RNA-sequencing data),
+`spatial_p` (spatial proteomics data), or `spatial_t` (single cell
+spatial data).
 
-#### Calculate feature_types {-}
-Suppose that we are interested in determining the proportion of each cell type in each individual within each region. It is necessary to specify `type = spatial_p` to reflect that we have spatial proteomics data and `feature_types = proportion_raw` to indicate we intend to calculate cell type proportion for each of the region-specific sub-cell types.
+Suppose that we are interested in determining the proportion of each
+cell type in each individual within each region. It is necessary to
+specify `type = spatial_p` to reflect that we have spatial proteomics
+data and `feature_types = proportion_raw` to indicate we intend to
+calculate cell type proportion for each of the region-specific sub-cell
+types.
+
+```{r scFeatures, eval = FALSE}
+matrix <- assay(kerenSPE, "intensities") |> as.matrix()
+sample <- kerenSPE$imageID
+celltype <- kerenSPE$cellType
+spatialCoords <- lapply(seq_len(ncol(spatialCoords(kerenSPE))), function(i) spatialCoords(kerenSPE)[,i])
 
 
-```{r scFeatures}
-# matrix <- assay(kerenSPE, "intensities") |> as.matrix()
-# sample <- kerenSPE$imageID
-# celltype <- kerenSPE$cellType
-# spatialCoords <- lapply(seq_len(ncol(spatialCoords(kerenSPE))), function(i) spatialCoords(kerenSPE)[,i])
-# 
-# 
-# scfeatures_result <- scFeatures(matrix, type = "spatial_p",
-#                                 sample = sample, celltype = celltype, spatialCoords = spatialCoords,
-#                                 ncores = 32)
+scfeatures_result <- scFeatures(matrix, type = "spatial_p",
+                                sample = sample, celltype = celltype, spatialCoords = spatialCoords,
+                                ncores = 32)
 ```
 
 ```{r scFeaturesLoad}
-source(system.file("extdata", "scfeaturesResult.rda", package = "ScdneySpatial"))
+load(system.file("extdata", "scfeaturesResult.rda", package = "ScdneySpatial"))
 ```
 
 ```{r scFeatures-head}
 data.frame(scfeatures_result[[1]][1:5, 1:5])
 ```
 
-The output of scFeatures, `scfeatures_result`, is a list of 13 dataframes, which each represent a different molecular feature of a patient. Below, we give an example visualisation of the raw cell type proportions for each patient.
+The output of scFeatures, `scfeatures_result`, is a list of 13
+dataframes, which each represent a different molecular feature of a
+patient. Below, we give an example visualisation of the raw cell type
+proportions for each patient.
 
 ```{r scFeaturesPlot}
 feature <- scfeatures_result$proportion_raw
@@ -1414,18 +1692,31 @@ feature <- scfeatures_result$proportion_raw
 feature$patient <- unlist(lapply(strsplit(rownames(feature), "_cond_"), `[`, 1))
 feature$condition <- unlist(lapply(strsplit(rownames(feature), "_cond_"), `[`, 2))
 
-feature <- as.data.frame(melt(feature, id=c("patient", "condition")) )
+feature <- as.data.frame(melt(feature, id=c("patient", "condition")))
 
-ggplot(feature , aes( x = patient , y = value , fill = variable) ) +   
+ggplot(feature , aes(x = patient , y = value , fill = variable)) +   
   geom_bar(stat="identity") + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + ggtitle("Proportion raw feature")
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + 
+  ggtitle("Proportion raw feature")
 
 ```
+
 ### How good are our metrics at predicting patient survival?
 
-Finally we demonstrate how we can use the Bioconductor package `ClassifyR` to perform patient classification with the features generated from `Statial`. In addition to `Kontextual`, `SpatioMark`, and `scFeatures` values, we also calculate cell type proportions and region proportions using the `getProp` function in `spicyR`. Here we perform 5 fold cross validation with 20 repeats, using a CoxPH model for survival classification.
+Finally we demonstrate how we can use the Bioconductor package
+`ClassifyR` to perform patient classification with the features
+generated from `Statial`. In addition to `Kontextual`, `SpatioMark`, and
+`scFeatures` values, we also calculate cell type proportions and region
+proportions using the `getProp` function in `spicyR`. Here we perform 5
+fold cross validation with 20 repeats, using a CoxPH model for survival
+classification.
 
-To prepare our metrics for classification, first we must convert our dataframes into matrix format. This can be accomplished, as we did earlier, with the `prepMatrix` function of `Statial`. As we generated matrices for `Kontextual` and the distance metric of `SpatioMark` earlier, we will now be generating matrices for the `SpatioMark` corrected distance metric, and the abundance metrics. 
+To prepare our metrics for classification, first we must convert our
+dataframes into matrix format. This can be accomplished, as we did
+earlier, with the `prepMatrix` function of `Statial`. As we generated
+matrices for `Kontextual` and the distance metric of `SpatioMark`
+earlier, we will now be generating matrices for the `SpatioMark`
+corrected distance metric, and the abundance metrics.
 
 ```{r prep-matrices}
 ## Distances Corrected Matrix
@@ -1435,7 +1726,7 @@ stateMatCorDist[is.na(stateMatCorDist)] <- 0
 # Remove some very small values
 stateMatCorDist <- stateMatCorDist[,colMeans(abs(stateMatCorDist)>0.0001)>.8]
 
-
+reducedDim(kerenSPE, "abundances")[is.na(reducedDim(kerenSPE, "abundances"))] <- 0
 ## Abundances
 stateChangesAbund <- calcStateChanges(
   cells = kerenSPE,
@@ -1463,8 +1754,13 @@ stateMatCorAbund <- stateMatCorAbund[,colMeans(abs(stateMatCorAbund)>0.0001)>.8]
 
 ```
 
-Then we compile these matrices into a list. `scFeatures` conveniently provides all its metrics as part of a list of matrices already, allowing us to easily combine our `Statial` metrics with `scFeatures` into 1 list of matrices. 
-We then input this list into the `crossValidate` function of `ClassifyR`, specifying our survival object created earlier, and 5 folds of cross validation with 20 repeats. We will also be using a feature selection algorithm selecting for 10 features for each metric.
+Then we compile these matrices into a list. `scFeatures` conveniently
+provides all its metrics as part of a list of matrices already, allowing
+us to easily combine our `Statial` metrics with `scFeatures` into 1 list
+of matrices. We then input this list into the `crossValidate` function
+of `ClassifyR`, specifying our survival object created earlier, and 5
+folds of cross validation with 20 repeats. We will also be using a
+feature selection algorithm selecting for 10 features for each metric.
 
 ```{r classification}
 
@@ -1486,13 +1782,15 @@ kerenCV = crossValidate(
   selectionMethod  = "CoxPH",
   nFolds = 5,
   nFeatures = 10,
-  nRepeats = 20
+  nRepeats = 20,
+  nCores = nCores
 )
 ```
 
-Next, we use the `performancePlot` function to assess the C-index from each repeat of the 5-fold cross-validation. 
+Next, we use the `performancePlot` function to assess the C-index from
+each repeat of the 5-fold cross-validation.
 
-```{r}
+```{r perfPlot-coxph}
 performancePlot(kerenCV,
   characteristicsList = list(x = "Assay Name"),
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
@@ -1502,10 +1800,14 @@ performancePlot(kerenCV,
   geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
 
-Unfortunately, our spatial metrics did not outperform some of the simpler metrics generated by scFeatures, particularly `gene_mean_bulk`, which simply produces a matrix describing the average gene expression of each marker in each patient. 
-To examine another variable which might be of interest, we used recurrence as another outcome to determine whether our spatial metrics could uncover signal.
+Unfortunately, our spatial metrics did not outperform some of the
+simpler metrics generated by scFeatures, particularly `gene_mean_bulk`,
+which simply produces a matrix describing the average gene expression of
+each marker in each patient. To examine another variable which might be
+of interest, we used recurrence as another outcome to determine whether
+our spatial metrics could uncover signal.
 
-```{r}
+```{r classify-recurrence}
 outcome <- survData$RECURRENCE_LABEL
 names(outcome) <- survData$imageID
 
@@ -1520,13 +1822,14 @@ kerenCV_recurrence = crossValidate(
   selectionMethod = "auto",
   nFolds = 5,
   nFeatures = 10,
-  nRepeats = 20
+  nRepeats = 20,
+  nCores = nCores
 )
 ```
 
-Again, using `performancePlot`, we found better performance in our spatial metrics.
+Again, using `performancePlot`, this time for recurrence, we found better performance in select spatial metrics.
 
-```{r}
+```{r perfPlot-recurrence}
 performancePlot(kerenCV_recurrence,
   characteristicsList = list(x = "Assay Name"),
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
@@ -1535,3 +1838,8 @@ performancePlot(kerenCV_recurrence,
   geom_rect(aes(xmin = 5.5, xmax = 14.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
   geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
+
+```{r sessionInfo}
+sessionInfo()
+```
+

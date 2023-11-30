@@ -32,7 +32,8 @@ Depends:
     scuttle,
     batchelor,
     plotly,
-    BumpyMatrix
+    BumpyMatrix,
+    SpatialExperiment
 Suggests: 
     knitr,
     rmarkdown,
@@ -40,4 +41,4 @@ Suggests:
 URL: https://sydneybiox.github.io/ScdneySpatial/
 BugReports: https://github.com/SydneyBioX/ScdneySpatial/issues/new/choose
 VignetteBuilder: knitr
-DockerImage: ghcr.io/sydneybiox/scdneyspatial:latest
+DockerImage: ghcr.io/sydneybiox/scdneyspatial:latest 
