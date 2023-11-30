@@ -2,7 +2,7 @@
 title: "Unlocking single cell spatial omics analyses with scdney"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Unlocking spatial omics analysis with scdney}
+  %\VignetteIndexEntry{Unlocking single cell spatial omics analyses with scdney}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -142,7 +142,10 @@ library(Statial)
 library(BumpyMatrix)
 library(cytomapper)
 library(batchelor)
+library(ggplot2)
+library(ggsurvfit)
 library(plotly)
+library(reshape)
 library(scater)
 library(scuttle)
 library(SingleCellExperiment)
@@ -154,7 +157,7 @@ theme_set(theme_classic())
 
 nCores <- 8  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
-load(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
+source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
 ```
 
@@ -719,7 +722,7 @@ anatomical region corresponding to the anterior end of the developing
 gut developing brain so we will first subset the cells using the spatial
 coordinates. We can check what we have selected by plotting.
 
-```{r}
+```{r visualise_spe}
 # Filter cells which are labeled gut tub, and in the anterior section.
 spe$gutRegion <- spe$celltype_mapped_refined == "Gut tube" &
   reducedDim(spe, "spatialCoords")[,1] < -0.5
@@ -740,7 +743,7 @@ spe_gut
 We select genes with at least some proportion of expressed cells for
 testing, and create the `scHOT` object.
 
-```{r}
+```{r scHOT-init}
 hist(rowMeans(counts(spe_gut)>0), 40)
 
 gene_to_test <- as.matrix(c(rownames(spe_gut[rowMeans(counts(spe_gut)>0) > 0.2,])))
@@ -764,7 +767,7 @@ requiring the weight matrix correspond to every individual cell, but
 instead a random selection among all the cells using the `thin`
 function.
 
-```{r}
+```{r scHOT_wmat}
 scHOT_spatial <- scHOT_addTestingScaffold(scHOT_spatial, gene_to_test)
 head(scHOT_spatial@testingScaffold)
 
@@ -777,7 +780,7 @@ dim(slot(scHOT_spatial, "weightMatrix"))
 For a given cell we can visually examine the local weight given by the
 span parameter.
 
-```{r}
+```{r scHOT-vis}
 cellID = 10
 
 df <- cbind(as.data.frame(colData(scHOT_spatial)),
@@ -802,7 +805,7 @@ ggplot(df,
 1.  How will the results change if the span is increased/decreased?
 :::
 
-```{r}
+```{r scHOT-q}
 ## Make associated changes to the code to test out the question above.
 ```
 
@@ -810,7 +813,7 @@ We set the higher order function as the weighted mean function, and then
 calculate the observed higher order test statistics. This may take
 around 10 seconds.
 
-```{r}
+```{r scHOT-t_stat}
 scHOT_spatial <- scHOT_calculateGlobalHigherOrderFunction(
     scHOT_spatial,
     higherOrderFunction = weightedMean,
@@ -827,7 +830,7 @@ any relationship. Labels can be interactively visualised using
 `ggplotly`. Some genes may have different distributions so we turn to
 permutation testing to assess statistical significance.
 
-```{r}
+```{r scHOT-vis2}
 g <- ggplot(as.data.frame(scHOT_spatial@scHOT_output), 
            aes(x = globalHigherOrderFunction, y = higherOrderStatistic, label = gene_1)) + 
   xlab("Mean across all cells") +
@@ -843,7 +846,7 @@ testing scaffold, you may want to change this as you work through the
 workshop yourself. The testing will take a few minutes to run, here with
 the parallel parameters that were set at the beginning of this document.
 
-```{r}
+```{r scHOT-scaffold}
 scHOT_spatial <- scHOT_setPermutationScaffold(scHOT_spatial,
                                               numberPermutations = 50,
                                               numberScaffold = 30)
@@ -859,7 +862,7 @@ slot(scHOT_spatial, "scHOT_output")
 After the permutation test we can estimate the P-values across all
 genes.
 
-```{r}
+```{r scHOT-pval}
 scHOT_plotPermutationDistributions(scHOT_spatial)
 
 scHOT_spatial <- scHOT_estimatePvalues(scHOT_spatial,
@@ -871,7 +874,7 @@ slot(scHOT_spatial, "scHOT_output")
 We can now examine the spatial expression of the 5 most significant
 genes, both in our scHOT object and over our original spe object.
 
-```{r}
+```{r scHOT-final}
 output_sorted <- slot(scHOT_spatial, "scHOT_output")[order(slot(scHOT_spatial,
                                                                 "scHOT_output")$pvalEstimated),]
 topgenes <- rownames(output_sorted)[1:5]
@@ -907,7 +910,7 @@ development of individual parts of the gut tube.
     structure in space.
 :::
 
-```{r}
+```{r scHOT-q2}
 ## try some code
 
 ```
@@ -1246,6 +1249,10 @@ kerenSPE <- getDistances(kerenSPE,
 kerenSPE <- getAbundances(kerenSPE,
                      r = 50)
 
+```
+
+```{r bugfix}
+reducedDim(kerenSPE, "abundances")[is.na(reducedDim(kerenSPE, "abundances"))] <- 0
 ```
 
 First, let's examine the same effect observed earlier with Kontextual.
@@ -1654,7 +1661,7 @@ data and `feature_types = proportion_raw` to indicate we intend to
 calculate cell type proportion for each of the region-specific sub-cell
 types.
 
-```{r scFeatures}
+```{r scFeatures, eval = FALSE}
 matrix <- assay(kerenSPE, "intensities") |> as.matrix()
 sample <- kerenSPE$imageID
 celltype <- kerenSPE$cellType
@@ -1667,7 +1674,7 @@ scfeatures_result <- scFeatures(matrix, type = "spatial_p",
 ```
 
 ```{r scFeaturesLoad}
-source(system.file("extdata", "scfeaturesResult.rda", package = "ScdneySpatial"))
+load(system.file("extdata", "scfeaturesResult.rda", package = "ScdneySpatial"))
 ```
 
 ```{r scFeatures-head}
@@ -1685,11 +1692,12 @@ feature <- scfeatures_result$proportion_raw
 feature$patient <- unlist(lapply(strsplit(rownames(feature), "_cond_"), `[`, 1))
 feature$condition <- unlist(lapply(strsplit(rownames(feature), "_cond_"), `[`, 2))
 
-feature <- as.data.frame(melt(feature, id=c("patient", "condition")) )
+feature <- as.data.frame(melt(feature, id=c("patient", "condition")))
 
-ggplot(feature , aes( x = patient , y = value , fill = variable) ) +   
+ggplot(feature , aes(x = patient , y = value , fill = variable)) +   
   geom_bar(stat="identity") + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + ggtitle("Proportion raw feature")
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + 
+  ggtitle("Proportion raw feature")
 
 ```
 
@@ -1718,7 +1726,7 @@ stateMatCorDist[is.na(stateMatCorDist)] <- 0
 # Remove some very small values
 stateMatCorDist <- stateMatCorDist[,colMeans(abs(stateMatCorDist)>0.0001)>.8]
 
-
+reducedDim(kerenSPE, "abundances")[is.na(reducedDim(kerenSPE, "abundances"))] <- 0
 ## Abundances
 stateChangesAbund <- calcStateChanges(
   cells = kerenSPE,
@@ -1774,14 +1782,15 @@ kerenCV = crossValidate(
   selectionMethod  = "CoxPH",
   nFolds = 5,
   nFeatures = 10,
-  nRepeats = 20
+  nRepeats = 20,
+  nCores = nCores
 )
 ```
 
 Next, we use the `performancePlot` function to assess the C-index from
 each repeat of the 5-fold cross-validation.
 
-```{r}
+```{r perfPlot-coxph}
 performancePlot(kerenCV,
   characteristicsList = list(x = "Assay Name"),
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
@@ -1798,7 +1807,7 @@ each marker in each patient. To examine another variable which might be
 of interest, we used recurrence as another outcome to determine whether
 our spatial metrics could uncover signal.
 
-```{r}
+```{r classify-recurrence}
 outcome <- survData$RECURRENCE_LABEL
 names(outcome) <- survData$imageID
 
@@ -1813,14 +1822,14 @@ kerenCV_recurrence = crossValidate(
   selectionMethod = "auto",
   nFolds = 5,
   nFeatures = 10,
-  nRepeats = 20
+  nRepeats = 20,
+  nCores = nCores
 )
 ```
 
-Again, using `performancePlot`, we found better performance in our
-spatial metrics.
+Again, using `performancePlot`, this time for recurrence, we found better performance in select spatial metrics.
 
-```{r}
+```{r perfPlot-recurrence}
 performancePlot(kerenCV_recurrence,
   characteristicsList = list(x = "Assay Name"),
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
@@ -1829,3 +1838,8 @@ performancePlot(kerenCV_recurrence,
   geom_rect(aes(xmin = 5.5, xmax = 14.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
   geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
+
+```{r sessionInfo}
+sessionInfo()
+```
+
