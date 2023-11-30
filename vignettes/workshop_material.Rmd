@@ -154,7 +154,7 @@ theme_set(theme_classic())
 
 nCores <- 8  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
-source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
+load(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
 ```
 
@@ -1127,7 +1127,7 @@ kerenKontextual <- Kontextual(
 ```
 
 ```{r kontextLoad}
-source(system.file("extdata", "kerenKontextual.rda", package = "ScdneySpatial"))
+load(system.file("extdata", "kerenKontextual.rda", package = "ScdneySpatial"))
 ```
 
 #### Are these spatial patterns associated with survival outcomes?
