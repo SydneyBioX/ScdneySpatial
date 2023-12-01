@@ -454,10 +454,52 @@ cells = rgbImage(green=1.5*cel, blue=nuc)
 display(cells, all = TRUE)
 ```
 
-We will next create a nuclei mask. The `nuc` channel contains
-fluorescent intensities of a protein expressed in the nuclei of cells.
-The nuclei mask will threshold this channel to separate signal from
-noise and then clean this with som
+We will next segment the nuclei. The `nuc` channel contains fluorescent
+intensities of a protein expressed in the nuclei of cells. First we
+create a nuclei mask which will threshold this channel to separate
+signal from noise and then clean this with some morphological
+operations. Then we identify single nuclei using `bwlabel`.
+
+```{r}
+nmask = thresh(nuc, w=10, h=10, offset=0.05)
+nmask = opening(nmask, makeBrush(5, shape='disc'))
+nmask = fillHull(nmask)
+nmask = bwlabel(nmask)
+
+display(nmask, all=TRUE)
+```
+
+::: question
+**Questions**
+
+1.  Do you understand what `nmask` is?
+2.  What are you seeing when you do `table(nmask)`
+3.  What happens when you using `colorLabels()` with `display`?
+:::
+
+Next, we use the segmented nuclei as seeds to perform Voronoi
+segmentation of the cytoplasm.
+
+```{r}
+ctmask = opening(cel>0.1, makeBrush(5, shape='disc'))
+cmask = propagate(cel, seeds=nmask, mask=ctmask)
+
+display(ctmask, all=TRUE)
+
+```
+
+We can then visualise our segmentations with `paintObjects`.
+
+```{r}
+segmented = paintObjects(cmask, cells, col='#ff00ff')
+segmented = paintObjects(nmask, segmented, col='#ffff00')
+
+display(segmented, all=TRUE)
+
+
+```
+
+### Can we do this in one step?
 
 Images stored in a `list` or `CytoImageList` can be segmented using
 `simpleSeg`. Below `simpleSeg` will identify the nuclei in the image
@@ -551,7 +593,7 @@ cellSize[2:length(cellSize)] |>
     available in `simpleSeg`.
 :::
 
-### How to I convert my image and mask to an object I can use in R?
+### How do I convert my image and mask to an object I can use in R?
 
 With our segmentation `masks` we can convert our image to a
 `SpatialExperiment` object using the `measureObjects` function in
