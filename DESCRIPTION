@@ -35,7 +35,8 @@ Depends:
     BumpyMatrix,
     SpatialExperiment,
     ggsurvfit,
-    reshape
+    reshape,
+    glmnet
 Suggests: 
     knitr,
     rmarkdown,
