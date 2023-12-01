@@ -118,6 +118,17 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseSOM","glmnet", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
 ```
 
+
+## Download datasets
+
+Please download these datasets before you start the workshop
+```{r}
+#Download data now
+spe <- STexampleData::seqFISH_mouseEmbryo()
+kerenSPE = SpatialDatasets::spe_Keren_2018() 
+```
+
+
 ## Load packages
 
 ```{r library, warning=FALSE, message=FALSE}
@@ -158,6 +169,7 @@ nCores <- 8  # Feel free to parallelise things if you have the cores to spare.
 BPPARAM <- simpleSeg:::generateBPParam(nCores)
 source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
+
 ```
 
 ## The data
@@ -528,14 +540,20 @@ masks <- simpleSeg(
 )
 
 
+```
+
+### Is this segmentation appropriate?
+
+One way to assess if segmentation is appropriate is to look. We now know two ways to do this.
+
+```{r}
+
 # Visualise segmentation performance one way.
 masks[[1]] |> 
   EBImage::colorLabels() |> 
   EBImage::display()
-
 ```
 
-### Is this segmentation appropriate?
 
 The `plotPixels` function in `cytomapper` makes it easy to overlay the
 masks on top of the intensities of markers in the image. Here we can s
@@ -549,17 +567,17 @@ cytomapper::plotPixels(
   colour_by = c("CD45", "Pan-Keratin", "SMA", "dsDNA"),
   display = "single",
   colour = list(
-    CD45 = c("black", "blue"),
+    CD45 = c("black", "red"),
     `Pan-Keratin` = c("black", "yellow"),
     SMA = c("black", "green"),
-    dsDNA = c("black", "red")
+    dsDNA = c("black", "blue")
   ),
   # Adjust the brightness, contrast and gamma of each channel.
   bcg = list(
-    CD45 = c(0, 1, 0.5),
-    `Pan-Keratin` = c(0, 1, 0.5),
-    SMA = c(0, 1, 0.5),
-    dsDNA = c(0, 1, 0.8)
+    CD45 = c(0, 4, 1),
+    `Pan-Keratin` = c(0, 3, 1),
+    SMA = c(0, 2, 1),
+    dsDNA = c(0, 4, 1)
   ),
   legend = NULL
 )
@@ -592,9 +610,11 @@ cellSize[2:length(cellSize)] |>
 1.  Do our segmentations look better if other parameters are used?
     *Hint*: use the help function to see what other parameters are
     available in `simpleSeg`.
+    
+2.  We only have one image here, but how would you check the quality of 100 images?
 :::
 
-### How do I convert my image and mask to an object I can use in R?
+### Summarising images into cell features?
 
 With our segmentation `masks` we can convert our image to a
 `SpatialExperiment` object using the `measureObjects` function in
@@ -603,7 +623,7 @@ represent the cell as an x and y coordinate. In addition the average
 marker expression within each cell is summarised and stored in the
 assays object of the `SpatialExperiment`. *NOTE:* If you are using other
 segmentation tools or softwares, you can import the masks as tiffs into
-R and use `measureObjects` to create a `SingleCellExperiment`.
+R and use `measureObjects` to create a `SpatialExperiment`.
 
 ```{r measureObjects}
 # Summarise the expression of each marker in each cell
@@ -623,7 +643,10 @@ cells
 
 ## Feature normalisation
 
-### How do I make sure my image marker intensities are consistent across images?
+### Are the intensities of markers consistent across images?
+
+Now we know where cells are, that is their x-y coordinate, and the average 
+expression of various markers within each cell.
 
 Before moving onto annotating the cell types, we should check if the
 marker intensities of each cell require any transformation or
@@ -653,6 +676,8 @@ first PC. This modified data is then stored in the `normIntensities`
 assay. We can see that the distribution of CD45 looks much less skewed
 than before.
 
+
+
 ```{r kerenNormalise}
 kerenSPE <- normalizeCells(
   cells = kerenSPE,
@@ -668,7 +693,7 @@ normProteinIntensities = kerenSPE |>
   join_features(features = rownames(kerenSPE), shape = "wide", assay = "normIntensities")
 
 
-ggplot(normProteinIntensities, aes(x = CD45, colour = imageID)) +
+ggplot(normProteinIntensities, aes(x = CD3, colour = imageID)) +
   geom_density() +
   theme(legend.position = "none")
 ```
@@ -749,6 +774,7 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(x = "Cell types in data", y = "Our clusters")
 ```
+
 
 #### How do I determine an appropriate number of clusters?
 
