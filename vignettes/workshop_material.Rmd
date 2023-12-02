@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 }
 </style>
 ```
-Farhan Ameen$^{1,2,3}$, Shila Ghazanfar$^{2,3}$, Ellis
+Farhan Ameen$^{1,2,3}$, Alex Qin$^{1,2,3}$, Nick Robertson$^{1,2,3}$, Shila Ghazanfar$^{2,3}$, Ellis
 Patrick$^{1,2,3}$.
 
 $^1$ Westmead Institute for Medical Research, University of Sydney,
@@ -213,7 +213,7 @@ of a `SpatialExperiment` object, where summarized information from an
 imaging dataset can be compiled and accessed with relative ease.
 
 ```{r seqFISHData}
-spe <- STexampleData::seqFISH_mouseEmbryo()
+#spe <- STexampleData::seqFISH_mouseEmbryo()
 spe
 ```
 
@@ -314,7 +314,7 @@ cancer data from Keren et al. into a `SpatialExperiment` object.
 
 ```{r kerenData}
 # Load in Keren et al. data.
-kerenSPE = SpatialDatasets::spe_Keren_2018() 
+#kerenSPE = SpatialDatasets::spe_Keren_2018() 
 
 # Remove cold tumour types and patients with missing survival data.
 kerenSPE = kerenSPE |> 
@@ -405,7 +405,7 @@ channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD1
 ### Visualise an image
 
 We can visualise this image to see what we have read in. Lets highlight
-4 markers.\
+4 markers.
 
 ```{r plotImage}
 # Visualise segmentation performance another way.
@@ -677,7 +677,6 @@ assay. We can see that the distribution of CD45 looks much less skewed
 than before.
 
 
-
 ```{r kerenNormalise}
 kerenSPE <- normalizeCells(
   cells = kerenSPE,
@@ -712,7 +711,7 @@ ggplot(normProteinIntensities, aes(x = CD3, colour = imageID)) +
 
 ## Cell type annotation
 
-### Cell type clustering
+### Can we use a clustering approach to identify cell types?
 
 #### Clustering cell types
 
@@ -736,7 +735,7 @@ kerenSPE <- runFuseSOM(
 
 ```
 
-#### Cluster Interpretation
+#### How do I interpret my clusters?
 
 We can begin the process of understanding what each of these cell
 clusters are by using the `plotGroupedHeatmap` function from `scater`.
@@ -776,7 +775,7 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
 ```
 
 
-#### How do I determine an appropriate number of clusters?
+#### What is an appropriate number of clusters?
 
 Great question! There is no right answer here, however there are several
 statistics which can be used to estimate the "true" number of clusters.
@@ -825,7 +824,7 @@ scater::plotReducedDim(
 # Answer question here.
 ```
 
-### Cell type classification
+### What if I don't have an expert to annotate my cell types?
 
 Cell type clustering may difficult without the aid of domain experts who
 know how many cell types to expect and are able to annotate the
@@ -833,20 +832,91 @@ clusters. Cell type classification is an alternative approach to
 clustering which annotates cell types based on an expert labeled
 reference dataset.
 
-*TO FILL* - Need a reference dataset with similar markers to keren: [1]
-"Na" "Si" "P" "Ca" "Fe" "dsDNA"\
-[7] "Vimentin" "SMA" "Background" "B7H3" "FoxP3" "Lag3"\
-[13] "CD4" "CD16" "CD56" "OX40" "PD1" "CD31"\
-[19] "PD.L1" "EGFR" "Ki67" "CD209" "CD11c" "CD138"\
-[25] "CD163" "CD68" "CSF.1R" "CD8" "CD3" "IDO"\
-[31] "Keratin17" "CD63" "CD45RO" "CD20" "p53" "Beta.catenin" [37]
-"HLA.DR" "CD11b" "CD45" "H3K9ac" "Pan.Keratin" "H3K27me3"\
-[43] "phospho.S6" "MPO" "Keratin6" "HLA_Class_1" "Ta" "Au"
+To do so we will use `scClassify`. Below we will use the intensities an cell type annotations from the `kerenSPE` dataset to predict the cell types in image 5.
+
+```{r scClassify_data}
+# Splitting data to train and test sets
+kerenSPE_train = kerenSPE |> 
+  filter(imageID != 5)
+
+kerenSPE_test = kerenSPE |> 
+  filter(imageID == 5 )
+
+
+# Converting intensities to dgCMatrix
+train_intensities = assay(kerenSPE_train, "intensities") |>  
+  as.matrix() |> 
+  as( "dgCMatrix")
+
+
+test_intensities = assay(kerenSPE_test, "intensities") |>  
+  as.matrix() |> 
+  as( "dgCMatrix")
+```
+
+
+`scClassify` first constructs a cell type tree from the training dataset, where cells are organised in a hierarchy with increasingly fined tuned annotations, here we use the `HOPACH` method to construct this tree. This tree is constructed using the proteins which are differentially expressed between one cell type to all the other cells, identified using `limma`. To annotate the cells in the unlabeled dataset, the unlabeled cells are projected into a lower dimensional space and a weighted KNN (`WKNN`) is used to classify unlabeled cells to their closest neighbours using `pearson` correlation as the distance metric. 
+
+```{r scClassify, eval = FALSE}
+scClassifyResults = scClassify(exprsMat_train = train_intensities, 
+                            cellTypes_train = kerenSPE_train$cellType,
+                            exprsMat_test = list(keren5 = test_intensities),
+                            tree = "HOPACH",
+                            algorithm = "WKNN",
+                            selectFeatures = c("limma"),
+                            similarity = c("pearson"),
+                            returnList = FALSE,
+                            verbose = FALSE,
+                            BPPARAM = BPPARAM)
+```
+
+To save time we have preloaded in the `scClassify` results, below we can view the hierarchical tree constructed by `scClassify`. 
+
+
+```{r loadscClassify}
+load(system.file("extdata", "scClassifyResults.rda", package = "ScdneySpatial"))
+
+
+plotCellTypeTree(cellTypeTree(scClassifyResults$trainRes))
+
+```
+
+
+Having a look at some of the predictions, we can observe some cells belonging to multiple cell types. These represent cells which are classified as parent populations in the hierarchical tree. Here we clean up the names to make plotting easier. We can compare our original labels to our classified labels to get a sense of how concordant our predictions are. As you can see, around 68% of the cell types have identical labels between the original and classified cell types. 
+
+
+```{r viewingCells}
+
+classifiedCellTypes = scClassifyResults$testRes$keren5$pearson_WKNN_limma$predRes
+
+table(classifiedCellTypes)
+
+newCellTypes = case_when(
+  classifiedCellTypes == "Keratin_Tumour_Unidentified_Other_Immune_Endothelial_Mesenchymal_Tumour" ~ "Tumour_parent",
+  classifiedCellTypes == "Other_Immune_Endothelial_Mesenchymal" ~ "Structural_parent",
+  classifiedCellTypes == "Macrophages_Mono_or_Neu" ~ "Monocyte_subparent",
+  classifiedCellTypes == "DC_or_Mono_Macrophages_Mono_or_Neu" ~ "Monocyte_parent",
+  classifiedCellTypes == "dn_T_CD3_B_cell_CD4_T_cell_DC_or_Mono_Macrophages_CD8_T_cell_Mono_or_Neu_Neutrophils_NK_DC_Tregs" ~ "Immune_parent",
+  classifiedCellTypes == "dn_T_CD3_CD4_T_cell_CD8_T_cell" ~ "Tcell_parent",
+  classifiedCellTypes == "Endothelial_Mesenchymal" ~ "Structural_parent",
+  classifiedCellTypes == "dn_T_CD3_B_cell_CD4_T_cell_CD8_T_cell" ~ "Lymphocytes_parent",
+  TRUE ~ classifiedCellTypes
+)
+
+kerenSPE_test$classifiedCellTypes = newCellTypes
+
+
+(kerenSPE_test$cellType == kerenSPE_test$classifiedCellTypes) |> 
+  mean()
+
+```
+
+
 
 ### Viewing images
 
 We can look at the distribution of cells in an image. Here we compare
-our clusters to the cell types in the dataset.
+our clusters and classified cell types to the cell types in the dataset.
 
 ```{r viewClustering}
 reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
@@ -857,15 +927,36 @@ kerenSPE |>
   ggtitle("Our clusters")
 
 
+reducedDim(kerenSPE_test, "spatialCoords") = spatialCoords(kerenSPE_test)
+
+kerenSPE_test |> 
+  plotReducedDim("spatialCoords", colour_by = "classifiedCellTypes") 
+  
 kerenSPE |> 
   filter(imageID == "5") |> 
   plotReducedDim("spatialCoords", colour_by = "cellType") +
-  ggtitle("Dataset clusters")
+  ggtitle("Original cell types")
 
 
+
+# Comparing orignal cell types to clustering and classification cell types. 
 regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Original vs Clustered")
+
+
+
+regionMap(kerenSPE_test, cellType = "classifiedCellTypes", region = "cellType") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Original vs Classified")
 ```
+::: question
+**Questions**
+
+1.  Discuss amongst your peers, why might there be differences between the clusters, the classified cell types and the original cell type labels in the dataset?
+:::
+
+
 
 ## Analytical techniques
 
