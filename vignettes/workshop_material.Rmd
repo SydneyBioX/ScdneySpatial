@@ -1,9 +1,9 @@
 ---
 title: "Unlocking single cell spatial omics analyses with scdney"
 output:
-  #rmarkdown::html_vignette
-  rmarkdown::html_document:
+ rmarkdown::html_document:
     toc: true
+    self_contained: true
 vignette: >
   %\VignetteIndexEntry{Unlocking single cell spatial omics analyses with scdney}
   %\VignetteEncoding{UTF-8}
@@ -13,14 +13,15 @@ editor_options:
     wrap: 72
 ---
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   #collapse = TRUE,
+  eval = FALSE,
   comment = "#>",
   cache = FALSE,
   message = FALSE,
   warning = FALSE
-  #eval = FALSE
 )
 ```
 

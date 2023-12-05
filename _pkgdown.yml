@@ -1,9 +1,10 @@
 url: https://sydneybiox.github.io/ScdneySpatial/
 
 template:
-  params:
-    bootswatch: flatly
-    #ganalytics: UA-99999999-9
+  bootstrap: 5
+  # params:
+  #   bootswatch: flatly
+  #   #ganalytics: UA-99999999-9
 
 home:
   title: "ScdneySpatial"
