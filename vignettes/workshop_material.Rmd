@@ -34,10 +34,10 @@ knitr::opts_chunk$set(
 }
 </style>
 ```
+**Presenting Authors**
 
-*Presenting Authors*
-
-Farhan Ameen$^{1,2,3}$, Alex Qin$^{1,2,3}$, Nick Robertson$^{1,2,3}$, Ellis Patrick$^{1,2,3}$.
+Farhan Ameen$^{1,2,3}$, Alex Qin$^{1,2,3}$, Nick Robertson$^{1,2,3}$,
+Ellis Patrick$^{1,2,3}$.
 
 $^1$ Westmead Institute for Medical Research, University of Sydney,
 Australia\
@@ -126,16 +126,15 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseSOM","glmnet", "spicyR", "lisaClust","Statial", "scFeatures", "ClassifyR", "tidyverse", "scater", "SingleCellExperiment", "STexampleData", "SpatialDatasets", "tidySingleCellExperiment", "scuttle", "batchelor"))
 ```
 
-
 ### Download datasets
 
 Please download these datasets before you start the workshop
+
 ```{r}
 #Download data now
 spe <- STexampleData::seqFISH_mouseEmbryo()
 kerenSPE = SpatialDatasets::spe_Keren_2018() 
 ```
-
 
 ### Load packages
 
@@ -179,7 +178,6 @@ source(system.file("extdata", "celltype_colours.R", package = "ScdneySpatial"))
 options("restore_SingleCellExperiment_show" = TRUE)
 
 ```
-
 
 ## Module 1: Data exploration {.tabset}
 
@@ -307,7 +305,6 @@ g_all
 
 ```
 
-
 ### Spatial proteomics - MIBI-TOF breast cancer
 
 As part of scdney package infrastructure, we provide several
@@ -405,11 +402,9 @@ channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD1
 3.  Challenge: What is the dimension of the image5 image?
 :::
 
-
 ```{r image5-Q}
 # Answer questions here
 ```
-
 
 ### How do I visualise my images?
 
@@ -553,7 +548,8 @@ masks <- simpleSeg(
 
 ### Is this segmentation appropriate?
 
-One way to assess if segmentation is appropriate is to look. We now know two ways to do this.
+One way to assess if segmentation is appropriate is to look. We now know
+two ways to do this.
 
 ```{r}
 
@@ -562,7 +558,6 @@ masks[[1]] |>
   EBImage::colorLabels() |> 
   EBImage::display()
 ```
-
 
 The `plotPixels` function in `cytomapper` makes it easy to overlay the
 masks on top of the intensities of markers in the image. Here we can s
@@ -619,8 +614,9 @@ cellSize[2:length(cellSize)] |>
 1.  Do our segmentations look better if other parameters are used?
     *Hint*: use the help function to see what other parameters are
     available in `simpleSeg`.
-    
-2.  We only have one image here, but how would you check the quality of 100 images?
+
+2.  We only have one image here, but how would you check the quality of
+    100 images?
 :::
 
 ### Im happy with my segmentation, how do I create an `SPE` object?
@@ -671,7 +667,6 @@ ggplot(proteinIntensities, aes(x = CD45, colour = imageID)) +
   theme(legend.position = "none")
 ```
 
-
 ### How can I transform and normalise my data?
 
 We can transform and normalise our data using the `normalizeCells`
@@ -682,7 +677,6 @@ we have performed principle component analysis, and regressed out the
 first PC. This modified data is then stored in the `normIntensities`
 assay. We can see that the distribution of CD45 looks much less skewed
 than before.
-
 
 ```{r kerenNormalise}
 kerenSPE <- normalizeCells(
@@ -709,8 +703,9 @@ ggplot(normProteinIntensities, aes(x = CD3, colour = imageID)) +
 1.  CD3 is a marker which characterises T cells, plot the distribution
     of CD3. What does it look like? What does this tell us about T cells
     in our dataset.
-    
-2. If we set `cellType == "CD4_T_cell"` is this concordant with the conclusion you made in question 1. 
+
+2.  If we set `cellType == "CD4_T_cell"` is this concordant with the
+    conclusion you made in question 1.
 :::
 
 ```{r normaliseQ1}
@@ -780,7 +775,6 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
   labs(x = "Cell types in data", y = "Our clusters")
 ```
 
-
 ### What is an appropriate number of clusters?
 
 Great question! There is no right answer here, however there are several
@@ -838,7 +832,9 @@ clusters. Cell type classification is an alternative approach to
 clustering which annotates cell types based on an expert labeled
 reference dataset.
 
-To do so we will use `scClassify`. Below we will use the intensities an cell type annotations from the `kerenSPE` dataset to predict the cell types in image 5.
+To do so we will use `scClassify`. Below we will use the intensities an
+cell type annotations from the `kerenSPE` dataset to predict the cell
+types in image 5.
 
 ```{r scClassify_data}
 # Splitting data to train and test sets
@@ -860,8 +856,16 @@ test_intensities = assay(kerenSPE_test, "intensities") |>
   as( "dgCMatrix")
 ```
 
-
-`scClassify` first constructs a cell type tree from the training dataset, where cells are organised in a hierarchy with increasingly fined tuned annotations, here we use the `HOPACH` method to construct this tree. This tree is constructed using the proteins which are differentially expressed between one cell type to all the other cells, identified using `limma`. To annotate the cells in the unlabeled dataset, the unlabeled cells are projected into a lower dimensional space and a weighted KNN (`WKNN`) is used to classify unlabeled cells to their closest neighbours using `pearson` correlation as the distance metric. 
+`scClassify` first constructs a cell type tree from the training
+dataset, where cells are organised in a hierarchy with increasingly
+fined tuned annotations, here we use the `HOPACH` method to construct
+this tree. This tree is constructed using the proteins which are
+differentially expressed between one cell type to all the other cells,
+identified using `limma`. To annotate the cells in the unlabeled
+dataset, the unlabeled cells are projected into a lower dimensional
+space and a weighted KNN (`WKNN`) is used to classify unlabeled cells to
+their closest neighbours using `pearson` correlation as the distance
+metric.
 
 ```{r scClassify, eval = FALSE}
 scClassifyResults = scClassify(exprsMat_train = train_intensities, 
@@ -876,8 +880,8 @@ scClassifyResults = scClassify(exprsMat_train = train_intensities,
                             BPPARAM = BPPARAM)
 ```
 
-To save time we have preloaded in the `scClassify` results, below we can view the hierarchical tree constructed by `scClassify`. 
-
+To save time we have preloaded in the `scClassify` results, below we can
+view the hierarchical tree constructed by `scClassify`.
 
 ```{r loadscClassify}
 load(system.file("extdata", "scClassifyResults.rda", package = "ScdneySpatial"))
@@ -887,9 +891,13 @@ plotCellTypeTree(cellTypeTree(scClassifyResults$trainRes))
 
 ```
 
-
-Having a look at some of the predictions, we can observe some cells belonging to multiple cell types. These represent cells which are classified as parent populations in the hierarchical tree. Here we clean up the names to make plotting easier. We can compare our original labels to our classified labels to get a sense of how concordant our predictions are. As you can see, around 68% of the cell types have identical labels between the original and classified cell types. 
-
+Having a look at some of the predictions, we can observe some cells
+belonging to multiple cell types. These represent cells which are
+classified as parent populations in the hierarchical tree. Here we clean
+up the names to make plotting easier. We can compare our original labels
+to our classified labels to get a sense of how concordant our
+predictions are. As you can see, around 68% of the cell types have
+identical labels between the original and classified cell types.
 
 ```{r viewingCells}
 
@@ -916,7 +924,6 @@ kerenSPE_test$classifiedCellTypes = newCellTypes
   mean()
 
 ```
-
 
 ### Viewing images
 
@@ -956,20 +963,20 @@ regionMap(kerenSPE_test, cellType = "classifiedCellTypes", region = "cellType") 
   ggtitle("Original vs Classified")
 ```
 
-
 ::: question
 **Questions**
 
-1.  Discuss amongst your peers, why might there be differences between the clusters, the classified cell types and the original cell type labels in the dataset?
+1.  Discuss amongst your peers, why might there be differences between
+    the clusters, the classified cell types and the original cell type
+    labels in the dataset?
 :::
-
-
 
 ## Module 5: Single sample analysis {.tabset}
 
-In this module we focus on examining gene expression patterns in a single image, from the SeqFISH mouse embryo dataset. 
+In this module we focus on examining gene expression patterns in a
+single image, from the SeqFISH mouse embryo dataset.
 
-### Are there genes which change expression across space? 
+### Are there genes which change expression across space?
 
 Here we will ask which gene patterns we observe to be changing across
 the `spe$gutRegion` cell type in space. Note that we want to assess the
@@ -1170,11 +1177,12 @@ development of individual parts of the gut tube.
 
 ```
 
-
-
 ## Module 6: Multi-sample analysis
 
-The following module will examine how we can extract different spatial and molecular features from multi-sample datasets. These features can be used to extract some biological understanding. Here we use the MIBI-TOF breast cancer dataset. 
+The following module will examine how we can extract different spatial
+and molecular features from multi-sample datasets. These features can be
+used to extract some biological understanding. Here we use the MIBI-TOF
+breast cancer dataset.
 
 ### Can I measure if two cell types are co-localised? {.tabset}
 
@@ -1197,8 +1205,8 @@ function defines their spatial localisation.
 
 #### Cell type hierarchy
 
-A key input for `Kontextual` is an annotation of cell type hierarchies. We
-will need these to organise all the cells present into cell state
+A key input for `Kontextual` is an annotation of cell type hierarchies.
+We will need these to organise all the cells present into cell state
 populations or clusters, e.g. all the different B cell types are put in
 a vector called `bcells.`
 
@@ -1428,23 +1436,24 @@ head(survivalResults)
 
 ```
 
-As we can see from the results `CD8_T_cell__Keratin_Tumour__immune` is the
-most significant pairwise relationship which contributes to patient
-survival. That is the relationship between CD8 T cells and
-Keratin+ Tumour cells, relative to the parent population of all immune cells.
-We can see that there is a negative coefficient associated with this
+As we can see from the results `CD8_T_cell__Keratin_Tumour__immune` is
+the most significant pairwise relationship which contributes to patient
+survival. That is the relationship between CD8 T cells and Keratin+
+Tumour cells, relative to the parent population of all immune cells. We
+can see that there is a negative coefficient associated with this
 relationship, which tells us a decrease in localisation of CD8_T_cell
 and Keratin+ Tumour leads to poorer survival outcomes for patients.
 
-We can visualise this association sing a Kaplan-Meier curve. We must first extract
-the Kontextual values of this relationship across all images. Next we
-determine if CD8 T cells and Keratin+ Tumours are relatively attracted or
-avoiding in each image, by comparing the Kontextual value in each image
-to the median Kontextual value. Finally we plot the Kaplan-Meier curve
-using the `ggsurvfit` package.
+We can visualise this association sing a Kaplan-Meier curve. We must
+first extract the Kontextual values of this relationship across all
+images. Next we determine if CD8 T cells and Keratin+ Tumours are
+relatively attracted or avoiding in each image, by comparing the
+Kontextual value in each image to the median Kontextual value. Finally
+we plot the Kaplan-Meier curve using the `ggsurvfit` package.
 
-As shown below, when CD8 T cells and Keratin+ Tumours are relatively more
-dispersed to one another, patients tend to have worse survival outcomes.
+As shown below, when CD8 T cells and Keratin+ Tumours are relatively
+more dispersed to one another, patients tend to have worse survival
+outcomes.
 
 ```{r kontextSurvPlot, fig.width=5, fig.height=4}
 # Selecting most significant relationship
@@ -1814,10 +1823,13 @@ head(survivalResults)
     distance and abundance?
 :::
 
-For our state changes results,
-`Macrophages__CD4_T_cell__CD138` is the most significant
-pairwise relationship which contributes to patient survival. That is,
-the relationship between CD138 expression in macrophages as their spatial proximity to CD4 T cells change. The positive coeffcient associated with this relationship tells us that lower CD138 expression in macrophages nearby CD4 T cells lead to poorer survival outcomes for patients.
+For our state changes results, `Macrophages__CD4_T_cell__CD138` is the
+most significant pairwise relationship which contributes to patient
+survival. That is, the relationship between CD138 expression in
+macrophages as their spatial proximity to CD4 T cells change. The
+positive coeffcient associated with this relationship tells us that
+lower CD138 expression in macrophages nearby CD4 T cells lead to poorer
+survival outcomes for patients.
 
 ```{r spatiomarkSurvPlot, fig.width=5, fig.height=4}
 # Selecting the most significant relationship
@@ -1937,12 +1949,13 @@ ggplot(feature , aes(x = patient , y = value , fill = variable)) +
 
 ```
 
-### Can I identify molecular signatures for localised lesion or tumour regions in my data?  {.tabset}
+### Can I identify molecular signatures for localised lesion or tumour regions in my data? {.tabset}
 
-We can cluster areas with similar spatial interactions to identify regions using the `lisaClust` package on Bioconductor. Here we set `k = 5` to identify 5 regions. For the Keren et al. dataset, we're effectively aiming to separate out 3 regions:
--   Non-tumour regions
--   Tumour regions
--   Tumour-immune interaction regions.
+We can cluster areas with similar spatial interactions to identify
+regions using the `lisaClust` package on Bioconductor. Here we set
+`k = 5` to identify 5 regions. For the Keren et al. dataset, we're
+effectively aiming to separate out 3 regions: - Non-tumour regions -
+Tumour regions - Tumour-immune interaction regions.
 
 ```{r}
 set.seed(51773)
@@ -1951,7 +1964,10 @@ set.seed(51773)
 kerenSPE <- lisaClust::lisaClust(kerenSPE, k = 5)
 
 ```
-So what are some ways I can check that my region clustering has worked effectively? One way we can do this is to use the `hatchingPlot` function to visualise the regions identified by lisaClust.
+
+So what are some ways I can check that my region clustering has worked
+effectively? One way we can do this is to use the `hatchingPlot`
+function to visualise the regions identified by lisaClust.
 
 ```{r, fig.height=5, fig.width=6.5}
 # Use hatching to visualise regions and cell types.
@@ -1963,9 +1979,13 @@ lisaClust::hatchingPlot(kerenSPE,
 
 ```
 
-We can appreciate that the regions have separated out nicely for image 5, with region 1 clearly being a tumour region, region 5 a non-tumour region, and region 3 being the tumour-immune interaction region.
+We can appreciate that the regions have separated out nicely for image
+5, with region 1 clearly being a tumour region, region 5 a non-tumour
+region, and region 3 being the tumour-immune interaction region.
 
-We can also use the `regionMap` function to get a more quantitative determination of what each region represents, to look at which cell types are encountered in which regions.
+We can also use the `regionMap` function to get a more quantitative
+determination of what each region represents, to look at which cell
+types are encountered in which regions.
 
 ```{r}
 regionMap(kerenSPE)
@@ -1973,7 +1993,10 @@ regionMap(kerenSPE)
 
 ### Changes in marker means
 
-`Statial` provides functionality to identify the average marker expression of a given cell type in a given region, using the `getMarkerMeans` function. Similar to the analysis above, these features can also be used for survival analysis.
+`Statial` provides functionality to identify the average marker
+expression of a given cell type in a given region, using the
+`getMarkerMeans` function. Similar to the analysis above, these features
+can also be used for survival analysis.
 
 ```{r lisaClust}
 
@@ -1992,8 +2015,10 @@ head(survivalResults)
 
 Finally we demonstrate how we can use the Bioconductor package
 `ClassifyR` to perform patient classification with the features
-generated from `Statial` and `scFeatures`. In addition to this, we also calculate cell type proportions and region proportions using the `getProp` function in `spicyR`. Here we perform 5 fold cross validation with 20 repeats, using a CoxPH model for survival
-classification.
+generated from `Statial` and `scFeatures`. In addition to this, we also
+calculate cell type proportions and region proportions using the
+`getProp` function in `spicyR`. Here we perform 5 fold cross validation
+with 20 repeats, using a CoxPH model for survival classification.
 
 To prepare our metrics for classification, first we must convert our
 dataframes into matrix format. This can be accomplished, as we did
@@ -2002,8 +2027,8 @@ matrices for `Kontextual` and the distance metric of `SpatioMark`
 earlier, we will now be generating matrices for the `SpatioMark`
 corrected distance metric, and the abundance metrics.
 
-We can also prepare a metric for region proportions, to look at whether 
-the percentage of area each region occupies in an image is capable of 
+We can also prepare a metric for region proportions, to look at whether
+the percentage of area each region occupies in an image is capable of
 predicting survival.
 
 ```{r prep-matrices}
@@ -2081,9 +2106,11 @@ kerenCV = crossValidate(
   nCores = nCores
 )
 ```
+
 ```{r}
 load(system.file("extdata", "featureList.rda", package = "ScdneySpatial"))
 ```
+
 ```{r}
 load(system.file("extdata", "kerenCV.rda", package = "ScdneySpatial"))
 ```
@@ -2135,6 +2162,7 @@ better performance in select spatial metrics.
 ```{r}
 load(system.file("extdata", "recurrenceCV.rda", package = "ScdneySpatial"))
 ```
+
 ```{r perfPlot-recurrence}
 performancePlot(kerenCV_recurrence,
   characteristicsList = list(x = "Assay Name"),
@@ -2145,12 +2173,13 @@ performancePlot(kerenCV_recurrence,
   geom_rect(aes(xmin = 7.5, xmax = 16.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
   geom_rect(aes(xmin = 16.5, xmax = 21, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
+
 ::: question
 **Questions**
 
-1.  Discuss among your table why spatial metrics might perform better for recurrence compared to survival.
+1.  Discuss among your table why spatial metrics might perform better
+    for recurrence compared to survival.
 :::
-
 
 ```{r sessionInfo}
 sessionInfo()

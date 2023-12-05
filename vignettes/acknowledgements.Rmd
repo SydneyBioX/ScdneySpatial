@@ -1,0 +1,27 @@
+---
+title: "Acknowledgement"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{Acknowledgement}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+
+The workshop is developed/adviced from the following members of the Sydney Precision Data Science Center (in alphabetical order):
+
+- Ms. Yue Cao
+- Dr. Shila Ghazanfar
+- Ms. Hani Kim
+- Mr. Taiyun Kim
+- Ms. Yingxin Lin
+- Dr. Kitty Lo
+- Mr. Andy Tran
+- Mr. Kevin Wang
+- Prof. Jean Yang
+- Dr. Pengyi Yang
+
+

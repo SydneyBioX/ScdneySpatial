@@ -33,7 +33,7 @@ The expected timing of the workshop:
 -   Understand and visualise spatial omics datasets.
 -   Identify key biological questions that can be addressed with these technologies and spatial analysis.
 -   Understand the key analytical steps involved in spatial omics analysis, and perform these steps using R.
--   Evaluate the performance of data normalisation and cell segmentation.\
+-   Evaluate the performance of data normalisation and cell segmentation.
 -   Understand and generate individual feature representations from spatial omics data.
 -   Develop appreciation on how to assess performance of classification models.
 -   Perform disease outcome prediction using the feature representation and robust classification framework.
