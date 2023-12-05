@@ -17,7 +17,7 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   #collapse = TRUE,
-  eval = FALSE,
+  #eval = FALSE,
   comment = "#>",
   cache = FALSE,
   message = FALSE,
@@ -49,7 +49,7 @@ Australia
 
 <br/> Contact: ellis.patrick\@sydney.edu.au
 
-# Overview
+## Overview
 
 Understanding the interplay between different types of cells and their
 immediate environment is critical for understanding the mechanisms of
@@ -113,7 +113,7 @@ more information visit: <https://sydneybiox.github.io/scdney/>.
 -   Perform disease outcome prediction using the feature representation
     and robust classification framework.
 
-# Workshop
+## Workshop
 
 ## Setup
 
