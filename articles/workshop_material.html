@@ -96,16 +96,17 @@ with scdney</h1>
   border-radius: 10px;
 }
 </style>
+<p><em>Presenting Authors</em></p>
 <p>Farhan Ameen<span class="math inline">\(^{1,2,3}\)</span>, Alex
-Qin<span class="math inline">\(^{1,2,3}\)</span>, Nick Robertson<span class="math inline">\(^{1,2,3}\)</span>, Shila Ghazanfar<span class="math inline">\(^{2,3}\)</span>, Ellis Patrick<span class="math inline">\(^{1,2,3}\)</span>.</p>
+Qin<span class="math inline">\(^{1,2,3}\)</span>, Nick Robertson<span class="math inline">\(^{1,2,3}\)</span>, Ellis Patrick<span class="math inline">\(^{1,2,3}\)</span>.</p>
 <p><span class="math inline">\(^1\)</span> Westmead Institute for
 Medical Research, University of Sydney, Australia<br><span class="math inline">\(^2\)</span> Sydney Precision Data Science
 Centre, University of Sydney, Australia<br><span class="math inline">\(^3\)</span> School of Mathematics and
 Statistics, University of Sydney, Australia</p>
 <p><br> Contact: ellis.patrick@sydney.edu.au</p>
-<div class="section level3">
-<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h3>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>Understanding the interplay between different types of cells and
 their immediate environment is critical for understanding the mechanisms
 of cells themselves and their function in the context of human diseases.
@@ -199,8 +200,11 @@ and robust classification framework.</li>
 <h2 id="workshop">Workshop<a class="anchor" aria-label="anchor" href="#workshop"></a>
 </h2>
 <div class="section level3">
-<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h3>
+<div class="section level4">
+<h4 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
@@ -208,18 +212,18 @@ and robust classification framework.</li>
 <span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="st">"simpleSeg"</span>, <span class="st">"cytomapper"</span>, <span class="st">"scClassify"</span>, <span class="st">"scHOT"</span>, <span class="st">"FuseSOM"</span>,<span class="st">"glmnet"</span>, <span class="st">"spicyR"</span>, <span class="st">"lisaClust"</span>,<span class="st">"Statial"</span>, <span class="st">"scFeatures"</span>, <span class="st">"ClassifyR"</span>, <span class="st">"tidyverse"</span>, <span class="st">"scater"</span>, <span class="st">"SingleCellExperiment"</span>, <span class="st">"STexampleData"</span>, <span class="st">"SpatialDatasets"</span>, <span class="st">"tidySingleCellExperiment"</span>, <span class="st">"scuttle"</span>, <span class="st">"batchelor"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="download-datasets">Download datasets<a class="anchor" aria-label="anchor" href="#download-datasets"></a>
-</h3>
+<div class="section level4">
+<h4 id="download-datasets">Download datasets<a class="anchor" aria-label="anchor" href="#download-datasets"></a>
+</h4>
 <p>Please download these datasets before you start the workshop</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Download data now</span></span>
 <span><span class="va">spe</span> <span class="op">&lt;-</span> <span class="fu">STexampleData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/STexampleData/man/STexampleData.html" class="external-link">seqFISH_mouseEmbryo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">kerenSPE</span> <span class="op">=</span> <span class="fu">SpatialDatasets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SpatialDatasets/man/SpatialDatasets.html" class="external-link">spe_Keren_2018</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="load-packages">Load packages<a class="anchor" aria-label="anchor" href="#load-packages"></a>
-</h3>
+<div class="section level4">
+<h4 id="load-packages">Load packages<a class="anchor" aria-label="anchor" href="#load-packages"></a>
+</h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># library(ScdneySpatial)</span></span>
 <span></span>
@@ -258,8 +262,9 @@ and robust classification framework.</li>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"celltype_colours.R"</span>, package <span class="op">=</span> <span class="st">"ScdneySpatial"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"restore_SingleCellExperiment_show"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level3">
-<h3 id="the-data">The data<a class="anchor" aria-label="anchor" href="#the-data"></a>
+<h3 class="tabset" id="module-1-data-exploration">Module 1: Data exploration<a class="anchor" aria-label="anchor" href="#module-1-data-exploration"></a>
 </h3>
 <p>In this workshop, we will be working with two datasets to explore how
 biological phenotypes, cellular interactions, and patterns of gene
@@ -282,20 +287,16 @@ use a subset of data that is made available from the STExampleData
 package. The primary question we will address with this dataset is if we
 can identify key transcriptomic drivers of the developing brain?</li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="data-visualisation-and-exploration">Data visualisation and exploration<a class="anchor" aria-label="anchor" href="#data-visualisation-and-exploration"></a>
-</h3>
 <p>The purpose of the this section is primarily to introduce the
 <code>SpatialExperiment</code> class which is used to store information
 from the imaging experiments in R. The goal will be to get comfortable
 enough manipulating and exploring these objects so that you can progress
 through the remainder of the workshop comfortably. Here we will download
-a dataset stored in the <code>STexampleData</code> R package , examine
+a dataset stored in the <code>STexampleData</code> R package, examine
 the structure, visualise the data and perform some exploratory
 analyses.</p>
 <div class="section level4">
-<h4 id="seqfish-mouse-embryo">SeqFISH mouse embryo<a class="anchor" aria-label="anchor" href="#seqfish-mouse-embryo"></a>
+<h4 id="spatial-transcriptomics---seqfish-mouse-embryo">Spatial transcriptomics - SeqFISH mouse embryo<a class="anchor" aria-label="anchor" href="#spatial-transcriptomics---seqfish-mouse-embryo"></a>
 </h4>
 <p>Here we download the seqFISH mouse embryo data. This comes in the
 format of a <code>SpatialExperiment</code> object, where summarized
@@ -397,13 +398,9 @@ plot with a tooltip that links the spatial and UMAP coordinate systems.
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># try to examine answer the above questions using the spe object. </span></span>
 <span><span class="co"># you may want to set up some small simulation..</span></span></code></pre></div>
-<p>At this point we will pause our examination of the seqFISH dataset
-that is in the object <code>spe</code>, and turn over to the second
-example dataset. In the second part we will revisit this data for
-performing <code>scHOT</code> testing.</p>
 </div>
 <div class="section level4">
-<h4 id="mibi-tof-breast-cancer">MIBI-TOF breast cancer<a class="anchor" aria-label="anchor" href="#mibi-tof-breast-cancer"></a>
+<h4 id="spatial-proteomics---mibi-tof-breast-cancer">Spatial proteomics - MIBI-TOF breast cancer<a class="anchor" aria-label="anchor" href="#spatial-proteomics---mibi-tof-breast-cancer"></a>
 </h4>
 <p>As part of scdney package infrastructure, we provide several
 pre-processed datasets which can be loaded in with the
@@ -473,10 +470,10 @@ us?</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="cell-segmentation-evaluation">Cell segmentation &amp; evaluation<a class="anchor" aria-label="anchor" href="#cell-segmentation-evaluation"></a>
+<h3 class="tabset" id="module-2-cell-segmentation">Module 2: Cell segmentation<a class="anchor" aria-label="anchor" href="#module-2-cell-segmentation"></a>
 </h3>
 <div class="section level4">
-<h4 id="reading-images">Reading images<a class="anchor" aria-label="anchor" href="#reading-images"></a>
+<h4 id="how-do-i-load-my-images-into-r">How do I load my images into R?<a class="anchor" aria-label="anchor" href="#how-do-i-load-my-images-into-r"></a>
 </h4>
 <p>To load in our images we use the <code>loadImages</code> function
 from <code>cytomapper</code>, here we use the patient 5 image from Keren
@@ -500,13 +497,15 @@ et al. as an example.</p>
 <li>Challenge: What is the dimension of the image5 image?</li>
 </ol>
 </div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Answer questions here</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="visualise-an-image">Visualise an image<a class="anchor" aria-label="anchor" href="#visualise-an-image"></a>
+<h4 id="how-do-i-visualise-my-images">How do I visualise my images?<a class="anchor" aria-label="anchor" href="#how-do-i-visualise-my-images"></a>
 </h4>
 <p>We can visualise this image to see what we have read in. Lets
 highlight 4 markers.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualise segmentation performance another way.</span></span>
 <span><span class="fu">cytomapper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cytomapper/man/plotPixels.html" class="external-link">plotPixels</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="va">image5</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -521,7 +520,7 @@ highlight 4 markers.</p>
 <p><img src="workshop_material_files/figure-html/plotImage-1.png" width="700"></p>
 <p>We can manipulate the brightness, contrast and gamma levels as
 follows. See if you can do a better job.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualise segmentation performance another way.</span></span>
 <span><span class="fu">cytomapper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cytomapper/man/plotPixels.html" class="external-link">plotPixels</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="va">image5</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -557,7 +556,7 @@ functionality that complements that which you’ve already learnt.</p>
 visualize the cells we overlay these images as the green and the blue
 channel of a false-color image. Notice, that with display you can
 zoom!</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nuc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/io.html" class="external-link">readImage</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'images'</span>, <span class="st">'nuclei.tif'</span>, package<span class="op">=</span><span class="st">'EBImage'</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">cel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/io.html" class="external-link">readImage</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'images'</span>, <span class="st">'cells.tif'</span>, package<span class="op">=</span><span class="st">'EBImage'</span><span class="op">)</span><span class="op">)</span>  </span>
 <span><span class="va">cells</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/channel.html" class="external-link">rgbImage</a></span><span class="op">(</span>green<span class="op">=</span><span class="fl">1.5</span><span class="op">*</span><span class="va">cel</span>, blue<span class="op">=</span><span class="va">nuc</span><span class="op">)</span> </span>
@@ -569,7 +568,7 @@ cells. First we create a nuclei mask which will threshold this channel
 to separate signal from noise and then clean this with some
 morphological operations. Then we identify single nuclei using
 <code>bwlabel</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nmask</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/thresh.html" class="external-link">thresh</a></span><span class="op">(</span><span class="va">nuc</span>, w<span class="op">=</span><span class="fl">10</span>, h<span class="op">=</span><span class="fl">10</span>, offset<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="va">nmask</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/morphology.html" class="external-link">opening</a></span><span class="op">(</span><span class="va">nmask</span>, <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/morphology.html" class="external-link">makeBrush</a></span><span class="op">(</span><span class="fl">5</span>, shape<span class="op">=</span><span class="st">'disc'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nmask</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/fillHull.html" class="external-link">fillHull</a></span><span class="op">(</span><span class="va">nmask</span><span class="op">)</span></span>
@@ -589,7 +588,7 @@ morphological operations. Then we identify single nuclei using
 </div>
 <p>Next, we use the segmented nuclei as seeds to perform Voronoi
 segmentation of the cytoplasm.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ctmask</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/morphology.html" class="external-link">opening</a></span><span class="op">(</span><span class="va">cel</span><span class="op">&gt;</span><span class="fl">0.1</span>, <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/morphology.html" class="external-link">makeBrush</a></span><span class="op">(</span><span class="fl">5</span>, shape<span class="op">=</span><span class="st">'disc'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cmask</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/propagate.html" class="external-link">propagate</a></span><span class="op">(</span><span class="va">cel</span>, seeds<span class="op">=</span><span class="va">nmask</span>, mask<span class="op">=</span><span class="va">ctmask</span><span class="op">)</span></span>
 <span></span>
@@ -597,7 +596,7 @@ segmentation of the cytoplasm.</p>
 <p><img src="workshop_material_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>We can then visualise our segmentations with
 <code>paintObjects</code>.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">segmented</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/paintObjects.html" class="external-link">paintObjects</a></span><span class="op">(</span><span class="va">cmask</span>, <span class="va">cells</span>, col<span class="op">=</span><span class="st">'#ff00ff'</span><span class="op">)</span></span>
 <span><span class="va">segmented</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/paintObjects.html" class="external-link">paintObjects</a></span><span class="op">(</span><span class="va">nmask</span>, <span class="va">segmented</span>, col<span class="op">=</span><span class="st">'#ffff00'</span><span class="op">)</span></span>
 <span></span>
@@ -617,7 +616,7 @@ channels be sqrt transformed, and the 99th quantile of values removed to
 ensure our segmentation is not affected by outliers.</p>
 <p>We can visualise the segmentations using the <code>display</code> and
 <code>colorLabels</code> functions in <code>EBImage</code>.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate segmentation masks</span></span>
 <span><span class="va">masks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/simpleSeg/reference/simpleSeg.html" class="external-link">simpleSeg</a></span><span class="op">(</span></span>
 <span>  <span class="va">image5</span>,</span>
@@ -635,7 +634,7 @@ ensure our segmentation is not affected by outliers.</p>
 </h4>
 <p>One way to assess if segmentation is appropriate is to look. We now
 know two ways to do this.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualise segmentation performance one way.</span></span>
 <span><span class="va">masks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">EBImage</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/EBImage/man/colorLabels.html" class="external-link">colorLabels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -644,7 +643,7 @@ know two ways to do this.</p>
 <p>The <code>plotPixels</code> function in <code>cytomapper</code> makes
 it easy to overlay the masks on top of the intensities of markers in the
 image. Here we can s</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualise segmentation performance another way.</span></span>
 <span><span class="fu">cytomapper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cytomapper/man/plotPixels.html" class="external-link">plotPixels</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="va">image5</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -676,7 +675,7 @@ pixel area by <span class="math inline">\(2.56^2\)</span>. We can see
 below the majority of our cells are just below <span class="math inline">\(100µm^2\)</span>, you should decide whether or not
 this is an appropriate size based on your knowledge of the cell types
 being imaged.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get area of every cell</span></span>
 <span><span class="va">cellSize</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">masks</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">2.56</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
@@ -698,7 +697,8 @@ of 100 images?</p></li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="summarising-images-into-cell-features">Summarising images into cell features?<a class="anchor" aria-label="anchor" href="#summarising-images-into-cell-features"></a>
+<h4 id="im-happy-with-my-segmentation-how-do-i-create-an-spe-object">Im happy with my segmentation, how do I create an <code>SPE</code>
+object?<a class="anchor" aria-label="anchor" href="#im-happy-with-my-segmentation-how-do-i-create-an-spe-object"></a>
 </h4>
 <p>With our segmentation <code>masks</code> we can convert our image to
 a <code>SpatialExperiment</code> object using the
@@ -710,7 +710,7 @@ assays object of the <code>SpatialExperiment</code>. <em>NOTE:</em> If
 you are using other segmentation tools or softwares, you can import the
 masks as tiffs into R and use <code>measureObjects</code> to create a
 <code>SpatialExperiment</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Summarise the expression of each marker in each cell</span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu">cytomapper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cytomapper/man/measureObjects.html" class="external-link">measureObjects</a></span><span class="op">(</span></span>
 <span>  mask <span class="op">=</span> <span class="va">masks</span>,</span>
@@ -735,19 +735,17 @@ masks as tiffs into R and use <code>measureObjects</code> to create a
 </div>
 </div>
 <div class="section level3">
-<h3 id="feature-normalisation">Feature normalisation<a class="anchor" aria-label="anchor" href="#feature-normalisation"></a>
+<h3 class="tabset" id="module-3-feature-normalisation">Module 3: Feature normalisation<a class="anchor" aria-label="anchor" href="#module-3-feature-normalisation"></a>
 </h3>
 <div class="section level4">
 <h4 id="are-the-intensities-of-markers-consistent-across-images">Are the intensities of markers consistent across images?<a class="anchor" aria-label="anchor" href="#are-the-intensities-of-markers-consistent-across-images"></a>
 </h4>
-<p>Now we know where cells are, that is their x-y coordinate, and the
-average expression of various markers within each cell.</p>
 <p>Before moving onto annotating the cell types, we should check if the
 marker intensities of each cell require any transformation or
 normalisation. Here we examine the distribution of CD45 in each cell
 across all the images, which is a general marker for immune cells. Below
 we can see that the intensity of CD45 looks very skewed.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Joining the marker information with the cell information</span></span>
 <span><span class="va">proteinIntensities</span> <span class="op">=</span> <span class="va">kerenSPE</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ttservice/man/join_features.html" class="external-link">join_features</a></span><span class="op">(</span>features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">kerenSPE</span><span class="op">)</span>, shape <span class="op">=</span> <span class="st">"wide"</span>, assay <span class="op">=</span> <span class="st">"intensities"</span><span class="op">)</span></span>
@@ -770,7 +768,7 @@ principle component analysis, and regressed out the first PC. This
 modified data is then stored in the <code>normIntensities</code> assay.
 We can see that the distribution of CD45 looks much less skewed than
 before.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/simpleSeg/reference/normalizeCells.html" class="external-link">normalizeCells</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  transformation <span class="op">=</span> <span class="st">"asinh"</span>,</span>
@@ -784,7 +782,6 @@ before.</p>
 <span><span class="va">normProteinIntensities</span> <span class="op">=</span> <span class="va">kerenSPE</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ttservice/man/join_features.html" class="external-link">join_features</a></span><span class="op">(</span>features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">kerenSPE</span><span class="op">)</span>, shape <span class="op">=</span> <span class="st">"wide"</span>, assay <span class="op">=</span> <span class="st">"normIntensities"</span><span class="op">)</span></span>
 <span></span>
-<span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">normProteinIntensities</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">CD3</span>, colour <span class="op">=</span> <span class="va">imageID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
@@ -792,30 +789,29 @@ before.</p>
 <div class="question">
 <p><strong>Questions</strong></p>
 <ol style="list-style-type: decimal">
-<li>CD3 is a marker which characterises T cells, plot the distribution
-of CD3. What does it look like? What does this tell us about T cells in
-our dataset.</li>
+<li><p>CD3 is a marker which characterises T cells, plot the
+distribution of CD3. What does it look like? What does this tell us
+about T cells in our dataset.</p></li>
+<li><p>If we set <code>cellType == "CD4_T_cell"</code> is this
+concordant with the conclusion you made in question 1.</p></li>
 </ol>
 </div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Answer question here</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
-<h3 id="cell-type-annotation">Cell type annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a>
+<h3 class="tabset" id="module-4-cell-type-annotation">Module 4: Cell type annotation<a class="anchor" aria-label="anchor" href="#module-4-cell-type-annotation"></a>
 </h3>
 <div class="section level4">
 <h4 id="can-we-use-a-clustering-approach-to-identify-cell-types">Can we use a clustering approach to identify cell types?<a class="anchor" aria-label="anchor" href="#can-we-use-a-clustering-approach-to-identify-cell-types"></a>
 </h4>
-<div class="section level5">
-<h5 id="clustering-cell-types">Clustering cell types<a class="anchor" aria-label="anchor" href="#clustering-cell-types"></a>
-</h5>
 <p>Here we cluster using the <code>runFuseSOM</code> function from
 <code>FuseSOM</code>. We have chosen to specify the same subset of
 markers used in the original manuscript for gating cell types. We have
 also specified the number of clusters to identify to be
 <code>numClusters = 17</code>.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">useMarkers</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD45"</span>, <span class="st">"FoxP3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD3"</span>, <span class="st">"CD20"</span>, <span class="st">"CD16"</span>, <span class="st">"CD68"</span>, <span class="st">"MPO"</span>, <span class="st">"HLA.DR"</span>, <span class="st">"Pan.Keratin"</span>, <span class="st">"Keratin17"</span>, <span class="st">"Keratin6"</span>, <span class="st">"p53"</span>, <span class="st">"Beta.catenin"</span>, <span class="st">"EGFR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">51773</span><span class="op">)</span></span>
@@ -827,13 +823,13 @@ also specified the number of clusters to identify to be
 <span>  numClusters <span class="op">=</span> <span class="fl">17</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="how-do-i-interpret-my-clusters">How do I interpret my clusters?<a class="anchor" aria-label="anchor" href="#how-do-i-interpret-my-clusters"></a>
-</h5>
+<div class="section level4">
+<h4 id="how-do-i-interpret-my-clusters">How do I interpret my clusters?<a class="anchor" aria-label="anchor" href="#how-do-i-interpret-my-clusters"></a>
+</h4>
 <p>We can begin the process of understanding what each of these cell
 clusters are by using the <code>plotGroupedHeatmap</code> function from
 <code>scater</code>.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotGroupedHeatmap.html" class="external-link">plotGroupedHeatmap</a></span><span class="op">(</span></span>
 <span>  <span class="va">kerenSPE</span>,</span>
 <span>  features <span class="op">=</span> <span class="va">useMarkers</span>,</span>
@@ -855,7 +851,7 @@ clusters we have identified. How do our clusters compare? Are there any
 clusters that should be combined?</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Type your answer here</span></span>
 <span></span>
 <span></span>
@@ -865,9 +861,9 @@ clusters that should be combined?</li>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Cell types in data"</span>, y <span class="op">=</span> <span class="st">"Our clusters"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/clusteringQ1-1.png" width="700"></p>
 </div>
-<div class="section level5">
-<h5 id="what-is-an-appropriate-number-of-clusters">What is an appropriate number of clusters?<a class="anchor" aria-label="anchor" href="#what-is-an-appropriate-number-of-clusters"></a>
-</h5>
+<div class="section level4">
+<h4 id="what-is-an-appropriate-number-of-clusters">What is an appropriate number of clusters?<a class="anchor" aria-label="anchor" href="#what-is-an-appropriate-number-of-clusters"></a>
+</h4>
 <p>Great question! There is no right answer here, however there are
 several statistics which can be used to estimate the “true” number of
 clusters. We can use the <code>estimateNumCluster</code> and
@@ -875,16 +871,16 @@ clusters. We can use the <code>estimateNumCluster</code> and
 our choice of 17 clusters is reasonable. Here we use the gap statistic,
 other methods such as jump, slope, silhouette and within cluster
 distance (wcd) are also available.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/FuseSOM/man/estimateNumCluster.html" class="external-link">estimateNumCluster</a></span><span class="op">(</span><span class="va">kerenSPE</span>, kSeq <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/FuseSOM/man/optiPlot.html" class="external-link">optiPlot</a></span><span class="op">(</span><span class="va">kerenSPE</span>, method <span class="op">=</span> <span class="st">"gap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/optiPlot-1.png" width="700"></p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span><span class="op">@</span><span class="va">metadata</span><span class="op">$</span><span class="va">clusterEstimation</span><span class="op">$</span><span class="va">Discriminant</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 10</span></span></code></pre>
 <p>Finally we can run a UMAP to examine how distinct our clusters are
 from one another.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">51773</span><span class="op">)</span></span>
 <span><span class="co"># Perform dimension reduction using UMP.</span></span>
 <span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">runUMAP</a></span><span class="op">(</span></span>
@@ -906,12 +902,11 @@ from one another.</p>
 <div class="question">
 <p><strong>Questions</strong></p>
 <ol style="list-style-type: decimal">
-<li>How does this UMAP compare to the original UMAP.</li>
+<li>How does this UMAP compare to the original UMAP?</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Answer question here.</span></span></code></pre></div>
-</div>
 </div>
 <div class="section level4">
 <h4 id="what-if-i-dont-have-an-expert-to-annotate-my-cell-types">What if I don’t have an expert to annotate my cell types?<a class="anchor" aria-label="anchor" href="#what-if-i-dont-have-an-expert-to-annotate-my-cell-types"></a>
@@ -924,7 +919,7 @@ reference dataset.</p>
 <p>To do so we will use <code>scClassify</code>. Below we will use the
 intensities an cell type annotations from the <code>kerenSPE</code>
 dataset to predict the cell types in image 5.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Splitting data to train and test sets</span></span>
 <span><span class="va">kerenSPE_train</span> <span class="op">=</span> <span class="va">kerenSPE</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">imageID</span> <span class="op">!=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -953,7 +948,7 @@ unlabeled cells are projected into a lower dimensional space and a
 weighted KNN (<code>WKNN</code>) is used to classify unlabeled cells to
 their closest neighbours using <code>pearson</code> correlation as the
 distance metric.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scClassifyResults</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/scClassify/man/scClassify.html" class="external-link">scClassify</a></span><span class="op">(</span>exprsMat_train <span class="op">=</span> <span class="va">train_intensities</span>, </span>
 <span>                            cellTypes_train <span class="op">=</span> <span class="va">kerenSPE_train</span><span class="op">$</span><span class="va">cellType</span>,</span>
 <span>                            exprsMat_test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>keren5 <span class="op">=</span> <span class="va">test_intensities</span><span class="op">)</span>,</span>
@@ -967,7 +962,7 @@ distance metric.</p>
 <p>To save time we have preloaded in the <code>scClassify</code>
 results, below we can view the hierarchical tree constructed by
 <code>scClassify</code>.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"scClassifyResults.rda"</span>, package <span class="op">=</span> <span class="st">"ScdneySpatial"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -980,7 +975,7 @@ up the names to make plotting easier. We can compare our original labels
 to our classified labels to get a sense of how concordant our
 predictions are. As you can see, around 68% of the cell types have
 identical labels between the original and classified cell types.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">classifiedCellTypes</span> <span class="op">=</span> <span class="va">scClassifyResults</span><span class="op">$</span><span class="va">testRes</span><span class="op">$</span><span class="va">keren5</span><span class="op">$</span><span class="va">pearson_WKNN_limma</span><span class="op">$</span><span class="va">predRes</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">classifiedCellTypes</span><span class="op">)</span></span></code></pre></div>
@@ -1037,7 +1032,7 @@ identical labels between the original and classified cell types.</p>
 <span><span class="co">#&gt;                                                                                                4 </span></span>
 <span><span class="co">#&gt;                                                                              Unidentified_Tumour </span></span>
 <span><span class="co">#&gt;                                                                                                4</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">newCellTypes</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>  <span class="va">classifiedCellTypes</span> <span class="op">==</span> <span class="st">"Keratin_Tumour_Unidentified_Other_Immune_Endothelial_Mesenchymal_Tumour"</span> <span class="op">~</span> <span class="st">"Tumour_parent"</span>,</span>
 <span>  <span class="va">classifiedCellTypes</span> <span class="op">==</span> <span class="st">"Other_Immune_Endothelial_Mesenchymal"</span> <span class="op">~</span> <span class="st">"Structural_parent"</span>,</span>
@@ -1063,7 +1058,7 @@ identical labels between the original and classified cell types.</p>
 <p>We can look at the distribution of cells in an image. Here we compare
 our clusters and classified cell types to the cell types in the
 dataset.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">kerenSPE</span>, <span class="st">"spatialCoords"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">kerenSPE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">kerenSPE</span> <span class="op">|&gt;</span> </span>
@@ -1071,42 +1066,46 @@ dataset.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="st">"spatialCoords"</span>, colour_by <span class="op">=</span> <span class="st">"clusters"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Our clusters"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/viewClustering-1.png" width="700"></p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">kerenSPE_test</span>, <span class="st">"spatialCoords"</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SpatialExperiment/man/SpatialExperiment-methods.html" class="external-link">spatialCoords</a></span><span class="op">(</span><span class="va">kerenSPE_test</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">kerenSPE_test</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="st">"spatialCoords"</span>, colour_by <span class="op">=</span> <span class="st">"classifiedCellTypes"</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/viewClustering-2.png" width="700"></p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">imageID</span> <span class="op">==</span> <span class="st">"5"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="st">"spatialCoords"</span>, colour_by <span class="op">=</span> <span class="st">"cellType"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Original cell types"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/viewClustering-3.png" width="700"></p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Comparing orignal cell types to clustering and classification cell types. </span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/lisaClust/man/regionMap.html" class="external-link">regionMap</a></span><span class="op">(</span><span class="va">kerenSPE</span>, cellType <span class="op">=</span> <span class="st">"clusters"</span>, region <span class="op">=</span> <span class="st">"cellType"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Original vs Clustered"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/viewClustering-4.png" width="700"></p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/lisaClust/man/regionMap.html" class="external-link">regionMap</a></span><span class="op">(</span><span class="va">kerenSPE_test</span>, cellType <span class="op">=</span> <span class="st">"classifiedCellTypes"</span>, region <span class="op">=</span> <span class="st">"cellType"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Original vs Classified"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workshop_material_files/figure-html/viewClustering-5.png" width="700">
-::: question <strong>Questions</strong></p>
+<p><img src="workshop_material_files/figure-html/viewClustering-5.png" width="700"></p>
+<div class="question">
+<p><strong>Questions</strong></p>
 <ol style="list-style-type: decimal">
 <li>Discuss amongst your peers, why might there be differences between
 the clusters, the classified cell types and the original cell type
-labels in the dataset? :::</li>
+labels in the dataset?</li>
 </ol>
 </div>
 </div>
+</div>
 <div class="section level3">
-<h3 id="analytical-techniques">Analytical techniques<a class="anchor" aria-label="anchor" href="#analytical-techniques"></a>
+<h3 class="tabset" id="module-5-single-sample-analysis">Module 5: Single sample analysis<a class="anchor" aria-label="anchor" href="#module-5-single-sample-analysis"></a>
 </h3>
+<p>In this module we focus on examining gene expression patterns in a
+single image, from the SeqFISH mouse embryo dataset.</p>
 <div class="section level4">
-<h4 id="schot-analysis-of-the-developing-brain">scHOT analysis of the developing brain<a class="anchor" aria-label="anchor" href="#schot-analysis-of-the-developing-brain"></a>
+<h4 id="are-there-genes-which-change-expression-across-space">Are there genes which change expression across space?<a class="anchor" aria-label="anchor" href="#are-there-genes-which-change-expression-across-space"></a>
 </h4>
 <p>Here we will ask which gene patterns we observe to be changing across
 the <code>spe$gutRegion</code> cell type in space. Note that we want to
@@ -1114,7 +1113,7 @@ assess the anatomical region corresponding to the anterior end of the
 developing gut developing brain so we will first subset the cells using
 the spatial coordinates. We can check what we have selected by
 plotting.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter cells which are labeled gut tub, and in the anterior section.</span></span>
 <span><span class="va">spe</span><span class="op">$</span><span class="va">gutRegion</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">$</span><span class="va">celltype_mapped_refined</span> <span class="op">==</span> <span class="st">"Gut tube"</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">spe</span>, <span class="st">"spatialCoords"</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;</span> <span class="op">-</span><span class="fl">0.5</span></span>
@@ -1125,7 +1124,7 @@ plotting.</p>
 <p><img src="workshop_material_files/figure-html/visualise_spe-1.png" width="700"></p>
 <p>Let’s subset the data to only these cells and continue with our scHOT
 analysis.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe_gut</span> <span class="op">&lt;-</span> <span class="va">spe</span><span class="op">[</span>,<span class="va">spe</span><span class="op">$</span><span class="va">gutRegion</span><span class="op">]</span></span>
 <span><span class="va">spe_gut</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; class: SpatialExperiment </span></span>
@@ -1141,14 +1140,14 @@ analysis.</p>
 <span><span class="co">#&gt; imgData names(1): sample_id</span></span></code></pre>
 <p>We select genes with at least some proportion of expressed cells for
 testing, and create the <code>scHOT</code> object.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">spe_gut</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/scHOT-init-1.png" width="700"></p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_to_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">spe_gut</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">spe_gut</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.2</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gene_to_test</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 165</span></span></code></pre>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">gene_to_test</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">gene_to_test</span>, <span class="fl">1</span>, <span class="va">paste0</span>, collapse <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gene_to_test</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;         [,1]     </span></span>
@@ -1158,7 +1157,7 @@ testing, and create the <code>scHOT</code> object.</p>
 <span><span class="co">#&gt; Akr1c19 "Akr1c19"</span></span>
 <span><span class="co">#&gt; Aldh1a2 "Aldh1a2"</span></span>
 <span><span class="co">#&gt; Aldh2   "Aldh2"</span></span></code></pre>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_buildFromSCE.html" class="external-link">scHOT_buildFromSCE</a></span><span class="op">(</span><span class="va">spe_gut</span>,</span>
 <span>                                    assayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
 <span>                                    positionType <span class="op">=</span> <span class="st">"spatial"</span>,</span>
@@ -1185,7 +1184,7 @@ set the local weight matrix for testing, with a choice of span of 0.1
 computation by not requiring the weight matrix correspond to every
 individual cell, but instead a random selection among all the cells
 using the <code>thin</code> function.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_addTestingScaffold.html" class="external-link">scHOT_addTestingScaffold</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>, <span class="va">gene_to_test</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scHOT_spatial</span><span class="op">@</span><span class="va">testingScaffold</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;         gene_1   </span></span>
@@ -1195,7 +1194,7 @@ using the <code>thin</code> function.</p>
 <span><span class="co">#&gt; Akr1c19 "Akr1c19"</span></span>
 <span><span class="co">#&gt; Aldh1a2 "Aldh1a2"</span></span>
 <span><span class="co">#&gt; Aldh2   "Aldh2"</span></span></code></pre>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_setWeightMatrix.html" class="external-link">scHOT_setWeightMatrix</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>, span <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="va">scHOT_spatial</span><span class="op">@</span><span class="va">weightMatrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/thin.html" class="external-link">thin</a></span><span class="op">(</span><span class="va">scHOT_spatial</span><span class="op">@</span><span class="va">weightMatrix</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span></span>
@@ -1203,7 +1202,7 @@ using the <code>thin</code> function.</p>
 <pre><code><span><span class="co">#&gt; [1]  53 472</span></span></code></pre>
 <p>For a given cell we can visually examine the local weight given by
 the span parameter.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cellID</span> <span class="op">=</span> <span class="fl">10</span></span>
 <span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">scHOT_spatial</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1227,12 +1226,12 @@ the span parameter.</p>
 <li>How will the results change if the span is increased/decreased?</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Make associated changes to the code to test out the question above.</span></span></code></pre></div>
 <p>We set the higher order function as the weighted mean function, and
 then calculate the observed higher order test statistics. This may take
 around 10 seconds.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_calculateGlobalHigherOrderFunction.html" class="external-link">scHOT_calculateGlobalHigherOrderFunction</a></span><span class="op">(</span></span>
 <span>    <span class="va">scHOT_spatial</span>,</span>
 <span>    higherOrderFunction <span class="op">=</span> <span class="va">weightedMean</span>,</span>
@@ -1253,14 +1252,14 @@ around 10 seconds.</p>
 <span><span class="co">#&gt; Xist           Xist                  1.162241</span></span>
 <span><span class="co">#&gt; Zfp444       Zfp444                  0.744082</span></span>
 <span><span class="co">#&gt; Zfp57         Zfp57                  0.595519</span></span></code></pre>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_calculateHigherOrderTestStatistics.html" class="external-link">scHOT_calculateHigherOrderTestStatistics</a></span><span class="op">(</span></span>
 <span>    <span class="va">scHOT_spatial</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can plot the overall mean versus the scHOT statistic to
 observe any relationship. Labels can be interactively visualised using
 <code>ggplotly</code>. Some genes may have different distributions so we
 turn to permutation testing to assess statistical significance.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">scHOT_spatial</span><span class="op">@</span><span class="va">scHOT_output</span><span class="op">)</span>, </span>
 <span>           <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">globalHigherOrderFunction</span>, y <span class="op">=</span> <span class="va">higherOrderStatistic</span>, label <span class="op">=</span> <span class="va">gene_1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Mean across all cells"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1268,16 +1267,16 @@ turn to permutation testing to assess statistical significance.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">g</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/scHOT-vis2-1.png" width="700"></p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/plotly/man/ggplotly.html" class="external-link">ggplotly</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
 <div class="plotly html-widget html-fill-item" id="htmlwidget-d10f9e6383278f5ad4f8" style="width:700px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-d10f9e6383278f5ad4f8">{"x":{"data":[{"x":[0.21666552735611611,0.37577624073907062,0.97641826897498996,0.74407017030072786,0.24598113331792176,0.57621688385637004,0.23714015727416829,0.21311146138673961,0.57203612263584536,0.21501613520732421,0.51264320790253159,0.78364174184367774,0.61137793088200598,0.23908786096561196,0.57331002310046431,0.79441922973015022,0.29529448321734508,0.22554474469973529,1.3034118346505226,0.65843819340434984,0.36069675428384212,0.50167467078331296,1.6982331364217238,0.6169600807730351,0.31478264601638573,0.44608821671678767,0.34208291118085427,1.9602204845818796,0.63466372607287114,0.72354119106741821,0.48109400065677832,0.2782337364534731,0.71526027492151278,0.92291201508114784,0.6432469482317259,0.21184593402623622,0.82435111277727369,0.41624493839071014,0.60440035919341417,1.4422476150058909,1.075913614761882,0.20042244573595483,0.27028744249370973,0.37269680194193966,0.74477315065749117,0.7866580914135477,0.22107122298289217,1.2763002780546775,1.1635097126550837,0.4120981727395866,0.25732306656694154,2.0492375226753303,1.3820831684358559,0.29890041870737799,0.38018117956576419,0.20808104326229426,1.0954940816795466,1.9601907765655602,0.2699867563461546,0.66824020210897617,0.32522575230510742,0.58927391005327978,0.58682333818527499,0.29647986944199978,0.19235173147853118,0.50884635454788629,0.24722469804609015,0.76766056339513056,0.55574180080135738,0.24864530189996081,0.25388676965681539,0.62470373987410555,0.21718656392817837,0.3540037183500146,0.58266002463937372,0.7884118671369108,0.57216715914481908,0.55700349034140129,0.58223625859697292,1.6139119096047625,1.0926070950474727,0.25316502418075132,0.24402709287273733,1.2309838380385743,1.4927254753415129,3.1461735946697611,0.54584533525953693,0.58728140567460896,2.7900368714686992,1.121406291147095,0.67470063305624151,0.5950188928353165,1.2933786162089944,0.21372117903023019,0.39291396306236454,0.80984277898690182,0.25062482071371628,0.28616762990566519,3.1714201156286199,0.27637731585371667,0.55632613598057212,0.60108958405887536,0.32671818851712797,0.98607793273384281,0.42119090449842173,0.32815258332994046,1.1472873701564217,0.71181135115499838,0.21488565244537938,0.23273347444793882,0.85701652609813805,0.26772453783279287,0.30990857893632007,0.33575352309027001,0.20264373803268534,0.45420800833416286,0.23978661944540236,0.21479506920752414,2.4988430121508967,0.24600963608570298,0.41973395792336066,0.23305094778343419,0.41605637457964789,0.27926233014940444,0.4537272391422531,0.31457161989425569,0.22211894233092785,1.1842563007397477,1.0084242460794188,0.75690504423769356,0.3426839327056237,0.23998577481502317,1.6203129561432765,1.1630577214433306,0.43160490248648653,0.4237788706716783,0.28103994379488711,0.7860524133034128,0.36636472198663073,0.23885545135155606,1.414629844358563,2.1829706132926536,0.54676314117002078,0.47472551591541745,0.47808969273253948,0.58594082534803971,0.87386089471660489,0.49776455063325081,0.20957263415951197,1.6886508256146189,2.3593471668159869,0.32030042961685501,0.2611588156308331,1.2984821828822615,0.50716608578160127,0.29612081131710122,1.30846630033652,0.27344062006270492,0.31903210675918403,0.60523576725855821,0.33581994971876239,0.22030035859149219,1.1622405164885681,0.74408203349418633,0.59551893573281622],"y":[0.075095380214497021,0.066514261705854574,0.33198974116788166,0.16733424713635042,0.18278360718917858,0.047671537659420338,0.07186424187938692,0.072962447674642716,0.073181758790845611,0.075120169081686533,0.30177676403587872,0.1360275037983418,0.49699891953758263,0.056942698676209873,0.49364457413495111,0.41880335773158406,0.20077560847361331,0.11467506362167465,0.40275597064761215,0.35314778827094068,0.19625521212022629,0.29492911074680683,0.45514740322789654,0.4539109990827444,0.15886662220312905,0.31463682633120993,0.096375648802461453,0.28731276477496509,0.45716024335599253,0.37270448722092175,0.14208552431771437,0.19677325129049691,0.40613789875267448,0.25051524280204962,0.19710074006945463,0.049166249684574538,0.45953594375934403,0.092989995065445849,0.14184919566747706,0.092563539791341451,0.22640012377923538,0.071806531265627305,0.074721694907642425,0.067030775412973254,0.14743939925476779,0.1734723099137484,0.10109092167971297,0.18179746784504919,0.18523524547279363,0.1175773883248421,0.16478510133758065,0.67492003058760197,0.366516341294432,0.10155142974125538,0.19711678094904198,0.10250082750830299,0.18832169593096001,0.18886922151675242,0.19659512793646761,0.28064129449400821,0.23524277936887625,0.48264343713798979,0.57536942841077399,0.12822926457478565,0.08358813994269669,0.45639989147226695,0.053989331141883021,0.55655937606082417,0.4822046668653534,0.058089447246819546,0.13102669292250885,0.12022546604755678,0.10148233737483212,0.27844114183633184,0.34495831689211026,0.28451211012487748,0.29033668050777695,0.24716736575919387,0.25272480409698705,0.41528830442036102,0.26209008279250512,0.045907743179835855,0.09085191586359348,0.19727984475908225,0.16053793632899108,0.28946312010240488,0.17750889579707813,0.24099351762276219,0.36913043172168658,0.33793229874715225,0.13422303963379703,0.35986322791147862,0.25160004707783945,0.072702929914132353,0.066365839569215351,0.16501604172984119,0.11689242051874478,0.11761442755781423,0.31131567935608212,0.093249754746791064,0.65257377436243924,0.14392269285478268,0.13614020147214193,0.69828735622624694,0.49888120969141392,0.093675322304645522,0.16645054123515643,0.10964026189916989,0.083969838940518488,0.053648789168821397,0.27369883421291136,0.077623141162213583,0.12466191712904855,0.29624618414932713,0.073048534054927158,0.56965653768002134,0.054245878043803236,0.058404339597059228,0.40998662475795533,0.16397672470283373,0.22379415253303789,0.083410448705932005,0.17780335910001122,0.10058222373924668,0.099150618043280792,0.13081957061787233,0.18269142698974802,0.12340876027492466,0.16965359159267754,0.092757739866083044,0.14286592514491342,0.091742916407448818,0.67710108943687441,0.75174986496642204,0.34742425041077118,0.10223663225145126,0.10097882441763696,0.34652476752963296,0.076266557294053891,0.11384079137320724,0.39927390801112272,0.41994711407553248,0.42476491099519398,0.1063925332329429,0.56488051773448922,0.34040256111296369,0.46242377876376256,0.45279942151473102,0.083654718276944068,0.14457351633888255,0.12042511501795565,0.051474315762060699,0.062109339514151464,0.095456549955225886,0.26578096419295338,0.11300255828680771,0.26947465570342066,0.12077106508792358,0.067784020669587802,0.094066179765152511,0.17229957637974883,0.10492409670964814,0.12082808057197614,0.1189296002916481,0.13012771733103512],"text":["globalHigherOrderFunction: 0.2166655<br />higherOrderStatistic: 0.07509538<br />gene_1: Acvr1","globalHigherOrderFunction: 0.3757762<br />higherOrderStatistic: 0.06651426<br />gene_1: Acvr2a","globalHigherOrderFunction: 0.9764183<br />higherOrderStatistic: 0.33198974<br />gene_1: Ahnak","globalHigherOrderFunction: 0.7440702<br />higherOrderStatistic: 0.16733425<br />gene_1: Akr1c19","globalHigherOrderFunction: 0.2459811<br />higherOrderStatistic: 0.18278361<br />gene_1: Aldh1a2","globalHigherOrderFunction: 0.5762169<br />higherOrderStatistic: 0.04767154<br />gene_1: Aldh2","globalHigherOrderFunction: 0.2371402<br />higherOrderStatistic: 0.07186424<br />gene_1: Apln","globalHigherOrderFunction: 0.2131115<br />higherOrderStatistic: 0.07296245<br />gene_1: Apoa4","globalHigherOrderFunction: 0.5720361<br />higherOrderStatistic: 0.07318176<br />gene_1: Ash2l","globalHigherOrderFunction: 0.2150161<br />higherOrderStatistic: 0.07512017<br />gene_1: Atp1b1","globalHigherOrderFunction: 0.5126432<br />higherOrderStatistic: 0.30177676<br />gene_1: Axin2","globalHigherOrderFunction: 0.7836417<br />higherOrderStatistic: 0.13602750<br />gene_1: Bak1","globalHigherOrderFunction: 0.6113779<br />higherOrderStatistic: 0.49699892<br />gene_1: Bambi","globalHigherOrderFunction: 0.2390879<br />higherOrderStatistic: 0.05694270<br />gene_1: Bid","globalHigherOrderFunction: 0.5733100<br />higherOrderStatistic: 0.49364457<br />gene_1: Bmp4","globalHigherOrderFunction: 0.7944192<br />higherOrderStatistic: 0.41880336<br />gene_1: Bmp7","globalHigherOrderFunction: 0.2952945<br />higherOrderStatistic: 0.20077561<br />gene_1: Car7","globalHigherOrderFunction: 0.2255447<br />higherOrderStatistic: 0.11467506<br />gene_1: Cavin3","globalHigherOrderFunction: 1.3034118<br />higherOrderStatistic: 0.40275597<br />gene_1: Cdh1","globalHigherOrderFunction: 0.6584382<br />higherOrderStatistic: 0.35314779<br />gene_1: Cdh2","globalHigherOrderFunction: 0.3606968<br />higherOrderStatistic: 0.19625521<br />gene_1: Cers4","globalHigherOrderFunction: 0.5016747<br />higherOrderStatistic: 0.29492911<br />gene_1: Chrd","globalHigherOrderFunction: 1.6982331<br />higherOrderStatistic: 0.45514740<br />gene_1: Cldn4","globalHigherOrderFunction: 0.6169601<br />higherOrderStatistic: 0.45391100<br />gene_1: Clic6","globalHigherOrderFunction: 0.3147826<br />higherOrderStatistic: 0.15886662<br />gene_1: Cntfr","globalHigherOrderFunction: 0.4460882<br />higherOrderStatistic: 0.31463683<br />gene_1: Col1a2","globalHigherOrderFunction: 0.3420829<br />higherOrderStatistic: 0.09637565<br />gene_1: Col26a1","globalHigherOrderFunction: 1.9602205<br />higherOrderStatistic: 0.28731276<br />gene_1: Col4a1","globalHigherOrderFunction: 0.6346637<br />higherOrderStatistic: 0.45716024<br />gene_1: Cpm","globalHigherOrderFunction: 0.7235412<br />higherOrderStatistic: 0.37270449<br />gene_1: Cpn1","globalHigherOrderFunction: 0.4810940<br />higherOrderStatistic: 0.14208552<br />gene_1: Cxcl12","globalHigherOrderFunction: 0.2782337<br />higherOrderStatistic: 0.19677325<br />gene_1: Cyp26a1","globalHigherOrderFunction: 0.7152603<br />higherOrderStatistic: 0.40613790<br />gene_1: Dlk1","globalHigherOrderFunction: 0.9229120<br />higherOrderStatistic: 0.25051524<br />gene_1: Dnmt3a","globalHigherOrderFunction: 0.6432469<br />higherOrderStatistic: 0.19710074<br />gene_1: Dnmt3b","globalHigherOrderFunction: 0.2118459<br />higherOrderStatistic: 0.04916625<br />gene_1: Dppa2","globalHigherOrderFunction: 0.8243511<br />higherOrderStatistic: 0.45953594<br />gene_1: Dusp6","globalHigherOrderFunction: 0.4162449<br />higherOrderStatistic: 0.09299000<br />gene_1: Eed","globalHigherOrderFunction: 0.6044004<br />higherOrderStatistic: 0.14184920<br />gene_1: Efna5","globalHigherOrderFunction: 1.4422476<br />higherOrderStatistic: 0.09256354<br />gene_1: Ep300","globalHigherOrderFunction: 1.0759136<br />higherOrderStatistic: 0.22640012<br />gene_1: Epcam","globalHigherOrderFunction: 0.2004224<br />higherOrderStatistic: 0.07180653<br />gene_1: Esam","globalHigherOrderFunction: 0.2702874<br />higherOrderStatistic: 0.07472169<br />gene_1: Ets1","globalHigherOrderFunction: 0.3726968<br />higherOrderStatistic: 0.06703078<br />gene_1: Ezh1","globalHigherOrderFunction: 0.7447732<br />higherOrderStatistic: 0.14743940<br />gene_1: Ezh2","globalHigherOrderFunction: 0.7866581<br />higherOrderStatistic: 0.17347231<br />gene_1: F2r","globalHigherOrderFunction: 0.2210712<br />higherOrderStatistic: 0.10109092<br />gene_1: Fam181b","globalHigherOrderFunction: 1.2763003<br />higherOrderStatistic: 0.18179747<br />gene_1: Fgfr1","globalHigherOrderFunction: 1.1635097<br />higherOrderStatistic: 0.18523525<br />gene_1: Fgfr2","globalHigherOrderFunction: 0.4120982<br />higherOrderStatistic: 0.11757739<br />gene_1: Fgfr3","globalHigherOrderFunction: 0.2573231<br />higherOrderStatistic: 0.16478510<br />gene_1: Fgfr4","globalHigherOrderFunction: 2.0492375<br />higherOrderStatistic: 0.67492003<br />gene_1: Foxa1","globalHigherOrderFunction: 1.3820832<br />higherOrderStatistic: 0.36651634<br />gene_1: Foxa2","globalHigherOrderFunction: 0.2989004<br />higherOrderStatistic: 0.10155143<br />gene_1: Foxc2","globalHigherOrderFunction: 0.3801812<br />higherOrderStatistic: 0.19711678<br />gene_1: Foxf1","globalHigherOrderFunction: 0.2080810<br />higherOrderStatistic: 0.10250083<br />gene_1: Fst","globalHigherOrderFunction: 1.0954941<br />higherOrderStatistic: 0.18832170<br />gene_1: Furin","globalHigherOrderFunction: 1.9601908<br />higherOrderStatistic: 0.18886922<br />gene_1: Fzd2","globalHigherOrderFunction: 0.2699868<br />higherOrderStatistic: 0.19659513<br />gene_1: Gata2","globalHigherOrderFunction: 0.6682402<br />higherOrderStatistic: 0.28064129<br />gene_1: Gata3","globalHigherOrderFunction: 0.3252258<br />higherOrderStatistic: 0.23524278<br />gene_1: Gata4","globalHigherOrderFunction: 0.5892739<br />higherOrderStatistic: 0.48264344<br />gene_1: Gata5","globalHigherOrderFunction: 0.5868233<br />higherOrderStatistic: 0.57536943<br />gene_1: Gata6","globalHigherOrderFunction: 0.2964799<br />higherOrderStatistic: 0.12822926<br />gene_1: Gmpr","globalHigherOrderFunction: 0.1923517<br />higherOrderStatistic: 0.08358814<br />gene_1: Gng3","globalHigherOrderFunction: 0.5088464<br />higherOrderStatistic: 0.45639989<br />gene_1: Gpc4","globalHigherOrderFunction: 0.2472247<br />higherOrderStatistic: 0.05398933<br />gene_1: Hapln1","globalHigherOrderFunction: 0.7676606<br />higherOrderStatistic: 0.55655938<br />gene_1: Hoxa1","globalHigherOrderFunction: 0.5557418<br />higherOrderStatistic: 0.48220467<br />gene_1: Hoxb1","globalHigherOrderFunction: 0.2486453<br />higherOrderStatistic: 0.05808945<br />gene_1: Hoxb3","globalHigherOrderFunction: 0.2538868<br />higherOrderStatistic: 0.13102669<br />gene_1: Hoxb4","globalHigherOrderFunction: 0.6247037<br />higherOrderStatistic: 0.12022547<br />gene_1: Hsf1","globalHigherOrderFunction: 0.2171866<br />higherOrderStatistic: 0.10148234<br />gene_1: Icam2","globalHigherOrderFunction: 0.3540037<br />higherOrderStatistic: 0.27844114<br />gene_1: Igf1","globalHigherOrderFunction: 0.5826600<br />higherOrderStatistic: 0.34495832<br />gene_1: Igfbp3","globalHigherOrderFunction: 0.7884119<br />higherOrderStatistic: 0.28451211<br />gene_1: Irx1","globalHigherOrderFunction: 0.5721672<br />higherOrderStatistic: 0.29033668<br />gene_1: Irx2","globalHigherOrderFunction: 0.5570035<br />higherOrderStatistic: 0.24716737<br />gene_1: Irx3","globalHigherOrderFunction: 0.5822363<br />higherOrderStatistic: 0.25272480<br />gene_1: Isl1","globalHigherOrderFunction: 1.6139119<br />higherOrderStatistic: 0.41528830<br />gene_1: Itga3","globalHigherOrderFunction: 1.0926071<br />higherOrderStatistic: 0.26209008<br />gene_1: Jarid2","globalHigherOrderFunction: 0.2531650<br />higherOrderStatistic: 0.04590774<br />gene_1: Kcng1","globalHigherOrderFunction: 0.2440271<br />higherOrderStatistic: 0.09085192<br />gene_1: Kitl","globalHigherOrderFunction: 1.2309838<br />higherOrderStatistic: 0.19727984<br />gene_1: Kmt2b","globalHigherOrderFunction: 1.4927255<br />higherOrderStatistic: 0.16053794<br />gene_1: Kmt2d","globalHigherOrderFunction: 3.1461736<br />higherOrderStatistic: 0.28946312<br />gene_1: Krt18","globalHigherOrderFunction: 0.5458453<br />higherOrderStatistic: 0.17750890<br />gene_1: Ldhb","globalHigherOrderFunction: 0.5872814<br />higherOrderStatistic: 0.24099352<br />gene_1: Lef1","globalHigherOrderFunction: 2.7900369<br />higherOrderStatistic: 0.36913043<br />gene_1: Lin28a","globalHigherOrderFunction: 1.1214063<br />higherOrderStatistic: 0.33793230<br />gene_1: Marcks","globalHigherOrderFunction: 0.6747006<br />higherOrderStatistic: 0.13422304<br />gene_1: Mcl1","globalHigherOrderFunction: 0.5950189<br />higherOrderStatistic: 0.35986323<br />gene_1: Meis1","globalHigherOrderFunction: 1.2933786<br />higherOrderStatistic: 0.25160005<br />gene_1: Meis2","globalHigherOrderFunction: 0.2137212<br />higherOrderStatistic: 0.07270293<br />gene_1: Meox1","globalHigherOrderFunction: 0.3929140<br />higherOrderStatistic: 0.06636584<br />gene_1: Mkrn1","globalHigherOrderFunction: 0.8098428<br />higherOrderStatistic: 0.16501604<br />gene_1: Mnt","globalHigherOrderFunction: 0.2506248<br />higherOrderStatistic: 0.11689242<br />gene_1: Msx1","globalHigherOrderFunction: 0.2861676<br />higherOrderStatistic: 0.11761443<br />gene_1: Msx2","globalHigherOrderFunction: 3.1714201<br />higherOrderStatistic: 0.31131568<br />gene_1: Myh9","globalHigherOrderFunction: 0.2763773<br />higherOrderStatistic: 0.09324975<br />gene_1: Nid1","globalHigherOrderFunction: 0.5563261<br />higherOrderStatistic: 0.65257377<br />gene_1: Nkx2-3","globalHigherOrderFunction: 0.6010896<br />higherOrderStatistic: 0.14392269<br />gene_1: Nr2f1","globalHigherOrderFunction: 0.3267182<br />higherOrderStatistic: 0.13614020<br />gene_1: Nrp1","globalHigherOrderFunction: 0.9860779<br />higherOrderStatistic: 0.69828736<br />gene_1: Osr1","globalHigherOrderFunction: 0.4211909<br />higherOrderStatistic: 0.49888121<br />gene_1: Otx2","globalHigherOrderFunction: 0.3281526<br />higherOrderStatistic: 0.09367532<br />gene_1: Ovol2","globalHigherOrderFunction: 1.1472874<br />higherOrderStatistic: 0.16645054<br />gene_1: Pcgf2","globalHigherOrderFunction: 0.7118114<br />higherOrderStatistic: 0.10964026<br />gene_1: Pcgf3","globalHigherOrderFunction: 0.2148857<br />higherOrderStatistic: 0.08396984<br />gene_1: Pcgf5","globalHigherOrderFunction: 0.2327335<br />higherOrderStatistic: 0.05364879<br />gene_1: Pcgf6","globalHigherOrderFunction: 0.8570165<br />higherOrderStatistic: 0.27369883<br />gene_1: Pdgfa","globalHigherOrderFunction: 0.2677245<br />higherOrderStatistic: 0.07762314<br />gene_1: Pdgfra","globalHigherOrderFunction: 0.3099086<br />higherOrderStatistic: 0.12466192<br />gene_1: Per2","globalHigherOrderFunction: 0.3357535<br />higherOrderStatistic: 0.29624618<br />gene_1: Perp","globalHigherOrderFunction: 0.2026437<br />higherOrderStatistic: 0.07304853<br />gene_1: Pim2","globalHigherOrderFunction: 0.4542080<br />higherOrderStatistic: 0.56965654<br />gene_1: Pitx1","globalHigherOrderFunction: 0.2397866<br />higherOrderStatistic: 0.05424588<br />gene_1: Plp1","globalHigherOrderFunction: 0.2147951<br />higherOrderStatistic: 0.05840434<br />gene_1: Plvap","globalHigherOrderFunction: 2.4988430<br />higherOrderStatistic: 0.40998662<br />gene_1: Podxl","globalHigherOrderFunction: 0.2460096<br />higherOrderStatistic: 0.16397672<br />gene_1: Popdc2","globalHigherOrderFunction: 0.4197340<br />higherOrderStatistic: 0.22379415<br />gene_1: Prdm1","globalHigherOrderFunction: 0.2330509<br />higherOrderStatistic: 0.08341045<br />gene_1: Prrx1","globalHigherOrderFunction: 0.4160564<br />higherOrderStatistic: 0.17780336<br />gene_1: Prrx2","globalHigherOrderFunction: 0.2792623<br />higherOrderStatistic: 0.10058222<br />gene_1: Ptn","globalHigherOrderFunction: 0.4537272<br />higherOrderStatistic: 0.09915062<br />gene_1: Ramp2","globalHigherOrderFunction: 0.3145716<br />higherOrderStatistic: 0.13081957<br />gene_1: Rgl1","globalHigherOrderFunction: 0.2221189<br />higherOrderStatistic: 0.18269143<br />gene_1: Runx1","globalHigherOrderFunction: 1.1842563<br />higherOrderStatistic: 0.12340876<br />gene_1: Setd1a","globalHigherOrderFunction: 1.0084242<br />higherOrderStatistic: 0.16965359<br />gene_1: Setd1b","globalHigherOrderFunction: 0.7569050<br />higherOrderStatistic: 0.09275774<br />gene_1: Setd2","globalHigherOrderFunction: 0.3426839<br />higherOrderStatistic: 0.14286593<br />gene_1: Sfrp1","globalHigherOrderFunction: 0.2399858<br />higherOrderStatistic: 0.09174292<br />gene_1: Sfrp2","globalHigherOrderFunction: 1.6203130<br />higherOrderStatistic: 0.67710109<br />gene_1: Shh","globalHigherOrderFunction: 1.1630577<br />higherOrderStatistic: 0.75174986<br />gene_1: Shisa2","globalHigherOrderFunction: 0.4316049<br />higherOrderStatistic: 0.34742425<br />gene_1: Six1","globalHigherOrderFunction: 0.4237789<br />higherOrderStatistic: 0.10223663<br />gene_1: Smarcd3","globalHigherOrderFunction: 0.2810399<br />higherOrderStatistic: 0.10097882<br />gene_1: Smim1","globalHigherOrderFunction: 0.7860524<br />higherOrderStatistic: 0.34652477<br />gene_1: Smoc2","globalHigherOrderFunction: 0.3663647<br />higherOrderStatistic: 0.07626656<br />gene_1: Snai1","globalHigherOrderFunction: 0.2388555<br />higherOrderStatistic: 0.11384079<br />gene_1: Socs2","globalHigherOrderFunction: 1.4146298<br />higherOrderStatistic: 0.39927391<br />gene_1: Sox2","globalHigherOrderFunction: 2.1829706<br />higherOrderStatistic: 0.41994711<br />gene_1: Sox4","globalHigherOrderFunction: 0.5467631<br />higherOrderStatistic: 0.42476491<br />gene_1: Sp5","globalHigherOrderFunction: 0.4747255<br />higherOrderStatistic: 0.10639253<br />gene_1: Suz12","globalHigherOrderFunction: 0.4780897<br />higherOrderStatistic: 0.56488052<br />gene_1: T","globalHigherOrderFunction: 0.5859408<br />higherOrderStatistic: 0.34040256<br />gene_1: Tagln","globalHigherOrderFunction: 0.8738609<br />higherOrderStatistic: 0.46242378<br />gene_1: Tbx1","globalHigherOrderFunction: 0.4977646<br />higherOrderStatistic: 0.45279942<br />gene_1: Tbx3","globalHigherOrderFunction: 0.2095726<br />higherOrderStatistic: 0.08365472<br />gene_1: Tbx4","globalHigherOrderFunction: 1.6886508<br />higherOrderStatistic: 0.14457352<br />gene_1: Tcf7l1","globalHigherOrderFunction: 2.3593472<br />higherOrderStatistic: 0.12042512<br />gene_1: Tead2","globalHigherOrderFunction: 0.3203004<br />higherOrderStatistic: 0.05147432<br />gene_1: Tet1","globalHigherOrderFunction: 0.2611588<br />higherOrderStatistic: 0.06210934<br />gene_1: Tet2","globalHigherOrderFunction: 1.2984822<br />higherOrderStatistic: 0.09545655<br />gene_1: Tet3","globalHigherOrderFunction: 0.5071661<br />higherOrderStatistic: 0.26578096<br />gene_1: Thbs1","globalHigherOrderFunction: 0.2961208<br />higherOrderStatistic: 0.11300256<br />gene_1: Tinagl1","globalHigherOrderFunction: 1.3084663<br />higherOrderStatistic: 0.26947466<br />gene_1: Tjp2","globalHigherOrderFunction: 0.2734406<br />higherOrderStatistic: 0.12077107<br />gene_1: Ttn","globalHigherOrderFunction: 0.3190321<br />higherOrderStatistic: 0.06778402<br />gene_1: Usp28","globalHigherOrderFunction: 0.6052358<br />higherOrderStatistic: 0.09406618<br />gene_1: Wdr5","globalHigherOrderFunction: 0.3358199<br />higherOrderStatistic: 0.17229958<br />gene_1: Wnt5a","globalHigherOrderFunction: 0.2203004<br />higherOrderStatistic: 0.10492410<br />gene_1: Wnt5b","globalHigherOrderFunction: 1.1622405<br />higherOrderStatistic: 0.12082808<br />gene_1: Xist","globalHigherOrderFunction: 0.7440820<br />higherOrderStatistic: 0.11892960<br />gene_1: Zfp444","globalHigherOrderFunction: 0.5955189<br />higherOrderStatistic: 0.13012772<br />gene_1: Zfp57"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":27.824636418824401,"r":7.3059360730593621,"b":41.778974318367787,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.043398312271026723,3.3203735348361243],"tickmode":"array","ticktext":["1","2","3"],"tickvals":[1,2.0000000000000004,3],"categoryorder":"array","categoryarray":["1","2","3"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Mean across all cells","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.010615637090506544,0.78704197105575135],"tickmode":"array","ticktext":["0.2","0.4","0.6"],"tickvals":[0.20000000000000001,0.40000000000000002,0.60000000000000009],"categoryorder":"array","categoryarray":["0.2","0.4","0.6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"scHOT statistic for local weightedMean","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"8ef62aee5e4":{"x":{},"y":{},"label":{},"type":"scatter"}},"cur_data":"8ef62aee5e4","visdat":{"8ef62aee5e4":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p>Set up the permutation testing schema. For the purposes of this
+<script type="application/json" data-for="htmlwidget-d10f9e6383278f5ad4f8">{"x":{"data":[{"x":[0.21666552735611611,0.37577624073907062,0.97641826897498996,0.74407017030072786,0.24598113331792176,0.57621688385637004,0.23714015727416829,0.21311146138673961,0.57203612263584536,0.21501613520732421,0.51264320790253159,0.78364174184367774,0.61137793088200598,0.23908786096561196,0.57331002310046431,0.79441922973015022,0.29529448321734508,0.22554474469973529,1.3034118346505226,0.65843819340434984,0.36069675428384212,0.50167467078331296,1.6982331364217238,0.6169600807730351,0.31478264601638573,0.44608821671678767,0.34208291118085427,1.9602204845818796,0.63466372607287114,0.72354119106741821,0.48109400065677832,0.2782337364534731,0.71526027492151278,0.92291201508114784,0.6432469482317259,0.21184593402623622,0.82435111277727369,0.41624493839071014,0.60440035919341417,1.4422476150058909,1.075913614761882,0.20042244573595483,0.27028744249370973,0.37269680194193966,0.74477315065749117,0.7866580914135477,0.22107122298289217,1.2763002780546775,1.1635097126550837,0.4120981727395866,0.25732306656694154,2.0492375226753303,1.3820831684358559,0.29890041870737799,0.38018117956576419,0.20808104326229426,1.0954940816795466,1.9601907765655602,0.2699867563461546,0.66824020210897617,0.32522575230510742,0.58927391005327978,0.58682333818527499,0.29647986944199978,0.19235173147853118,0.50884635454788629,0.24722469804609015,0.76766056339513056,0.55574180080135738,0.24864530189996081,0.25388676965681539,0.62470373987410555,0.21718656392817837,0.3540037183500146,0.58266002463937372,0.7884118671369108,0.57216715914481908,0.55700349034140129,0.58223625859697292,1.6139119096047625,1.0926070950474727,0.25316502418075132,0.24402709287273733,1.2309838380385743,1.4927254753415129,3.1461735946697611,0.54584533525953693,0.58728140567460896,2.7900368714686992,1.121406291147095,0.67470063305624151,0.5950188928353165,1.2933786162089944,0.21372117903023019,0.39291396306236454,0.80984277898690182,0.25062482071371628,0.28616762990566519,3.1714201156286199,0.27637731585371667,0.55632613598057212,0.60108958405887536,0.32671818851712797,0.98607793273384281,0.42119090449842173,0.32815258332994046,1.1472873701564217,0.71181135115499838,0.21488565244537938,0.23273347444793882,0.85701652609813805,0.26772453783279287,0.30990857893632007,0.33575352309027001,0.20264373803268534,0.45420800833416286,0.23978661944540236,0.21479506920752414,2.4988430121508967,0.24600963608570298,0.41973395792336066,0.23305094778343419,0.41605637457964789,0.27926233014940444,0.4537272391422531,0.31457161989425569,0.22211894233092785,1.1842563007397477,1.0084242460794188,0.75690504423769356,0.3426839327056237,0.23998577481502317,1.6203129561432765,1.1630577214433306,0.43160490248648653,0.4237788706716783,0.28103994379488711,0.7860524133034128,0.36636472198663073,0.23885545135155606,1.414629844358563,2.1829706132926536,0.54676314117002078,0.47472551591541745,0.47808969273253948,0.58594082534803971,0.87386089471660489,0.49776455063325081,0.20957263415951197,1.6886508256146189,2.3593471668159869,0.32030042961685501,0.2611588156308331,1.2984821828822615,0.50716608578160127,0.29612081131710122,1.30846630033652,0.27344062006270492,0.31903210675918403,0.60523576725855821,0.33581994971876239,0.22030035859149219,1.1622405164885681,0.74408203349418633,0.59551893573281622],"y":[0.075095380214497021,0.066514261705854574,0.33198974116788166,0.16733424713635042,0.18278360718917858,0.047671537659420338,0.07186424187938692,0.072962447674642716,0.073181758790845611,0.075120169081686533,0.30177676403587872,0.1360275037983418,0.49699891953758263,0.056942698676209873,0.49364457413495111,0.41880335773158406,0.20077560847361331,0.11467506362167465,0.40275597064761215,0.35314778827094068,0.19625521212022629,0.29492911074680683,0.45514740322789654,0.4539109990827444,0.15886662220312905,0.31463682633120993,0.096375648802461453,0.28731276477496509,0.45716024335599253,0.37270448722092175,0.14208552431771437,0.19677325129049691,0.40613789875267448,0.25051524280204962,0.19710074006945463,0.049166249684574538,0.45953594375934403,0.092989995065445849,0.14184919566747706,0.092563539791341451,0.22640012377923538,0.071806531265627305,0.074721694907642425,0.067030775412973254,0.14743939925476779,0.1734723099137484,0.10109092167971297,0.18179746784504919,0.18523524547279363,0.1175773883248421,0.16478510133758065,0.67492003058760197,0.366516341294432,0.10155142974125538,0.19711678094904198,0.10250082750830299,0.18832169593096001,0.18886922151675242,0.19659512793646761,0.28064129449400821,0.23524277936887625,0.48264343713798979,0.57536942841077399,0.12822926457478565,0.08358813994269669,0.45639989147226695,0.053989331141883021,0.55655937606082417,0.4822046668653534,0.058089447246819546,0.13102669292250885,0.12022546604755678,0.10148233737483212,0.27844114183633184,0.34495831689211026,0.28451211012487748,0.29033668050777695,0.24716736575919387,0.25272480409698705,0.41528830442036102,0.26209008279250512,0.045907743179835855,0.09085191586359348,0.19727984475908225,0.16053793632899108,0.28946312010240488,0.17750889579707813,0.24099351762276219,0.36913043172168658,0.33793229874715225,0.13422303963379703,0.35986322791147862,0.25160004707783945,0.072702929914132353,0.066365839569215351,0.16501604172984119,0.11689242051874478,0.11761442755781423,0.31131567935608212,0.093249754746791064,0.65257377436243924,0.14392269285478268,0.13614020147214193,0.69828735622624694,0.49888120969141392,0.093675322304645522,0.16645054123515643,0.10964026189916989,0.083969838940518488,0.053648789168821397,0.27369883421291136,0.077623141162213583,0.12466191712904855,0.29624618414932713,0.073048534054927158,0.56965653768002134,0.054245878043803236,0.058404339597059228,0.40998662475795533,0.16397672470283373,0.22379415253303789,0.083410448705932005,0.17780335910001122,0.10058222373924668,0.099150618043280792,0.13081957061787233,0.18269142698974802,0.12340876027492466,0.16965359159267754,0.092757739866083044,0.14286592514491342,0.091742916407448818,0.67710108943687441,0.75174986496642204,0.34742425041077118,0.10223663225145126,0.10097882441763696,0.34652476752963296,0.076266557294053891,0.11384079137320724,0.39927390801112272,0.41994711407553248,0.42476491099519398,0.1063925332329429,0.56488051773448922,0.34040256111296369,0.46242377876376256,0.45279942151473102,0.083654718276944068,0.14457351633888255,0.12042511501795565,0.051474315762060699,0.062109339514151464,0.095456549955225886,0.26578096419295338,0.11300255828680771,0.26947465570342066,0.12077106508792358,0.067784020669587802,0.094066179765152511,0.17229957637974883,0.10492409670964814,0.12082808057197614,0.1189296002916481,0.13012771733103512],"text":["globalHigherOrderFunction: 0.2166655<br />higherOrderStatistic: 0.07509538<br />gene_1: Acvr1","globalHigherOrderFunction: 0.3757762<br />higherOrderStatistic: 0.06651426<br />gene_1: Acvr2a","globalHigherOrderFunction: 0.9764183<br />higherOrderStatistic: 0.33198974<br />gene_1: Ahnak","globalHigherOrderFunction: 0.7440702<br />higherOrderStatistic: 0.16733425<br />gene_1: Akr1c19","globalHigherOrderFunction: 0.2459811<br />higherOrderStatistic: 0.18278361<br />gene_1: Aldh1a2","globalHigherOrderFunction: 0.5762169<br />higherOrderStatistic: 0.04767154<br />gene_1: Aldh2","globalHigherOrderFunction: 0.2371402<br />higherOrderStatistic: 0.07186424<br />gene_1: Apln","globalHigherOrderFunction: 0.2131115<br />higherOrderStatistic: 0.07296245<br />gene_1: Apoa4","globalHigherOrderFunction: 0.5720361<br />higherOrderStatistic: 0.07318176<br />gene_1: Ash2l","globalHigherOrderFunction: 0.2150161<br />higherOrderStatistic: 0.07512017<br />gene_1: Atp1b1","globalHigherOrderFunction: 0.5126432<br />higherOrderStatistic: 0.30177676<br />gene_1: Axin2","globalHigherOrderFunction: 0.7836417<br />higherOrderStatistic: 0.13602750<br />gene_1: Bak1","globalHigherOrderFunction: 0.6113779<br />higherOrderStatistic: 0.49699892<br />gene_1: Bambi","globalHigherOrderFunction: 0.2390879<br />higherOrderStatistic: 0.05694270<br />gene_1: Bid","globalHigherOrderFunction: 0.5733100<br />higherOrderStatistic: 0.49364457<br />gene_1: Bmp4","globalHigherOrderFunction: 0.7944192<br />higherOrderStatistic: 0.41880336<br />gene_1: Bmp7","globalHigherOrderFunction: 0.2952945<br />higherOrderStatistic: 0.20077561<br />gene_1: Car7","globalHigherOrderFunction: 0.2255447<br />higherOrderStatistic: 0.11467506<br />gene_1: Cavin3","globalHigherOrderFunction: 1.3034118<br />higherOrderStatistic: 0.40275597<br />gene_1: Cdh1","globalHigherOrderFunction: 0.6584382<br />higherOrderStatistic: 0.35314779<br />gene_1: Cdh2","globalHigherOrderFunction: 0.3606968<br />higherOrderStatistic: 0.19625521<br />gene_1: Cers4","globalHigherOrderFunction: 0.5016747<br />higherOrderStatistic: 0.29492911<br />gene_1: Chrd","globalHigherOrderFunction: 1.6982331<br />higherOrderStatistic: 0.45514740<br />gene_1: Cldn4","globalHigherOrderFunction: 0.6169601<br />higherOrderStatistic: 0.45391100<br />gene_1: Clic6","globalHigherOrderFunction: 0.3147826<br />higherOrderStatistic: 0.15886662<br />gene_1: Cntfr","globalHigherOrderFunction: 0.4460882<br />higherOrderStatistic: 0.31463683<br />gene_1: Col1a2","globalHigherOrderFunction: 0.3420829<br />higherOrderStatistic: 0.09637565<br />gene_1: Col26a1","globalHigherOrderFunction: 1.9602205<br />higherOrderStatistic: 0.28731276<br />gene_1: Col4a1","globalHigherOrderFunction: 0.6346637<br />higherOrderStatistic: 0.45716024<br />gene_1: Cpm","globalHigherOrderFunction: 0.7235412<br />higherOrderStatistic: 0.37270449<br />gene_1: Cpn1","globalHigherOrderFunction: 0.4810940<br />higherOrderStatistic: 0.14208552<br />gene_1: Cxcl12","globalHigherOrderFunction: 0.2782337<br />higherOrderStatistic: 0.19677325<br />gene_1: Cyp26a1","globalHigherOrderFunction: 0.7152603<br />higherOrderStatistic: 0.40613790<br />gene_1: Dlk1","globalHigherOrderFunction: 0.9229120<br />higherOrderStatistic: 0.25051524<br />gene_1: Dnmt3a","globalHigherOrderFunction: 0.6432469<br />higherOrderStatistic: 0.19710074<br />gene_1: Dnmt3b","globalHigherOrderFunction: 0.2118459<br />higherOrderStatistic: 0.04916625<br />gene_1: Dppa2","globalHigherOrderFunction: 0.8243511<br />higherOrderStatistic: 0.45953594<br />gene_1: Dusp6","globalHigherOrderFunction: 0.4162449<br />higherOrderStatistic: 0.09299000<br />gene_1: Eed","globalHigherOrderFunction: 0.6044004<br />higherOrderStatistic: 0.14184920<br />gene_1: Efna5","globalHigherOrderFunction: 1.4422476<br />higherOrderStatistic: 0.09256354<br />gene_1: Ep300","globalHigherOrderFunction: 1.0759136<br />higherOrderStatistic: 0.22640012<br />gene_1: Epcam","globalHigherOrderFunction: 0.2004224<br />higherOrderStatistic: 0.07180653<br />gene_1: Esam","globalHigherOrderFunction: 0.2702874<br />higherOrderStatistic: 0.07472169<br />gene_1: Ets1","globalHigherOrderFunction: 0.3726968<br />higherOrderStatistic: 0.06703078<br />gene_1: Ezh1","globalHigherOrderFunction: 0.7447732<br />higherOrderStatistic: 0.14743940<br />gene_1: Ezh2","globalHigherOrderFunction: 0.7866581<br />higherOrderStatistic: 0.17347231<br />gene_1: F2r","globalHigherOrderFunction: 0.2210712<br />higherOrderStatistic: 0.10109092<br />gene_1: Fam181b","globalHigherOrderFunction: 1.2763003<br />higherOrderStatistic: 0.18179747<br />gene_1: Fgfr1","globalHigherOrderFunction: 1.1635097<br />higherOrderStatistic: 0.18523525<br />gene_1: Fgfr2","globalHigherOrderFunction: 0.4120982<br />higherOrderStatistic: 0.11757739<br />gene_1: Fgfr3","globalHigherOrderFunction: 0.2573231<br />higherOrderStatistic: 0.16478510<br />gene_1: Fgfr4","globalHigherOrderFunction: 2.0492375<br />higherOrderStatistic: 0.67492003<br />gene_1: Foxa1","globalHigherOrderFunction: 1.3820832<br />higherOrderStatistic: 0.36651634<br />gene_1: Foxa2","globalHigherOrderFunction: 0.2989004<br />higherOrderStatistic: 0.10155143<br />gene_1: Foxc2","globalHigherOrderFunction: 0.3801812<br />higherOrderStatistic: 0.19711678<br />gene_1: Foxf1","globalHigherOrderFunction: 0.2080810<br />higherOrderStatistic: 0.10250083<br />gene_1: Fst","globalHigherOrderFunction: 1.0954941<br />higherOrderStatistic: 0.18832170<br />gene_1: Furin","globalHigherOrderFunction: 1.9601908<br />higherOrderStatistic: 0.18886922<br />gene_1: Fzd2","globalHigherOrderFunction: 0.2699868<br />higherOrderStatistic: 0.19659513<br />gene_1: Gata2","globalHigherOrderFunction: 0.6682402<br />higherOrderStatistic: 0.28064129<br />gene_1: Gata3","globalHigherOrderFunction: 0.3252258<br />higherOrderStatistic: 0.23524278<br />gene_1: Gata4","globalHigherOrderFunction: 0.5892739<br />higherOrderStatistic: 0.48264344<br />gene_1: Gata5","globalHigherOrderFunction: 0.5868233<br />higherOrderStatistic: 0.57536943<br />gene_1: Gata6","globalHigherOrderFunction: 0.2964799<br />higherOrderStatistic: 0.12822926<br />gene_1: Gmpr","globalHigherOrderFunction: 0.1923517<br />higherOrderStatistic: 0.08358814<br />gene_1: Gng3","globalHigherOrderFunction: 0.5088464<br />higherOrderStatistic: 0.45639989<br />gene_1: Gpc4","globalHigherOrderFunction: 0.2472247<br />higherOrderStatistic: 0.05398933<br />gene_1: Hapln1","globalHigherOrderFunction: 0.7676606<br />higherOrderStatistic: 0.55655938<br />gene_1: Hoxa1","globalHigherOrderFunction: 0.5557418<br />higherOrderStatistic: 0.48220467<br />gene_1: Hoxb1","globalHigherOrderFunction: 0.2486453<br />higherOrderStatistic: 0.05808945<br />gene_1: Hoxb3","globalHigherOrderFunction: 0.2538868<br />higherOrderStatistic: 0.13102669<br />gene_1: Hoxb4","globalHigherOrderFunction: 0.6247037<br />higherOrderStatistic: 0.12022547<br />gene_1: Hsf1","globalHigherOrderFunction: 0.2171866<br />higherOrderStatistic: 0.10148234<br />gene_1: Icam2","globalHigherOrderFunction: 0.3540037<br />higherOrderStatistic: 0.27844114<br />gene_1: Igf1","globalHigherOrderFunction: 0.5826600<br />higherOrderStatistic: 0.34495832<br />gene_1: Igfbp3","globalHigherOrderFunction: 0.7884119<br />higherOrderStatistic: 0.28451211<br />gene_1: Irx1","globalHigherOrderFunction: 0.5721672<br />higherOrderStatistic: 0.29033668<br />gene_1: Irx2","globalHigherOrderFunction: 0.5570035<br />higherOrderStatistic: 0.24716737<br />gene_1: Irx3","globalHigherOrderFunction: 0.5822363<br />higherOrderStatistic: 0.25272480<br />gene_1: Isl1","globalHigherOrderFunction: 1.6139119<br />higherOrderStatistic: 0.41528830<br />gene_1: Itga3","globalHigherOrderFunction: 1.0926071<br />higherOrderStatistic: 0.26209008<br />gene_1: Jarid2","globalHigherOrderFunction: 0.2531650<br />higherOrderStatistic: 0.04590774<br />gene_1: Kcng1","globalHigherOrderFunction: 0.2440271<br />higherOrderStatistic: 0.09085192<br />gene_1: Kitl","globalHigherOrderFunction: 1.2309838<br />higherOrderStatistic: 0.19727984<br />gene_1: Kmt2b","globalHigherOrderFunction: 1.4927255<br />higherOrderStatistic: 0.16053794<br />gene_1: Kmt2d","globalHigherOrderFunction: 3.1461736<br />higherOrderStatistic: 0.28946312<br />gene_1: Krt18","globalHigherOrderFunction: 0.5458453<br />higherOrderStatistic: 0.17750890<br />gene_1: Ldhb","globalHigherOrderFunction: 0.5872814<br />higherOrderStatistic: 0.24099352<br />gene_1: Lef1","globalHigherOrderFunction: 2.7900369<br />higherOrderStatistic: 0.36913043<br />gene_1: Lin28a","globalHigherOrderFunction: 1.1214063<br />higherOrderStatistic: 0.33793230<br />gene_1: Marcks","globalHigherOrderFunction: 0.6747006<br />higherOrderStatistic: 0.13422304<br />gene_1: Mcl1","globalHigherOrderFunction: 0.5950189<br />higherOrderStatistic: 0.35986323<br />gene_1: Meis1","globalHigherOrderFunction: 1.2933786<br />higherOrderStatistic: 0.25160005<br />gene_1: Meis2","globalHigherOrderFunction: 0.2137212<br />higherOrderStatistic: 0.07270293<br />gene_1: Meox1","globalHigherOrderFunction: 0.3929140<br />higherOrderStatistic: 0.06636584<br />gene_1: Mkrn1","globalHigherOrderFunction: 0.8098428<br />higherOrderStatistic: 0.16501604<br />gene_1: Mnt","globalHigherOrderFunction: 0.2506248<br />higherOrderStatistic: 0.11689242<br />gene_1: Msx1","globalHigherOrderFunction: 0.2861676<br />higherOrderStatistic: 0.11761443<br />gene_1: Msx2","globalHigherOrderFunction: 3.1714201<br />higherOrderStatistic: 0.31131568<br />gene_1: Myh9","globalHigherOrderFunction: 0.2763773<br />higherOrderStatistic: 0.09324975<br />gene_1: Nid1","globalHigherOrderFunction: 0.5563261<br />higherOrderStatistic: 0.65257377<br />gene_1: Nkx2-3","globalHigherOrderFunction: 0.6010896<br />higherOrderStatistic: 0.14392269<br />gene_1: Nr2f1","globalHigherOrderFunction: 0.3267182<br />higherOrderStatistic: 0.13614020<br />gene_1: Nrp1","globalHigherOrderFunction: 0.9860779<br />higherOrderStatistic: 0.69828736<br />gene_1: Osr1","globalHigherOrderFunction: 0.4211909<br />higherOrderStatistic: 0.49888121<br />gene_1: Otx2","globalHigherOrderFunction: 0.3281526<br />higherOrderStatistic: 0.09367532<br />gene_1: Ovol2","globalHigherOrderFunction: 1.1472874<br />higherOrderStatistic: 0.16645054<br />gene_1: Pcgf2","globalHigherOrderFunction: 0.7118114<br />higherOrderStatistic: 0.10964026<br />gene_1: Pcgf3","globalHigherOrderFunction: 0.2148857<br />higherOrderStatistic: 0.08396984<br />gene_1: Pcgf5","globalHigherOrderFunction: 0.2327335<br />higherOrderStatistic: 0.05364879<br />gene_1: Pcgf6","globalHigherOrderFunction: 0.8570165<br />higherOrderStatistic: 0.27369883<br />gene_1: Pdgfa","globalHigherOrderFunction: 0.2677245<br />higherOrderStatistic: 0.07762314<br />gene_1: Pdgfra","globalHigherOrderFunction: 0.3099086<br />higherOrderStatistic: 0.12466192<br />gene_1: Per2","globalHigherOrderFunction: 0.3357535<br />higherOrderStatistic: 0.29624618<br />gene_1: Perp","globalHigherOrderFunction: 0.2026437<br />higherOrderStatistic: 0.07304853<br />gene_1: Pim2","globalHigherOrderFunction: 0.4542080<br />higherOrderStatistic: 0.56965654<br />gene_1: Pitx1","globalHigherOrderFunction: 0.2397866<br />higherOrderStatistic: 0.05424588<br />gene_1: Plp1","globalHigherOrderFunction: 0.2147951<br />higherOrderStatistic: 0.05840434<br />gene_1: Plvap","globalHigherOrderFunction: 2.4988430<br />higherOrderStatistic: 0.40998662<br />gene_1: Podxl","globalHigherOrderFunction: 0.2460096<br />higherOrderStatistic: 0.16397672<br />gene_1: Popdc2","globalHigherOrderFunction: 0.4197340<br />higherOrderStatistic: 0.22379415<br />gene_1: Prdm1","globalHigherOrderFunction: 0.2330509<br />higherOrderStatistic: 0.08341045<br />gene_1: Prrx1","globalHigherOrderFunction: 0.4160564<br />higherOrderStatistic: 0.17780336<br />gene_1: Prrx2","globalHigherOrderFunction: 0.2792623<br />higherOrderStatistic: 0.10058222<br />gene_1: Ptn","globalHigherOrderFunction: 0.4537272<br />higherOrderStatistic: 0.09915062<br />gene_1: Ramp2","globalHigherOrderFunction: 0.3145716<br />higherOrderStatistic: 0.13081957<br />gene_1: Rgl1","globalHigherOrderFunction: 0.2221189<br />higherOrderStatistic: 0.18269143<br />gene_1: Runx1","globalHigherOrderFunction: 1.1842563<br />higherOrderStatistic: 0.12340876<br />gene_1: Setd1a","globalHigherOrderFunction: 1.0084242<br />higherOrderStatistic: 0.16965359<br />gene_1: Setd1b","globalHigherOrderFunction: 0.7569050<br />higherOrderStatistic: 0.09275774<br />gene_1: Setd2","globalHigherOrderFunction: 0.3426839<br />higherOrderStatistic: 0.14286593<br />gene_1: Sfrp1","globalHigherOrderFunction: 0.2399858<br />higherOrderStatistic: 0.09174292<br />gene_1: Sfrp2","globalHigherOrderFunction: 1.6203130<br />higherOrderStatistic: 0.67710109<br />gene_1: Shh","globalHigherOrderFunction: 1.1630577<br />higherOrderStatistic: 0.75174986<br />gene_1: Shisa2","globalHigherOrderFunction: 0.4316049<br />higherOrderStatistic: 0.34742425<br />gene_1: Six1","globalHigherOrderFunction: 0.4237789<br />higherOrderStatistic: 0.10223663<br />gene_1: Smarcd3","globalHigherOrderFunction: 0.2810399<br />higherOrderStatistic: 0.10097882<br />gene_1: Smim1","globalHigherOrderFunction: 0.7860524<br />higherOrderStatistic: 0.34652477<br />gene_1: Smoc2","globalHigherOrderFunction: 0.3663647<br />higherOrderStatistic: 0.07626656<br />gene_1: Snai1","globalHigherOrderFunction: 0.2388555<br />higherOrderStatistic: 0.11384079<br />gene_1: Socs2","globalHigherOrderFunction: 1.4146298<br />higherOrderStatistic: 0.39927391<br />gene_1: Sox2","globalHigherOrderFunction: 2.1829706<br />higherOrderStatistic: 0.41994711<br />gene_1: Sox4","globalHigherOrderFunction: 0.5467631<br />higherOrderStatistic: 0.42476491<br />gene_1: Sp5","globalHigherOrderFunction: 0.4747255<br />higherOrderStatistic: 0.10639253<br />gene_1: Suz12","globalHigherOrderFunction: 0.4780897<br />higherOrderStatistic: 0.56488052<br />gene_1: T","globalHigherOrderFunction: 0.5859408<br />higherOrderStatistic: 0.34040256<br />gene_1: Tagln","globalHigherOrderFunction: 0.8738609<br />higherOrderStatistic: 0.46242378<br />gene_1: Tbx1","globalHigherOrderFunction: 0.4977646<br />higherOrderStatistic: 0.45279942<br />gene_1: Tbx3","globalHigherOrderFunction: 0.2095726<br />higherOrderStatistic: 0.08365472<br />gene_1: Tbx4","globalHigherOrderFunction: 1.6886508<br />higherOrderStatistic: 0.14457352<br />gene_1: Tcf7l1","globalHigherOrderFunction: 2.3593472<br />higherOrderStatistic: 0.12042512<br />gene_1: Tead2","globalHigherOrderFunction: 0.3203004<br />higherOrderStatistic: 0.05147432<br />gene_1: Tet1","globalHigherOrderFunction: 0.2611588<br />higherOrderStatistic: 0.06210934<br />gene_1: Tet2","globalHigherOrderFunction: 1.2984822<br />higherOrderStatistic: 0.09545655<br />gene_1: Tet3","globalHigherOrderFunction: 0.5071661<br />higherOrderStatistic: 0.26578096<br />gene_1: Thbs1","globalHigherOrderFunction: 0.2961208<br />higherOrderStatistic: 0.11300256<br />gene_1: Tinagl1","globalHigherOrderFunction: 1.3084663<br />higherOrderStatistic: 0.26947466<br />gene_1: Tjp2","globalHigherOrderFunction: 0.2734406<br />higherOrderStatistic: 0.12077107<br />gene_1: Ttn","globalHigherOrderFunction: 0.3190321<br />higherOrderStatistic: 0.06778402<br />gene_1: Usp28","globalHigherOrderFunction: 0.6052358<br />higherOrderStatistic: 0.09406618<br />gene_1: Wdr5","globalHigherOrderFunction: 0.3358199<br />higherOrderStatistic: 0.17229958<br />gene_1: Wnt5a","globalHigherOrderFunction: 0.2203004<br />higherOrderStatistic: 0.10492410<br />gene_1: Wnt5b","globalHigherOrderFunction: 1.1622405<br />higherOrderStatistic: 0.12082808<br />gene_1: Xist","globalHigherOrderFunction: 0.7440820<br />higherOrderStatistic: 0.11892960<br />gene_1: Zfp444","globalHigherOrderFunction: 0.5955189<br />higherOrderStatistic: 0.13012772<br />gene_1: Zfp57"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":27.824636418824401,"r":7.3059360730593621,"b":41.778974318367787,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.043398312271026723,3.3203735348361243],"tickmode":"array","ticktext":["1","2","3"],"tickvals":[1,2.0000000000000004,3],"categoryorder":"array","categoryarray":["1","2","3"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Mean across all cells","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.010615637090506544,0.78704197105575135],"tickmode":"array","ticktext":["0.2","0.4","0.6"],"tickvals":[0.20000000000000001,0.40000000000000002,0.60000000000000009],"categoryorder":"array","categoryarray":["0.2","0.4","0.6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"scHOT statistic for local weightedMean","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"14383346b898":{"x":{},"y":{},"label":{},"type":"scatter"}},"cur_data":"14383346b898","visdat":{"14383346b898":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p>Set up the permutation testing schema. For the purposes of this
 workshop we set a low number of permutations over a low number of genes
 in the testing scaffold, you may want to change this as you work through
 the workshop yourself. The testing will take a few minutes to run, here
 with the parallel parameters that were set at the beginning of this
 document.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_setPermutationScaffold.html" class="external-link">scHOT_setPermutationScaffold</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>,</span>
 <span>                                              numberPermutations <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>                                              numberScaffold <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -1290,7 +1289,7 @@ document.</p>
 <span><span class="co">#&gt; Permutation testing combination 80 of 165...</span></span>
 <span><span class="co">#&gt; Permutation testing combination 110 of 165...</span></span>
 <span><span class="co">#&gt; Permutation testing combination 150 of 165...</span></span></code></pre>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slot</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>, <span class="st">"scHOT_output"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; DataFrame with 165 rows and 9 columns</span></span>
 <span><span class="co">#&gt;              gene_1 globalHigherOrderFunction            higherOrderSequence</span></span>
@@ -1334,10 +1333,10 @@ document.</p>
 <span><span class="co">#&gt; Zfp57                                  NA               NA              NA</span></span></code></pre>
 <p>After the permutation test we can estimate the P-values across all
 genes.</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_plotPermutationDistributions.html" class="external-link">scHOT_plotPermutationDistributions</a></span><span class="op">(</span><span class="va">scHOT_spatial</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/scHOT-pval-1.png" width="700"></p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scHOT_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scHOT/man/scHOT_estimatePvalues.html" class="external-link">scHOT_estimatePvalues</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>,</span>
 <span>                                       nperm_estimate <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>                                       maxDist <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
@@ -1410,7 +1409,7 @@ genes.</p>
 <span><span class="co">#&gt; Zfp57                    3.171420    0.09000000    0.1091912</span></span></code></pre>
 <p>We can now examine the spatial expression of the 5 most significant
 genes, both in our scHOT object and over our original spe object.</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output_sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slot</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>, <span class="st">"scHOT_output"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slot</a></span><span class="op">(</span><span class="va">scHOT_spatial</span>,</span>
 <span>                                                                <span class="st">"scHOT_output"</span><span class="op">)</span><span class="op">$</span><span class="va">pvalEstimated</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="va">topgenes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">output_sorted</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
@@ -1444,32 +1443,20 @@ to get towards assessing changes in variation or correlation structure
 in space.</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## try some code</span></span></code></pre></div>
-<p>Now that we have assessed genes varying in expression in space, let’s
-look further into the IMC data where we will make use of the multiple
-samples to perform clustering and extract some biological
-understanding.</p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="how-do-i-make-sense-of-and-summarise-spatially-defined-cellular-interactions-that-occur-in-my-data">How do I make sense of and summarise spatially defined cellular
-interactions that occur in my data?<a class="anchor" aria-label="anchor" href="#how-do-i-make-sense-of-and-summarise-spatially-defined-cellular-interactions-that-occur-in-my-data"></a>
+<h3 id="module-6-multi-sample-analysis">Module 6: Multi-sample analysis<a class="anchor" aria-label="anchor" href="#module-6-multi-sample-analysis"></a>
 </h3>
-<p>Having now clustered and annotated our data, we now want to see what
-biological conclusions and hypotheses we can draw from it.</p>
-<p>For this workshop, we will use 2 packages, <code>Statial</code> and
-<code>scFeatures</code>. <code>Statial</code> is the latest of scdney
-bioconductor packages aimed at addressing biological questions relating
-to cellular interactions <em>in-situ</em>. For example, we can answer
-questions such as:</p>
-<p>- Which cell types localise with each other?</p>
-<p>- How does the functionality of a cell affect its localisation with
-other cell types?</p>
-<p>- How do the phenotypes of cells change during localisation?</p>
+<p>The following module will examine how we can extract different
+spatial and molecular features from multi-sample datasets. These
+features can be used to extract some biological understanding. Here we
+use the MIBI-TOF breast cancer dataset.</p>
 <div class="section level4">
-<h4 id="how-do-i-determine-which-cell-types-are-interacting-with-each-other-in-my-data">How do I determine which cell types are interacting with each other
-in my data?<a class="anchor" aria-label="anchor" href="#how-do-i-determine-which-cell-types-are-interacting-with-each-other-in-my-data"></a>
+<h4 class="tabset" id="can-i-measure-if-two-cell-types-are-co-localised">Can I measure if two cell types are
+co-localised?<a class="anchor" aria-label="anchor" href="#can-i-measure-if-two-cell-types-are-co-localised"></a>
 </h4>
 <p><code>Kontextual</code> is a part of the <code>Statial</code> package
 which models spatial relationships between cells in the context of
@@ -1490,14 +1477,14 @@ defines their spatial localisation.</p>
 <div class="section level5">
 <h5 id="cell-type-hierarchy">Cell type hierarchy<a class="anchor" aria-label="anchor" href="#cell-type-hierarchy"></a>
 </h5>
-<p>A key input for Kontextual is an annotation of cell type hierarchies.
-We will need these to organise all the cells present into cell state
-populations or clusters, e.g. all the different B cell types are put in
-a vector called bcells.</p>
+<p>A key input for <code>Kontextual</code> is an annotation of cell type
+hierarchies. We will need these to organise all the cells present into
+cell state populations or clusters, e.g. all the different B cell types
+are put in a vector called <code>bcells.</code></p>
 <p>To make our lives easier, we will start by defining these here. I’m
 happy to talk about how we use our bioconductor package <a href="http://www.bioconductor.org/packages/release/bioc/html/treekoR.html" class="external-link">treekoR</a>
 to define these hierarchies in a data driven way.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set up cell populations</span></span>
 <span></span>
 <span><span class="va">tumour</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Keratin_Tumour"</span>, <span class="st">"Tumour"</span><span class="op">)</span></span>
@@ -1526,7 +1513,7 @@ dispersed. However when the behaviour of <em>p53+ tumour cells</em> are
 placed in the context of the spatial behaviour of its broader parent
 population <em>tumour cells</em>, <em>p53+ tumour cells</em> and
 <em>immune</em> would appear localised.</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Lets define a new cell type vector</span></span>
 <span><span class="va">kerenSPE</span><span class="op">$</span><span class="va">cellTypeNew</span> <span class="op">&lt;-</span> <span class="va">kerenSPE</span><span class="op">$</span><span class="va">cellType</span></span>
 <span></span>
@@ -1573,20 +1560,20 @@ cores can be specified using the <code>cores</code> argument.
 each argument and will test all combinations of the arguments
 specified.</p>
 <p>We can calculate these relationships for a single radius.</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p53_Kontextual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/Kontextual.html" class="external-link">Kontextual</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  image <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>  r <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  from <span class="op">=</span> <span class="st">"p53_Tumour"</span>,</span>
-<span>  to <span class="op">=</span> <span class="st">"Immune"</span>,</span>
-<span>  parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p53"</span>, <span class="st">"Tumour"</span><span class="op">)</span>,</span>
+<span>  r <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  from <span class="op">=</span> <span class="st">"Immune"</span>,</span>
+<span>  to <span class="op">=</span> <span class="st">"p53_Tumour"</span>,</span>
+<span>  parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p53_Tumour"</span>, <span class="st">"Tumour"</span><span class="op">)</span>,</span>
 <span>  cellType <span class="op">=</span> <span class="st">"cellTypeNew"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p53_Kontextual</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;   imageID               test  original kontextual  r weightQuantile inhom edge</span></span>
-<span><span class="co">#&gt; 1       6 p53_Tumour__Immune -20.41372        NaN 50            0.8 FALSE TRUE</span></span>
+<pre><code><span><span class="co">#&gt;   imageID               test  original kontextual   r weightQuantile inhom edge</span></span>
+<span><span class="co">#&gt; 1       6 Immune__p53_Tumour -23.49524  -1.856852 100            0.8 FALSE TRUE</span></span>
 <span><span class="co">#&gt;   includeZeroCells window window.length</span></span>
 <span><span class="co">#&gt; 1             TRUE convex            NA</span></span></code></pre>
 </div>
@@ -1602,13 +1589,13 @@ following plot Kontextual is able to correctly identify localisation
 between p53+ tumour cells and immune cells in the example image for a
 certain range of radii. The original L-function is not able to identify
 localisation at any value of radii.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/kontextCurve.html" class="external-link">kontextCurve</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  image <span class="op">=</span> <span class="st">"6"</span>,</span>
-<span>  from <span class="op">=</span> <span class="st">"p53_Tumour"</span>,</span>
-<span>  to <span class="op">=</span> <span class="st">"Immune"</span>,</span>
-<span>  parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p53+Tumour"</span>, <span class="st">"Tumour"</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="st">"Immune"</span>,</span>
+<span>  to <span class="op">=</span> <span class="st">"p53_Tumour"</span>,</span>
+<span>  parent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p53_Tumour"</span>, <span class="st">"Tumour"</span><span class="op">)</span>,</span>
 <span>  rs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">510</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  cellType <span class="op">=</span> <span class="st">"cellTypeNew"</span>,</span>
 <span>  cores <span class="op">=</span> <span class="va">nCores</span></span>
@@ -1628,7 +1615,7 @@ function. This function takes in a vector of all the cells, as well as
 all the parent vectors set up earlier. As shown below the output is a
 data frame specifying the <code>to</code>, <code>from</code>, and
 <code>parent</code> arguments for <code>Kontextual</code>.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get all relationships between cell types and their parents</span></span>
 <span><span class="va">parentDf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/parentCombinations.html" class="external-link">parentCombinations</a></span><span class="op">(</span></span>
 <span>  all <span class="op">=</span> <span class="va">all</span>,</span>
@@ -1648,7 +1635,7 @@ data frame specifying the <code>to</code>, <code>from</code>, and
 examine all pairwise relationships in the dataset. This chunk will take
 a significant amount of time to run (~20 minutes), for demonstration the
 results have been saved and are loaded in.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running Kontextual on all relationships across all images.</span></span>
 <span><span class="va">kerenKontextual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/Kontextual.html" class="external-link">Kontextual</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
@@ -1656,7 +1643,7 @@ results have been saved and are loaded in.</p>
 <span>  r <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  cores <span class="op">=</span> <span class="va">nCores</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"kerenKontextual.rda"</span>, package <span class="op">=</span> <span class="st">"ScdneySpatial"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level5">
@@ -1671,7 +1658,7 @@ which features are most associated with patient survival using the
 Kontextual values as an example. To do so, survival data is extracted
 from <code>kerenSPE</code> and converted into the survival object
 <code>kerenSurv</code>.</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extracting survival data</span></span>
 <span><span class="va">survData</span> <span class="op">=</span> <span class="va">kerenSPE</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -1687,7 +1674,7 @@ from <code>kerenSPE</code> and converted into the survival object
 using <code>prepMatrix</code>. Note, to extract the original L-function
 values, specify <code>column = "original"</code> in
 <code>prepMatrix</code>.</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Converting Kontextual result into data matrix</span></span>
 <span><span class="va">kontextMat</span> <span class="op">=</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/prepMatrix.html" class="external-link">prepMatrix</a></span><span class="op">(</span><span class="va">kerenKontextual</span><span class="op">)</span></span>
 <span></span>
@@ -1699,7 +1686,7 @@ values, specify <code>column = "original"</code> in
 <p>Finally, both the Kontextual matrix and survival object are passed
 into <code>colTest</code>, with <code>type = "survival"</code> to obtain
 the survival results.</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Running survival analysis</span></span>
 <span><span class="va">survivalResults</span> <span class="op">=</span> <span class="fu">spicyR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/spicyR/man/colTest.html" class="external-link">colTest</a></span><span class="op">(</span><span class="va">kontextMat</span>, <span class="va">kerenSurv</span>, type <span class="op">=</span> <span class="st">"survival"</span><span class="op">)</span></span>
 <span></span>
@@ -1720,39 +1707,39 @@ the survival results.</p>
 <span><span class="co">#&gt; Other_Immune__NK__myeloid                   Other_Immune__NK__myeloid</span></span>
 <span><span class="co">#&gt; Endothelial__CD8_T_cell__tissue       Endothelial__CD8_T_cell__tissue</span></span></code></pre>
 <p>As we can see from the results
-<code>Mesenchymal__Macrophages__tissue</code> is the most significant
+<code>CD8_T_cell__Keratin_Tumour__immune</code> is the most significant
 pairwise relationship which contributes to patient survival. That is the
-relationship between Mesenchymal cells and macrophage cells, relative to
-the parent population of all tissue cells. We can see that there is a
+relationship between CD8 T cells and Keratin+ Tumour cells, relative to
+the parent population of all immune cells. We can see that there is a
 negative coefficient associated with this relationship, which tells us a
-decrease in localisation of Mesenchymal and Macrophages leads to poorer
-survival outcomes for patients.</p>
-<p>The association between <code>Mesenchymal__Macrophages__tissue</code>
-and survival can also be visualised on a Kaplan-Meier curve. We must
+decrease in localisation of CD8_T_cell and Keratin+ Tumour leads to
+poorer survival outcomes for patients.</p>
+<p>We can visualise this association sing a Kaplan-Meier curve. We must
 first extract the Kontextual values of this relationship across all
-images. Next we determine if Mesenchymal and Macrophages are relatively
-attracted or avoiding in each image, by comparing the Kontextual value
-in each image to the median Kontextual value. Finally we plot the
-Kaplan-Meier curve using the <code>ggsurvfit</code> package.</p>
-<p>As shown below, when Mesenchymal and Macrophages are relatively more
-dispersed to one another, patients tend to have worse survival
+images. Next we determine if CD8 T cells and Keratin+ Tumours are
+relatively attracted or avoiding in each image, by comparing the
+Kontextual value in each image to the median Kontextual value. Finally
+we plot the Kaplan-Meier curve using the <code>ggsurvfit</code>
+package.</p>
+<p>As shown below, when CD8 T cells and Keratin+ Tumours are relatively
+more dispersed to one another, patients tend to have worse survival
 outcomes.</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Selecting most significant relationship</span></span>
-<span><span class="va">survRelationship</span> <span class="op">=</span> <span class="va">kontextMat</span><span class="op">[[</span><span class="st">"Mesenchymal__Macrophages__tissue"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">survRelationship</span> <span class="op">=</span> <span class="va">kontextMat</span><span class="op">[[</span><span class="st">"CD8_T_cell__Keratin_Tumour__immune"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">survRelationship</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">survRelationship</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">survRelationship</span><span class="op">)</span>, <span class="st">"Localised"</span>, <span class="st">"Dispersed"</span><span class="op">)</span></span>
 <span>    </span>
 <span><span class="co"># Plotting Kaplan-Meier curve</span></span>
 <span><span class="fu"><a href="http://www.danieldsjoberg.com/ggsurvfit/reference/survfit2.html" class="external-link">survfit2</a></span><span class="op">(</span><span class="va">kerenSurv</span> <span class="op">~</span> <span class="va">survRelationship</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="http://www.danieldsjoberg.com/ggsurvfit/reference/ggsurvfit.html" class="external-link">ggsurvfit</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="http://www.danieldsjoberg.com/ggsurvfit/reference/add_pvalue.html" class="external-link">add_pvalue</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Mesenchymal__Macrophages__tissue"</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"CD8_T_cell__Keratin_Tumour__immune"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/kontextSurvPlot-1.png" width="480"></p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="can-i-visualise-changes-in-specific-markers-as-spatial-proximity-between-cell-types-change">Can I visualise changes in specific markers as spatial proximity
-between cell types change?<a class="anchor" aria-label="anchor" href="#can-i-visualise-changes-in-specific-markers-as-spatial-proximity-between-cell-types-change"></a>
+<h4 class="tabset" id="are-there-changes-in-cell-states-associated-with-cell-localisation">Are there changes in cell states associated with cell
+localisation?<a class="anchor" aria-label="anchor" href="#are-there-changes-in-cell-states-associated-with-cell-localisation"></a>
 </h4>
 <p>Changes in cell phenotype can be analytically framed as the change in
 abundance of a gene or protein within a particular cell type. We can
@@ -1775,13 +1762,13 @@ proximity (<code>getDistances</code>) and abundance
 values will then be stored in the <code>reducedDims</code> slot of the
 <code>SpatialExperiment</code> object under the names
 <code>distances</code> and <code>abundances</code> respectively.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/getDistances.html" class="external-link">getDistances</a></span><span class="op">(</span><span class="va">kerenSPE</span>,</span>
 <span>                    maxDist <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/getAbundances.html" class="external-link">getAbundances</a></span><span class="op">(</span><span class="va">kerenSPE</span>,</span>
 <span>                     r <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">kerenSPE</span>, <span class="st">"abundances"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">kerenSPE</span>, <span class="st">"abundances"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></code></pre></div>
 <p>First, let’s examine the same effect observed earlier with
 Kontextual. To avoid redefining cell types we’ll examine the distance
@@ -1798,7 +1785,7 @@ the <code>fdr</code> statistic for this relationship is significant, and
 with a negative <code>coef</code>, or coefficient value, indicating that
 the expression of p53 in keratin/tumour cells decreases as distance from
 macrophages increases.</p>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stateChanges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/calcStateChanges.html" class="external-link">calcStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -1826,7 +1813,7 @@ keratin/tumour cells as distance to macrophages increase.</p>
 <p>These results allow us to essentially arrive at the same result as
 Kontextual, which calculated a localisation between p53+ keratin/tumour
 cells and macrophages in the wider context of keratin/tumour cells.</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/plotStateChanges.html" class="external-link">plotStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -1842,7 +1829,7 @@ cells and macrophages in the wider context of keratin/tumour cells.</p>
 <span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">image</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-example2-1.png" width="576"></p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">$</span><span class="va">scatter</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"p53 expression in Keratin_Tumour"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"Distance of Keratin_Tumour to Macrophages"</span><span class="op">)</span></span></code></pre></div>
@@ -1873,7 +1860,7 @@ the entire dataset. Here, we’ve calculated all state changes across all
 images in case you would like to have a play, but first we’ll be taking
 a closer examination at the most significant interactions found within
 image 6 of the Keren et al. dataset.</p>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stateChanges</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/calcStateChanges.html" class="external-link">calcStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -1917,7 +1904,7 @@ expression HLA class I.</p>
 cells, tasked with presenting internal cell antigens for recognition by
 the immune system, marking aberrant cells for destruction by either CD8+
 T cells or NK cells.</p>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/plotStateChanges.html" class="external-link">plotStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -1933,14 +1920,14 @@ T cells or NK cells.</p>
 <span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">image</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-example3-1.png" width="576"></p>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">$</span><span class="va">scatter</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"HLA_Class_1 expression in Keratin_Tumour"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"Distance of Keratin_Tumour to Macrophages"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-example3-2.png" width="576"></p>
 <p>Now, we can take a look at the top 10 most significant results across
 all images.</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stateChanges</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;        imageID primaryCellType otherCellType     marker         coef</span></span>
 <span><span class="co">#&gt; 69468       37     Endothelial        Tumour       Lag3 -0.001621517</span></span>
@@ -1990,7 +1977,7 @@ artefacts?</p>
 </li>
 </ol>
 </div>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/plotStateChanges.html" class="external-link">plotStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -2008,7 +1995,7 @@ artefacts?</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"CD20 expression in CD4_T_cell"</span>,</span>
 <span>       x <span class="op">=</span> <span class="st">"Distance of B_cell to CD4_T_cell"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-contamination-1.png" width="576"></p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">$</span><span class="va">scatter</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-contamination-2.png" width="576"></p>
 <p>So why are T cells expressing CD20? This brings us to a key
@@ -2050,10 +2037,10 @@ perfect solution for the issue of contamination. As we can see, despite
 factoring in contamination into our linear model, the correlation
 between B cell density and CD20 expression in CD4+ T cells remains one
 of the most significant interactions in our model.</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kerenSPE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/calcContamination.html" class="external-link">calcContamination</a></span><span class="op">(</span><span class="va">kerenSPE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Growing trees.. Progress: 57%. Estimated remaining time: 24 seconds.</span></span></code></pre>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">#&gt; Growing trees.. Progress: 53%. Estimated remaining time: 28 seconds.</span></span></code></pre>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stateChangesCorrected</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/calcStateChanges.html" class="external-link">calcStateChanges</a></span><span class="op">(</span></span>
 <span>  cells <span class="op">=</span> <span class="va">kerenSPE</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"distances"</span>,</span>
@@ -2112,7 +2099,7 @@ treated as such for the purposes of evaluation.</p>
 <p>Plotting the relationship between false positives and true positives,
 we’d expect the contamination correction to be greatest in relationships
 which are detected to be more significant.</p>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cellTypeMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"CD56"</span>, <span class="st">"CD11c"</span>, <span class="st">"CD68"</span>, <span class="st">"CD45"</span>, <span class="st">"CD20"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">values</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span></span>
@@ -2126,7 +2113,7 @@ which are detected to be more significant.</p>
 <p>Here, we zoom in on the ROC curve where the top 100 lowest p values
 occur, where we indeed see more true positives than false positives with
 contamination correction.</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">TP</span>, y <span class="op">=</span> <span class="va">FP</span>, colour <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">100</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1000</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Cell state marker"</span>, x <span class="op">=</span> <span class="st">"Cell type marker"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">values</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/spatiomark-roc-zoom-1.png" width="480"></p>
 <div class="question">
@@ -2146,7 +2133,7 @@ extracts the coefficients, or the <code>coef</code> column of
 <code>stateChanges</code> by default. To use the t values instead,
 specify <code>column = "tval"</code> in the <code>prepMatrix</code>
 function.</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Preparing features for Statial</span></span>
 <span><span class="va">stateMat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/prepMatrix.html" class="external-link">prepMatrix</a></span><span class="op">(</span><span class="va">stateChanges</span><span class="op">)</span></span>
 <span></span>
@@ -2192,7 +2179,7 @@ As there is a negative coeffcient associated with this relationship,
 which tells us that higher HLA class I expression in keratin/tumour
 cells nearby mesenchymal cell populations lead to poorer survival
 outcomes for patients.</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Selecting the most significant relationship</span></span>
 <span><span class="va">survRelationship</span> <span class="op">=</span> <span class="va">stateMat</span><span class="op">[[</span><span class="st">"Keratin_Tumour__Mesenchymal__HLA_Class_1"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">survRelationship</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">survRelationship</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">survRelationship</span><span class="op">)</span>, <span class="st">"Higher expressed in close cells"</span>, <span class="st">"Lower expressed in close cells"</span><span class="op">)</span></span>
@@ -2214,14 +2201,14 @@ outcomes for patients.</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="how-do-we-generate-a-molecular-representation-for-each-individual">How do we generate a molecular representation for each
-individual?<a class="anchor" aria-label="anchor" href="#how-do-we-generate-a-molecular-representation-for-each-individual"></a>
+<h4 class="tabset" id="how-do-we-generate-a-molecular-representation-for-each-individual">How do we generate a molecular representation for
+each individual?<a class="anchor" aria-label="anchor" href="#how-do-we-generate-a-molecular-representation-for-each-individual"></a>
 </h4>
-<p>The next section of this workshop will be dedicated to scFeatures - a
-straightforward package for generating a suite of molecular
-representations regarding a patient, taking a matrix of
-<code>proteins x cells</code> as input. The molecular representation is
-interpretable and hence facilitates downstream analysis of the
+<p>The next section of this workshop will be dedicated to
+<code>scFeatures</code> - a straightforward package for generating a
+suite of molecular representations regarding a patient, taking a matrix
+of <code>proteins x cells</code> as input. The molecular representation
+is interpretable and hence facilitates downstream analysis of the
 individual. In general, <code>scFeatures</code> generates features
 across six categories representing different molecular views of cellular
 characteristics. These include:</p>
@@ -2266,7 +2253,7 @@ specify <code>type = spatial_p</code> to reflect that we have spatial
 proteomics data and <code>feature_types = proportion_raw</code> to
 indicate we intend to calculate cell type proportion for each of the
 region-specific sub-cell types.</p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">kerenSPE</span>, <span class="st">"intensities"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">kerenSPE</span><span class="op">$</span><span class="va">imageID</span></span>
 <span><span class="va">celltype</span> <span class="op">&lt;-</span> <span class="va">kerenSPE</span><span class="op">$</span><span class="va">cellType</span></span>
@@ -2276,9 +2263,9 @@ region-specific sub-cell types.</p>
 <span><span class="va">scfeatures_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scFeatures/man/scFeatures.html" class="external-link">scFeatures</a></span><span class="op">(</span><span class="va">matrix</span>, type <span class="op">=</span> <span class="st">"spatial_p"</span>,</span>
 <span>                                sample <span class="op">=</span> <span class="va">sample</span>, celltype <span class="op">=</span> <span class="va">celltype</span>, spatialCoords <span class="op">=</span> <span class="va">spatialCoords</span>,</span>
 <span>                                ncores <span class="op">=</span> <span class="fl">32</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"scfeaturesResult.rda"</span>, package <span class="op">=</span> <span class="st">"ScdneySpatial"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"scfeaturesResult.rda"</span>, package <span class="op">=</span> <span class="st">"ScdneySpatial"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">scfeatures_result</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;        B_cell  CD4_T_cell CD8_T_cell           DC  DC_or_Mono</span></span>
 <span><span class="co">#&gt; 1 0.221985678 0.047029224 0.03348171 0.0003870718 0.034062319</span></span>
@@ -2290,7 +2277,7 @@ region-specific sub-cell types.</p>
 of 13 dataframes, which each represent a different molecular feature of
 a patient. Below, we give an example visualisation of the raw cell type
 proportions for each patient.</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">feature</span> <span class="op">&lt;-</span> <span class="va">scfeatures_result</span><span class="op">$</span><span class="va">proportion_raw</span></span>
 <span></span>
 <span><span class="va">feature</span><span class="op">$</span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">feature</span><span class="op">)</span>, <span class="st">"_cond_"</span><span class="op">)</span>, <span class="va">`[`</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -2304,17 +2291,17 @@ proportions for each patient.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Proportion raw feature"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/scFeaturesPlot-1.png" width="700"></p>
 </div>
-<div class="section level4">
-<h4 id="how-good-are-our-metrics-at-predicting-patient-survival">How good are our metrics at predicting patient survival?<a class="anchor" aria-label="anchor" href="#how-good-are-our-metrics-at-predicting-patient-survival"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="module-7-patient-classification">Module 7: Patient classification<a class="anchor" aria-label="anchor" href="#module-7-patient-classification"></a>
+</h3>
 <p>Finally we demonstrate how we can use the Bioconductor package
 <code>ClassifyR</code> to perform patient classification with the
-features generated from <code>Statial</code>. In addition to
-<code>Kontextual</code>, <code>SpatioMark</code>, and
-<code>scFeatures</code> values, we also calculate cell type proportions
-and region proportions using the <code>getProp</code> function in
-<code>spicyR</code>. Here we perform 5 fold cross validation with 20
-repeats, using a CoxPH model for survival classification.</p>
+features generated from <code>Statial</code> and
+<code>scFeatures</code>. In addition to this, we also calculate cell
+type proportions and region proportions using the <code>getProp</code>
+function in <code>spicyR</code>. Here we perform 5 fold cross validation
+with 20 repeats, using a CoxPH model for survival classification.</p>
 <p>To prepare our metrics for classification, first we must convert our
 dataframes into matrix format. This can be accomplished, as we did
 earlier, with the <code>prepMatrix</code> function of
@@ -2323,7 +2310,7 @@ earlier, with the <code>prepMatrix</code> function of
 <code>SpatioMark</code> earlier, we will now be generating matrices for
 the <code>SpatioMark</code> corrected distance metric, and the abundance
 metrics.</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Distances Corrected Matrix</span></span>
 <span><span class="va">stateMatCorDist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://sydneybiox.github.io/Statial/reference/prepMatrix.html" class="external-link">prepMatrix</a></span><span class="op">(</span><span class="va">stateChangesCorrected</span><span class="op">)</span></span>
 <span><span class="va">stateMatCorDist</span> <span class="op">&lt;-</span> <span class="va">stateMatCorDist</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">kerenSurv</span><span class="op">)</span>, <span class="op">]</span></span>
@@ -2365,7 +2352,7 @@ list into the <code>crossValidate</code> function of
 and 5 folds of cross validation with 20 repeats. We will also be using a
 feature selection algorithm selecting for 10 features for each
 metric.</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">statialFeatureList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`SpatioMark Distances` <span class="op">=</span> <span class="va">stateMat</span>,</span>
 <span>                           `SpatioMark Corrected Distances` <span class="op">=</span> <span class="va">stateMatCorDist</span>,</span>
 <span>                           `SpatioMark Abundances` <span class="op">=</span> <span class="va">stateMatAbund</span>,</span>
@@ -2389,7 +2376,7 @@ metric.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Next, we use the <code>performancePlot</code> function to assess the
 C-index from each repeat of the 5-fold cross-validation.</p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://sydneybiox.github.io/ClassifyR/reference/performancePlot.html" class="external-link">performancePlot</a></span><span class="op">(</span><span class="va">kerenCV</span>,</span>
 <span>  characteristicsList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Assay Name"</span><span class="op">)</span>,</span>
 <span>  orderingList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Assay Name"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">statialFeatureList</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scfeatures_result</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -2405,7 +2392,7 @@ the average gene expression of each marker in each patient. To examine
 another variable which might be of interest, we used recurrence as
 another outcome to determine whether our spatial metrics could uncover
 signal.</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="va">survData</span><span class="op">$</span><span class="va">RECURRENCE_LABEL</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">survData</span><span class="op">$</span><span class="va">imageID</span></span>
 <span></span>
@@ -2425,7 +2412,7 @@ signal.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Again, using <code>performancePlot</code>, this time for recurrence,
 we found better performance in select spatial metrics.</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://sydneybiox.github.io/ClassifyR/reference/performancePlot.html" class="external-link">performancePlot</a></span><span class="op">(</span><span class="va">kerenCV_recurrence</span>,</span>
 <span>  characteristicsList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Assay Name"</span><span class="op">)</span>,</span>
 <span>  orderingList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Assay Name"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">statialFeatureList</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scfeatures_result</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -2434,7 +2421,7 @@ we found better performance in select spatial metrics.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">5.5</span>, xmax <span class="op">=</span> <span class="fl">14.5</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, ymax <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"blue"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">14.5</span>, xmax <span class="op">=</span> <span class="fl">19</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, ymax <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"green"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="workshop_material_files/figure-html/perfPlot-recurrence-1.png" width="700"></p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; R Under development (unstable) (2023-11-22 r85609)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -2550,7 +2537,7 @@ we found better performance in select spatial metrics.</p>
 <span><span class="co">#&gt; [117] KEGGREST_1.43.0               Rtsne_0.16                   </span></span>
 <span><span class="co">#&gt; [119] shape_1.4.6                   limma_3.59.1                 </span></span>
 <span><span class="co">#&gt; [121] Rsamtools_2.19.2              filelock_1.0.2               </span></span>
-<span><span class="co">#&gt; [123] pkgconfig_2.0.3               xml2_1.3.5                   </span></span>
+<span><span class="co">#&gt; [123] pkgconfig_2.0.3               xml2_1.3.6                   </span></span>
 <span><span class="co">#&gt; [125] ggpubr_0.6.0                  GenomicAlignments_1.39.0     </span></span>
 <span><span class="co">#&gt; [127] spatstat.sparse_3.0-3         ape_5.7-1                    </span></span>
 <span><span class="co">#&gt; [129] viridisLite_0.4.2             xtable_1.8-4                 </span></span>
@@ -2626,8 +2613,7 @@ we found better performance in select spatial metrics.</p>
 <span><span class="co">#&gt; [269] GenomicFeatures_1.55.1        gplots_3.1.3                 </span></span>
 <span><span class="co">#&gt; [271] magick_2.8.1                  metapod_1.11.0               </span></span>
 <span><span class="co">#&gt; [273] locfit_1.5-9.8                svgPanZoom_0.3.4             </span></span>
-<span><span class="co">#&gt; [275] jsonlite_1.8.7                brglm_0.7.2</span></span></code></pre>
-</div>
+<span><span class="co">#&gt; [275] jsonlite_1.8.8                brglm_0.7.2</span></span></code></pre>
 </div>
 </div>
   </div>
@@ -2644,7 +2630,7 @@ we found better performance in select spatial metrics.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Farhan Ameen, Alex Qin, Nick Robertson, Ellis Patrick, Shila Ghazanfar.</p>
+<p>Developed by Farhan Ameen, Alex Qin, Nick Robertson, Shila Ghazanfar, Ellis Patrick.</p>
 </div>
 
 <div class="pkgdown">
