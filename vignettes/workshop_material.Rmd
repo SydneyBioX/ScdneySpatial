@@ -2060,7 +2060,7 @@ feature selection algorithm selecting for 10 features for each metric.
 statialFeatureList <- list(`SpatioMark Distances` = stateMat,
                            `SpatioMark Corrected Distances` = stateMatCorDist,
                            `SpatioMark Abundances` = stateMatAbund,
-                           `SpatioMark Corrected Abundances` = stateMatCorAbund,
+                           `SpatioMark Corrected Abundasnces` = stateMatCorAbund,
                            `Kontextual` = kontextMat,
                            `Region Marker Means` = cellTypeRegionMeans,
                            `Region Proportions` = regionProp)
@@ -2145,6 +2145,12 @@ performancePlot(kerenCV_recurrence,
   geom_rect(aes(xmin = 7.5, xmax = 16.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
   geom_rect(aes(xmin = 16.5, xmax = 21, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
+::: question
+**Questions**
+
+1.  Discuss among your table why spatial metrics might perform better for recurrence compared to survival.
+:::
+
 
 ```{r sessionInfo}
 sessionInfo()
