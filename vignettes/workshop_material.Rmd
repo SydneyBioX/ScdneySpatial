@@ -2081,6 +2081,12 @@ kerenCV = crossValidate(
   nCores = nCores
 )
 ```
+```{r}
+load(system.file("extdata", "featureList.rda", package = "ScdneySpatial"))
+```
+```{r}
+load(system.file("extdata", "kerenCV.rda", package = "ScdneySpatial"))
+```
 
 Next, we use the `performancePlot` function to assess the C-index from
 each repeat of the 5-fold cross-validation.
@@ -2126,6 +2132,9 @@ kerenCV_recurrence = crossValidate(
 Again, using `performancePlot`, this time for recurrence, we found
 better performance in select spatial metrics.
 
+```{r}
+load(system.file("extdata", "recurrenceCV.rda", package = "ScdneySpatial"))
+```
 ```{r perfPlot-recurrence}
 performancePlot(kerenCV_recurrence,
   characteristicsList = list(x = "Assay Name"),
