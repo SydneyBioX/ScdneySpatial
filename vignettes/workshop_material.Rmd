@@ -2060,7 +2060,7 @@ feature selection algorithm selecting for 10 features for each metric.
 statialFeatureList <- list(`SpatioMark Distances` = stateMat,
                            `SpatioMark Corrected Distances` = stateMatCorDist,
                            `SpatioMark Abundances` = stateMatAbund,
-                           `SpatioMark Corrected Abundasnces` = stateMatCorAbund,
+                           `SpatioMark Corrected Abundances` = stateMatCorAbund,
                            `Kontextual` = kontextMat,
                            `Region Marker Means` = cellTypeRegionMeans,
                            `Region Proportions` = regionProp)
