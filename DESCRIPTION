@@ -4,8 +4,8 @@ Version: 2.0.0
 Authors@R: c(person(given = "Farhan", family = "Ameen", role = c("aut", "cre"), email = "farhan.ameen@sydney.edu.au"),
       person("Alex", "Qin", email = "alex.qin@sydney.edu.au", role = c("aut")),
       person("Nick", "Robertson", email = "nicholas.robertson@sydney.edu.au", role = c("aut")),
-      person(given = "Ellis", family = "Patrick", role = c("aut"), email = "ellis.patrick@sydney.edu.au"),
-      person(given = "Shila", family = "Ghazanfar", role = c("aut"), email = "shila.ghazanfar@sydney.edu.au"))
+      person(given = "Shila", family = "Ghazanfar", role = c("aut"), email = "shila.ghazanfar@sydney.edu.au"),
+      person(given = "Ellis", family = "Patrick", role = c("aut"), email = "ellis.patrick@sydney.edu.au"))
 Description: This workshop introduces an analysitical framwork for analysisng data from high dimensional spatial omics technologies, 
     using functionality from packages developed by the Sydney Precision Data Science Center.
 License: MIT + file LICENSE

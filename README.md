@@ -1,4 +1,5 @@
-![](vignettes/images/banner.png)
+
+<img src="vignettes/images/banner.png" style="border: 0px"/>
 
 ## Overview
 

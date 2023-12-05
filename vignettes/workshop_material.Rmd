@@ -1,6 +1,9 @@
 ---
 title: "Unlocking single cell spatial omics analyses with scdney"
-output: rmarkdown::html_vignette
+output:
+  #rmarkdown::html_vignette
+  rmarkdown::html_document:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Unlocking single cell spatial omics analyses with scdney}
   %\VignetteEncoding{UTF-8}
@@ -16,7 +19,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   cache = FALSE,
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  #eval = FALSE
 )
 ```
 
@@ -30,8 +34,10 @@ knitr::opts_chunk$set(
 }
 </style>
 ```
-Farhan Ameen$^{1,2,3}$, Alex Qin$^{1,2,3}$, Nick Robertson$^{1,2,3}$, Shila Ghazanfar$^{2,3}$, Ellis
-Patrick$^{1,2,3}$.
+
+*Presenting Authors*
+
+Farhan Ameen$^{1,2,3}$, Alex Qin$^{1,2,3}$, Nick Robertson$^{1,2,3}$, Ellis Patrick$^{1,2,3}$.
 
 $^1$ Westmead Institute for Medical Research, University of Sydney,
 Australia\
@@ -42,7 +48,7 @@ Australia
 
 <br/> Contact: ellis.patrick\@sydney.edu.au
 
-## Overview
+# Overview
 
 Understanding the interplay between different types of cells and their
 immediate environment is critical for understanding the mechanisms of
@@ -108,7 +114,9 @@ more information visit: <https://sydneybiox.github.io/scdney/>.
 
 # Workshop
 
-## Installation
+## Setup
+
+### Installation
 
 ```{r install, warning=FALSE, message=FALSE, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -119,7 +127,7 @@ BiocManager::install(c( "simpleSeg", "cytomapper", "scClassify", "scHOT", "FuseS
 ```
 
 
-## Download datasets
+### Download datasets
 
 Please download these datasets before you start the workshop
 ```{r}
@@ -129,7 +137,7 @@ kerenSPE = SpatialDatasets::spe_Keren_2018()
 ```
 
 
-## Load packages
+### Load packages
 
 ```{r library, warning=FALSE, message=FALSE}
 
@@ -172,7 +180,8 @@ options("restore_SingleCellExperiment_show" = TRUE)
 
 ```
 
-## The data
+
+## Module 1: Data exploration {.tabset}
 
 In this workshop, we will be working with two datasets to explore how
 biological phenotypes, cellular interactions, and patterns of gene
@@ -196,17 +205,15 @@ We will use two motivating datasets:
     question we will address with this dataset is if we can identify key
     transcriptomic drivers of the developing brain?
 
-## Data visualisation and exploration
-
 The purpose of the this section is primarily to introduce the
 `SpatialExperiment` class which is used to store information from the
 imaging experiments in R. The goal will be to get comfortable enough
 manipulating and exploring these objects so that you can progress
 through the remainder of the workshop comfortably. Here we will download
-a dataset stored in the `STexampleData` R package , examine the
+a dataset stored in the `STexampleData` R package, examine the
 structure, visualise the data and perform some exploratory analyses.
 
-### SeqFISH mouse embryo
+### Spatial transcriptomics - SeqFISH mouse embryo
 
 Here we download the seqFISH mouse embryo data. This comes in the format
 of a `SpatialExperiment` object, where summarized information from an
@@ -300,12 +307,8 @@ g_all
 
 ```
 
-At this point we will pause our examination of the seqFISH dataset that
-is in the object `spe`, and turn over to the second example dataset. In
-the second part we will revisit this data for performing `scHOT`
-testing.
 
-### MIBI-TOF breast cancer
+### Spatial proteomics - MIBI-TOF breast cancer
 
 As part of scdney package infrastructure, we provide several
 pre-processed datasets which can be loaded in with the `SpatialDatasets`
@@ -370,9 +373,9 @@ kerenSPE <- scater::runUMAP(kerenSPE, exprs_values = "intensities", name = "UMAP
 # try to answer the question here!
 ```
 
-## Cell segmentation & evaluation
+## Module 2: Cell segmentation {.tabset}
 
-### Reading images
+### How do I load my images into R?
 
 To load in our images we use the `loadImages` function from
 `cytomapper`, here we use the patient 5 image from Keren et al. as an
@@ -402,7 +405,13 @@ channelNames(image5) = c("Au", "Background", "Beta catenin", "Ca", "CD11b", "CD1
 3.  Challenge: What is the dimension of the image5 image?
 :::
 
-### Visualise an image
+
+```{r image5-Q}
+# Answer questions here
+```
+
+
+### How do I visualise my images?
 
 We can visualise this image to see what we have read in. Lets highlight
 4 markers.
@@ -614,7 +623,7 @@ cellSize[2:length(cellSize)] |>
 2.  We only have one image here, but how would you check the quality of 100 images?
 :::
 
-### Summarising images into cell features?
+### Im happy with my segmentation, how do I create an `SPE` object?
 
 With our segmentation `masks` we can convert our image to a
 `SpatialExperiment` object using the `measureObjects` function in
@@ -641,12 +650,9 @@ cells <- cytomapper::measureObjects(
 cells
 ```
 
-## Feature normalisation
+## Module 3: Feature normalisation {.tabset}
 
 ### Are the intensities of markers consistent across images?
-
-Now we know where cells are, that is their x-y coordinate, and the average 
-expression of various markers within each cell.
 
 Before moving onto annotating the cell types, we should check if the
 marker intensities of each cell require any transformation or
@@ -664,6 +670,7 @@ ggplot(proteinIntensities, aes(x = CD45, colour = imageID)) +
   geom_density() +
   theme(legend.position = "none")
 ```
+
 
 ### How can I transform and normalise my data?
 
@@ -691,7 +698,6 @@ kerenSPE <- normalizeCells(
 normProteinIntensities = kerenSPE |> 
   join_features(features = rownames(kerenSPE), shape = "wide", assay = "normIntensities")
 
-
 ggplot(normProteinIntensities, aes(x = CD3, colour = imageID)) +
   geom_density() +
   theme(legend.position = "none")
@@ -703,17 +709,17 @@ ggplot(normProteinIntensities, aes(x = CD3, colour = imageID)) +
 1.  CD3 is a marker which characterises T cells, plot the distribution
     of CD3. What does it look like? What does this tell us about T cells
     in our dataset.
+    
+2. If we set `cellType == "CD4_T_cell"` is this concordant with the conclusion you made in question 1. 
 :::
 
 ```{r normaliseQ1}
 # Answer question here
 ```
 
-## Cell type annotation
+## Module 4: Cell type annotation {.tabset}
 
 ### Can we use a clustering approach to identify cell types?
-
-#### Clustering cell types
 
 Here we cluster using the `runFuseSOM` function from `FuseSOM`. We have
 chosen to specify the same subset of markers used in the original
@@ -735,7 +741,7 @@ kerenSPE <- runFuseSOM(
 
 ```
 
-#### How do I interpret my clusters?
+### How do I interpret my clusters?
 
 We can begin the process of understanding what each of these cell
 clusters are by using the `plotGroupedHeatmap` function from `scater`.
@@ -775,7 +781,7 @@ regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
 ```
 
 
-#### What is an appropriate number of clusters?
+### What is an appropriate number of clusters?
 
 Great question! There is no right answer here, however there are several
 statistics which can be used to estimate the "true" number of clusters.
@@ -817,7 +823,7 @@ scater::plotReducedDim(
 ::: question
 **Questions**
 
-1.  How does this UMAP compare to the original UMAP.
+1.  How does this UMAP compare to the original UMAP?
 :::
 
 ```{r clusteringQ2}
@@ -912,7 +918,6 @@ kerenSPE_test$classifiedCellTypes = newCellTypes
 ```
 
 
-
 ### Viewing images
 
 We can look at the distribution of cells in an image. Here we compare
@@ -950,6 +955,8 @@ regionMap(kerenSPE_test, cellType = "classifiedCellTypes", region = "cellType") 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   ggtitle("Original vs Classified")
 ```
+
+
 ::: question
 **Questions**
 
@@ -958,9 +965,11 @@ regionMap(kerenSPE_test, cellType = "classifiedCellTypes", region = "cellType") 
 
 
 
-## Analytical techniques
+## Module 5: Single sample analysis {.tabset}
 
-### scHOT analysis of the developing brain
+In this module we focus on examining gene expression patterns in a single image, from the SeqFISH mouse embryo dataset. 
+
+### Are there genes which change expression across space? 
 
 Here we will ask which gene patterns we observe to be changing across
 the `spe$gutRegion` cell type in space. Note that we want to assess the
@@ -1161,28 +1170,13 @@ development of individual parts of the gut tube.
 
 ```
 
-Now that we have assessed genes varying in expression in space, let's
-look further into the IMC data where we will make use of the multiple
-samples to perform clustering and extract some biological understanding.
 
-## How do I make sense of and summarise spatially defined cellular interactions that occur in my data?
 
-Having now clustered and annotated our data, we now want to see what
-biological conclusions and hypotheses we can draw from it.
+## Module 6: Multi-sample analysis
 
-For this workshop, we will use 2 packages, `Statial` and `scFeatures`.
-`Statial` is the latest of scdney bioconductor packages aimed at
-addressing biological questions relating to cellular interactions
-*in-situ*. For example, we can answer questions such as:
+The following module will examine how we can extract different spatial and molecular features from multi-sample datasets. These features can be used to extract some biological understanding. Here we use the MIBI-TOF breast cancer dataset. 
 
-\- Which cell types localise with each other?
-
-\- How does the functionality of a cell affect its localisation with
-other cell types?
-
-\- How do the phenotypes of cells change during localisation?
-
-### How do I determine which cell types are interacting with each other in my data?
+### Can I measure if two cell types are co-localised? {.tabset}
 
 `Kontextual` is a part of the `Statial` package which models spatial
 relationships between cells in the context of hierarchical cell lineage
@@ -1203,10 +1197,10 @@ function defines their spatial localisation.
 
 #### Cell type hierarchy
 
-A key input for Kontextual is an annotation of cell type hierarchies. We
+A key input for `Kontextual` is an annotation of cell type hierarchies. We
 will need these to organise all the cells present into cell state
 populations or clusters, e.g. all the different B cell types are put in
-a vector called bcells.
+a vector called `bcells.`
 
 To make our lives easier, we will start by defining these here. I'm
 happy to talk about how we use our bioconductor package
@@ -1294,14 +1288,16 @@ We can calculate these relationships for a single radius.
 p53_Kontextual <- Kontextual(
   cells = kerenSPE,
   image = 6,
-  r = 50,
-  from = "p53_Tumour",
-  to = "Immune",
-  parent = c("p53", "Tumour"),
+  r = 100,
+  from = "Immune",
+  to = "p53_Tumour",
+  parent = c("p53_Tumour", "Tumour"),
   cellType = "cellTypeNew"
 )
 
 p53_Kontextual
+
+
 
 ```
 
@@ -1318,13 +1314,12 @@ original L-function is not able to identify localisation at any value of
 radii.
 
 ```{r kontextCurve, fig.width=6, fig.height=4}
-
 curves <- kontextCurve(
   cells = kerenSPE,
   image = "6",
-  from = "p53_Tumour",
-  to = "Immune",
-  parent = c("p53+Tumour", "Tumour"),
+  from = "Immune",
+  to = "p53_Tumour",
+  parent = c("p53_Tumour", "Tumour"),
   rs = seq(10, 510, 100),
   cellType = "cellTypeNew",
   cores = nCores
@@ -1433,38 +1428,37 @@ head(survivalResults)
 
 ```
 
-As we can see from the results `Mesenchymal__Macrophages__tissue` is the
+As we can see from the results `CD8_T_cell__Keratin_Tumour__immune` is the
 most significant pairwise relationship which contributes to patient
-survival. That is the relationship between Mesenchymal cells and
-macrophage cells, relative to the parent population of all tissue cells.
+survival. That is the relationship between CD8 T cells and
+Keratin+ Tumour cells, relative to the parent population of all immune cells.
 We can see that there is a negative coefficient associated with this
-relationship, which tells us a decrease in localisation of Mesenchymal
-and Macrophages leads to poorer survival outcomes for patients.
+relationship, which tells us a decrease in localisation of CD8_T_cell
+and Keratin+ Tumour leads to poorer survival outcomes for patients.
 
-The association between `Mesenchymal__Macrophages__tissue` and survival
-can also be visualised on a Kaplan-Meier curve. We must first extract
+We can visualise this association sing a Kaplan-Meier curve. We must first extract
 the Kontextual values of this relationship across all images. Next we
-determine if Mesenchymal and Macrophages are relatively attracted or
+determine if CD8 T cells and Keratin+ Tumours are relatively attracted or
 avoiding in each image, by comparing the Kontextual value in each image
 to the median Kontextual value. Finally we plot the Kaplan-Meier curve
 using the `ggsurvfit` package.
 
-As shown below, when Mesenchymal and Macrophages are relatively more
+As shown below, when CD8 T cells and Keratin+ Tumours are relatively more
 dispersed to one another, patients tend to have worse survival outcomes.
 
 ```{r kontextSurvPlot, fig.width=5, fig.height=4}
 # Selecting most significant relationship
-survRelationship = kontextMat[["Mesenchymal__Macrophages__tissue"]]
+survRelationship = kontextMat[["CD8_T_cell__Keratin_Tumour__immune"]]
 survRelationship = ifelse(survRelationship > median(survRelationship), "Localised", "Dispersed")
     
 # Plotting Kaplan-Meier curve
 survfit2(kerenSurv ~ survRelationship) |>
     ggsurvfit() +
     add_pvalue() +
-    ggtitle("Mesenchymal__Macrophages__tissue")
+    ggtitle("CD8_T_cell__Keratin_Tumour__immune")
 ```
 
-### Can I visualise changes in specific markers as spatial proximity between cell types change?
+### Are there changes in cell states associated with cell localisation? {.tabset}
 
 Changes in cell phenotype can be analytically framed as the change in
 abundance of a gene or protein within a particular cell type. We can
@@ -1850,9 +1844,9 @@ survfit2(kerenSurv ~ survRelationship) |>
 3.  Could you visualise representative images?
 :::
 
-### How do we generate a molecular representation for each individual?
+### How do we generate a molecular representation for each individual? {.tabset}
 
-The next section of this workshop will be dedicated to scFeatures - a
+The next section of this workshop will be dedicated to `scFeatures` - a
 straightforward package for generating a suite of molecular
 representations regarding a patient, taking a matrix of
 `proteins x cells` as input. The molecular representation is
@@ -1947,14 +1941,11 @@ ggplot(feature , aes(x = patient , y = value , fill = variable)) +
 
 ```
 
-### How good are our metrics at predicting patient survival?
+## Module 7: Patient classification
 
 Finally we demonstrate how we can use the Bioconductor package
 `ClassifyR` to perform patient classification with the features
-generated from `Statial`. In addition to `Kontextual`, `SpatioMark`, and
-`scFeatures` values, we also calculate cell type proportions and region
-proportions using the `getProp` function in `spicyR`. Here we perform 5
-fold cross validation with 20 repeats, using a CoxPH model for survival
+generated from `Statial` and `scFeatures`. In addition to this, we also calculate cell type proportions and region proportions using the `getProp` function in `spicyR`. Here we perform 5 fold cross validation with 20 repeats, using a CoxPH model for survival
 classification.
 
 To prepare our metrics for classification, first we must convert our
