@@ -1815,24 +1815,20 @@ head(survivalResults)
 :::
 
 For our state changes results,
-`Keratin_Tumour__Mesenchymal__HLA_Class_1` is the most significant
+`Macrophages__CD4_T_cell__CD138` is the most significant
 pairwise relationship which contributes to patient survival. That is,
-the relationship between HLA class I expression in keratin/tumour cells
-and their spatial proximity to mesenchymal cells. As there is a negative
-coeffcient associated with this relationship, which tells us that higher
-HLA class I expression in keratin/tumour cells nearby mesenchymal cell
-populations lead to poorer survival outcomes for patients.
+the relationship between CD138 expression in macrophages as their spatial proximity to CD4 T cells change. The positive coeffcient associated with this relationship tells us that lower CD138 expression in macrophages nearby CD4 T cells lead to poorer survival outcomes for patients.
 
 ```{r spatiomarkSurvPlot, fig.width=5, fig.height=4}
 # Selecting the most significant relationship
-survRelationship = stateMat[["Keratin_Tumour__Mesenchymal__HLA_Class_1"]]
+survRelationship = stateMat[["Macrophages__CD4_T_cell__CD138"]]
 survRelationship = ifelse(survRelationship > median(survRelationship), "Higher expressed in close cells", "Lower expressed in close cells")
     
 # Plotting Kaplan-Meier curve
 survfit2(kerenSurv ~ survRelationship) |>
     ggsurvfit() +
     add_pvalue() +
-    ggtitle("Keratin_Tumour__Mesenchymal__HLA_Class_1")
+    ggtitle("Macrophages__CD4_T_cell__CD138")
 
 ```
 
@@ -1941,6 +1937,57 @@ ggplot(feature , aes(x = patient , y = value , fill = variable)) +
 
 ```
 
+### Can I identify molecular signatures for localised lesion or tumour regions in my data?  {.tabset}
+
+We can cluster areas with similar spatial interactions to identify regions using the `lisaClust` package on Bioconductor. Here we set `k = 5` to identify 5 regions. For the Keren et al. dataset, we're effectively aiming to separate out 3 regions:
+-   Non-tumour regions
+-   Tumour regions
+-   Tumour-immune interaction regions.
+
+```{r}
+set.seed(51773)
+
+# Preparing features for lisaClust
+kerenSPE <- lisaClust::lisaClust(kerenSPE, k = 5)
+
+```
+So what are some ways I can check that my region clustering has worked effectively? One way we can do this is to use the `hatchingPlot` function to visualise the regions identified by lisaClust.
+
+```{r, fig.height=5, fig.width=6.5}
+# Use hatching to visualise regions and cell types.
+lisaClust::hatchingPlot(kerenSPE,
+  useImages = "5",
+  line.spacing = 41, # spacing of lines
+  nbp = 100 # smoothness of lines
+) 
+
+```
+
+We can appreciate that the regions have separated out nicely for image 5, with region 1 clearly being a tumour region, region 5 a non-tumour region, and region 3 being the tumour-immune interaction region.
+
+We can also use the `regionMap` function to get a more quantitative determination of what each region represents, to look at which cell types are encountered in which regions.
+
+```{r}
+regionMap(kerenSPE)
+```
+
+### Changes in marker means
+
+`Statial` provides functionality to identify the average marker expression of a given cell type in a given region, using the `getMarkerMeans` function. Similar to the analysis above, these features can also be used for survival analysis.
+
+```{r lisaClust}
+
+cellTypeRegionMeans <- getMarkerMeans(kerenSPE,
+                              imageID = "imageID",
+                              cellType = "cellType",
+                              region = "region")
+
+survivalResults = colTest(cellTypeRegionMeans[names(kerenSurv),], kerenSurv, type = "survival")
+
+head(survivalResults)
+
+```
+
 ## Module 7: Patient classification
 
 Finally we demonstrate how we can use the Bioconductor package
@@ -1954,6 +2001,10 @@ earlier, with the `prepMatrix` function of `Statial`. As we generated
 matrices for `Kontextual` and the distance metric of `SpatioMark`
 earlier, we will now be generating matrices for the `SpatioMark`
 corrected distance metric, and the abundance metrics.
+
+We can also prepare a metric for region proportions, to look at whether 
+the percentage of area each region occupies in an image is capable of 
+predicting survival.
 
 ```{r prep-matrices}
 ## Distances Corrected Matrix
@@ -1989,6 +2040,11 @@ stateMatCorAbund[is.na(stateMatCorAbund)] <- 0
 # Remove some very small values
 stateMatCorAbund <- stateMatCorAbund[,colMeans(abs(stateMatCorAbund)>0.0001)>.8]
 
+## Region proportions
+regionProp <- getProp(kerenSPE, 
+                       feature = "region",
+                       imageID = "imageID")
+
 ```
 
 Then we compile these matrices into a list. `scFeatures` conveniently
@@ -2005,7 +2061,9 @@ statialFeatureList <- list(`SpatioMark Distances` = stateMat,
                            `SpatioMark Corrected Distances` = stateMatCorDist,
                            `SpatioMark Abundances` = stateMatAbund,
                            `SpatioMark Corrected Abundances` = stateMatCorAbund,
-                           `Kontextual` = kontextMat)
+                           `Kontextual` = kontextMat,
+                           `Region Marker Means` = cellTypeRegionMeans,
+                           `Region Proportions` = regionProp)
 
 set.seed(51773)
 
@@ -2033,8 +2091,9 @@ performancePlot(kerenCV,
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   geom_rect(aes(xmin = 0, xmax = 5.5, ymin = -Inf, ymax = Inf), fill = "red", alpha = 0.2) +
-  geom_rect(aes(xmin = 5.5, xmax = 14.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
-  geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
+  geom_rect(aes(xmin = 5.5, xmax = 7.5, ymin = -Inf, ymax = Inf), fill = "yellow", alpha = 0.2) +
+  geom_rect(aes(xmin = 7.5, xmax = 16.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
+  geom_rect(aes(xmin = 16.5, xmax = 21, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
 
 Unfortunately, our spatial metrics did not outperform some of the
@@ -2073,8 +2132,9 @@ performancePlot(kerenCV_recurrence,
   orderingList = list("Assay Name" = c(names(statialFeatureList), names(scfeatures_result)))) + 
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   geom_rect(aes(xmin = 0, xmax = 5.5, ymin = -Inf, ymax = Inf), fill = "red", alpha = 0.2) +
-  geom_rect(aes(xmin = 5.5, xmax = 14.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
-  geom_rect(aes(xmin = 14.5, xmax = 19, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
+  geom_rect(aes(xmin = 5.5, xmax = 7.5, ymin = -Inf, ymax = Inf), fill = "yellow", alpha = 0.2) +
+  geom_rect(aes(xmin = 7.5, xmax = 16.5, ymin = -Inf, ymax = Inf), fill = "blue", alpha = 0.2) +
+  geom_rect(aes(xmin = 16.5, xmax = 21, ymin = -Inf, ymax = Inf), fill = "green", alpha = 0.2)
 ```
 
 ```{r sessionInfo}
