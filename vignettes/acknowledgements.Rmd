@@ -1,8 +1,8 @@
 ---
-title: "Acknowledgement"
+title: "Acknowledgements"
 output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{Acknowledgement}
+  %\VignetteIndexEntry{Acknowledgements}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -11,7 +11,7 @@ editor_options:
 ---
 
 
-The workshop is developed/adviced from the following members of the Sydney Precision Data Science Center (in alphabetical order):
+The workshop is developed/adviced from the following members of the Sydney Precision Data Science Centre (in alphabetical order):
 
 - Ms. Yue Cao
 - Dr. Shila Ghazanfar
@@ -24,4 +24,6 @@ The workshop is developed/adviced from the following members of the Sydney Preci
 - Prof. Jean Yang
 - Dr. Pengyi Yang
 
+Checkout the [Sydney Precision Data Science Centre](https://www.sydney.edu.au/science/our-research/research-centres/sydney-precision-data-science-centre.html). 
 
+Checkout [SCDNEY](https://sydneybiox.github.io/scdney/) for more information about our packages and additional workshops.

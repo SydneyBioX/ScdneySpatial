@@ -931,6 +931,8 @@ kerenSPE_test$classifiedCellTypes = newCellTypes
 We can look at the distribution of cells in an image. Here we compare
 our clusters and classified cell types to the cell types in the dataset.
 
+
+
 ```{r viewClustering}
 reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
 
@@ -942,26 +944,32 @@ kerenSPE |>
 
 reducedDim(kerenSPE_test, "spatialCoords") = spatialCoords(kerenSPE_test)
 
+# Filter out the "parent" classified cells
 kerenSPE_test |> 
-  plotReducedDim("spatialCoords", colour_by = "classifiedCellTypes") 
+  filter(classifiedCellTypes %in% unique(kerenSPE$cellType)) |> 
+  plotReducedDim("spatialCoords", colour_by = "classifiedCellTypes") +
+  ggtitle("Classified cell types")
   
 kerenSPE |> 
   filter(imageID == "5") |> 
   plotReducedDim("spatialCoords", colour_by = "cellType") +
   ggtitle("Original cell types")
+```
 
 
-
+```{r comparingAnnotations, fig.height= 6}
 # Comparing orignal cell types to clustering and classification cell types. 
 regionMap(kerenSPE, cellType = "clusters", region = "cellType") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Original vs Clustered")
+  ggtitle("Original vs Clustered") +
+  labs(x = "Original cell labels", y = "Clustering cell labels")
 
 
 
 regionMap(kerenSPE_test, cellType = "classifiedCellTypes", region = "cellType") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Original vs Classified")
+  ggtitle("Original vs Classified") +
+  labs(x = "Original cell labels", y = "Classified cell labels")
 ```
 
 ::: question
@@ -1853,6 +1861,7 @@ survfit2(kerenSurv ~ survRelationship) |>
 3.  Could you visualise representative images?
 :::
 
+
 ### How do we generate a molecular representation for each individual? {.tabset}
 
 The next section of this workshop will be dedicated to `scFeatures` - a
@@ -1950,19 +1959,20 @@ ggplot(feature , aes(x = patient , y = value , fill = variable)) +
 
 ```
 
-### Can I identify molecular signatures for localised lesion or tumour regions in my data? {.tabset}
+### Can I identify distinct neighbourhoods or regions of cells in my images? {.tabset}
 
 We can cluster areas with similar spatial interactions to identify
 regions using the `lisaClust` package on Bioconductor. Here we set
-`k = 5` to identify 5 regions. For the Keren et al. dataset, we're
-effectively aiming to separate out 3 regions: - Non-tumour regions -
-Tumour regions - Tumour-immune interaction regions.
+`k = 5` to identify 5 regions. 
 
-```{r}
+```{r lisaClust}
 set.seed(51773)
 
 # Preparing features for lisaClust
-kerenSPE <- lisaClust::lisaClust(kerenSPE, k = 5)
+kerenSPE <- lisaClust::lisaClust(
+  cells = kerenSPE,
+  k = 5,
+  BPPARAM = BPPARAM)
 
 ```
 
@@ -1970,12 +1980,11 @@ So what are some ways I can check that my region clustering has worked
 effectively? One way we can do this is to use the `hatchingPlot`
 function to visualise the regions identified by lisaClust.
 
-```{r, fig.height=5, fig.width=6.5}
+```{r viewRegions, fig.height=6}
 # Use hatching to visualise regions and cell types.
-lisaClust::hatchingPlot(kerenSPE,
-  useImages = "5",
-  line.spacing = 41, # spacing of lines
-  nbp = 100 # smoothness of lines
+lisaClust::hatchingPlot(
+  kerenSPE,
+  useImages = "5"
 ) 
 
 ```
@@ -1988,18 +1997,22 @@ We can also use the `regionMap` function to get a more quantitative
 determination of what each region represents, to look at which cell
 types are encountered in which regions.
 
-```{r}
+```{r regionMap, fig.height = 5}
 regionMap(kerenSPE)
 ```
 
-### Changes in marker means
 
-`Statial` provides functionality to identify the average marker
-expression of a given cell type in a given region, using the
-`getMarkerMeans` function. Similar to the analysis above, these features
-can also be used for survival analysis.
 
-```{r lisaClust}
+::: question
+**Question**
+
+1. What are some ways you could identify the "right" number of regions?
+2. Can you think of some ways to generate additional features using these regions?
+:::
+
+One feature we might be interested in exploring is to examine the molecular profile of each region or cells within each region. `Statial` provides functionality to identify the average marker expression of a given cell type in a given region, using the `getMarkerMeans` function. Similar to the analysis above, these features can also be used for survival analysis.
+
+```{r markerMeans}
 
 cellTypeRegionMeans <- getMarkerMeans(kerenSPE,
                               imageID = "imageID",
@@ -2108,11 +2121,9 @@ kerenCV = crossValidate(
 )
 ```
 
-```{r}
+```{r loadClassification}
 load(system.file("extdata", "featureList.rda", package = "ScdneySpatial"))
-```
 
-```{r}
 load(system.file("extdata", "kerenCV.rda", package = "ScdneySpatial"))
 ```
 
@@ -2160,7 +2171,7 @@ kerenCV_recurrence = crossValidate(
 Again, using `performancePlot`, this time for recurrence, we found
 better performance in select spatial metrics.
 
-```{r}
+```{r loadRecurrence}
 load(system.file("extdata", "recurrenceCV.rda", package = "ScdneySpatial"))
 ```
 
