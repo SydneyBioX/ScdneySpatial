@@ -12,11 +12,6 @@ home:
 
 
 navbar:
-  left: 
-    - text: "Workshop"
-      href: workshop_material.html
-    - text: "Acknowledgement"
-      href: acknowledgements.html
   right:
    - icon: fa-github
      href: https://github.com/SydneyBioX/ScdneySpatial

@@ -932,7 +932,6 @@ We can look at the distribution of cells in an image. Here we compare
 our clusters and classified cell types to the cell types in the dataset.
 
 
-
 ```{r viewClustering}
 reducedDim(kerenSPE, "spatialCoords") <- spatialCoords(kerenSPE)
 
@@ -2121,9 +2120,11 @@ kerenCV = crossValidate(
 )
 ```
 
-```{r loadClassification}
+```{r loadFeatureList}
 load(system.file("extdata", "featureList.rda", package = "ScdneySpatial"))
+```
 
+```{r loadkerenCV}
 load(system.file("extdata", "kerenCV.rda", package = "ScdneySpatial"))
 ```
 
