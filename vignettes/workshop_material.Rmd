@@ -17,7 +17,7 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   #collapse = TRUE,
-  #eval = FALSE,
+  eval = FALSE,
   comment = "#>",
   cache = FALSE,
   message = FALSE,
@@ -885,8 +885,8 @@ scClassifyResults = scClassify(exprsMat_train = train_intensities,
 To save time we have preloaded in the `scClassify` results, below we can
 view the hierarchical tree constructed by `scClassify`.
 
-```{r loadscClassify, eval = TRUE}
-load(file = system.file("extdata", "scClassifyResults.rda", package = "ScdneySpatial"))
+```{r loadscClassify}
+load(system.file("extdata", "scClassifyResults.rda", package = "ScdneySpatial"))
 
 plotCellTypeTree(cellTypeTree(scClassifyResults$trainRes))
 ```
