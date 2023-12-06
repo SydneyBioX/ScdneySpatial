@@ -38,7 +38,8 @@ Depends:
     SpatialExperiment,
     ggsurvfit,
     reshape,
-    glmnet
+    glmnet,
+    ggplot2
 Suggests: 
     knitr,
     rmarkdown,
